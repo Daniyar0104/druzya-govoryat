@@ -72,7 +72,7 @@
       <div class="notice small">
         1. Введите <strong>Project URL</strong> и <strong>Anon key</strong>.<br>
         2. Ниже войдите под админской учётной записью сотрудников.<br>
-        3. Затем можно искать гостя по номеру бонусной карты Prime Hill.
+        3. Затем можно искать гостя по номеру карты Prime Hill.
       </div>
       <div class="grid" style="margin-bottom:14px">
         <div class="field"><div class="label">Supabase Project URL</div><input id="cfgUrl" class="input" placeholder="https://xxxx.supabase.co"></div>
@@ -93,7 +93,7 @@
         <div class="section-title">Регистрация гостя по бонусной карте</div>
         <div class="small muted" style="margin-bottom:12px">Гость может сам зарегистрироваться по номеру карты и оставить данные о себе. Если гость уже есть, карточка будет обновлена.</div>
         <div class="grid">
-          <div class="field"><div class="label">Номер бонусной карты</div><input id="grCard" class="input"></div>
+          <div class="field"><div class="label">Номер карты Prime Hill</div><input id="grCard" class="input"></div>
           <div class="field"><div class="label">Имя</div><input id="grName" class="input"></div>
           <div class="field"><div class="label">Nickname</div><input id="grNick" class="input"></div>
           <div class="field"><div class="label">Телефон</div><input id="grPhone" class="input"></div>
@@ -141,7 +141,7 @@
           <div class="page-sub">Поиск по бонусной карте, телефону, имени или nickname. Главный сценарий — сотрудник узнаёт предпочтения гостя до принятия заказа.</div>
         </div>
         <div class="actions">
-          <input id="globalSearch" class="input" style="width:330px;max-width:100%" placeholder="Номер бонусной карты / имя / nickname">
+          <input id="globalSearch" class="input" style="width:330px;max-width:100%" placeholder="Номер карты Prime Hill / имя / nickname">
           <button class="btn btn-primary" id="btnSearchCard">Найти гостя</button>
           <button class="btn" id="btnReload">Обновить</button>
         </div>
@@ -205,7 +205,7 @@
           <div class="grid grid-2">
             <div class="field"><div class="label">Имя гостя</div><input id="gName" class="input"></div>
             <div class="field"><div class="label">Nickname</div><input id="gNick" class="input"></div>
-            <div class="field"><div class="label">Номер бонусной карты</div><input id="gCard" class="input"></div>
+            <div class="field"><div class="label">Номер карты Prime Hill</div><input id="gCard" class="input"></div>
             <div class="field"><div class="label">Телефон</div><input id="gPhone" class="input"></div>
             <div class="field"><div class="label">Любимый стол</div><input id="gTable" class="input"></div>
             <div class="field"><div class="label">Пиковые часы</div><input id="gHours" class="input" placeholder="18:00–22:00"></div>
@@ -306,16 +306,17 @@ async function guestSelfRegister(){
     sbClient = window.supabase.createClient(url, key);
   }
   const payload = {
-    bonus_card_number:$('grCard').value.trim(),
-    name:$('grName').value.trim(),
+    prime_hill_card:$('grCard').value.trim(),
+    full_name:$('grName').value.trim(),
     nickname:$('grNick').value.trim(),
     phone:$('grPhone').value.trim(),
     favorite_table:$('grTable').value.trim(),
     peak_hours:$('grHours').value.trim(),
-    notes:[$('grPrefs').value.trim(), $('grNotes').value.trim()].filter(Boolean).join('\n\n')
+    notes:$('grNotes').value.trim(),
+    self_notes:$('grPrefs').value.trim()
   };
-  if(!payload.bonus_card_number || !payload.name){ toast('Для гостя нужны минимум номер карты и имя', false); return; }
-  const existing = await sbClient.from('guests').select('id, notes').eq('bonus_card_number', payload.bonus_card_number).maybeSingle();
+  if(!payload.prime_hill_card || !payload.full_name){ toast('Для гостя нужны минимум номер карты и имя', false); return; }
+  const existing = await sbClient.from('guests').select('id, notes').eq('prime_hill_card', payload.prime_hill_card).maybeSingle();
   if(existing.error && existing.error.code !== 'PGRST116'){ toast(existing.error.message, false); return; }
   if(existing.data?.id){
     const upd = await sbClient.from('guests').update(payload).eq('id', existing.data.id);
@@ -384,8 +385,8 @@ async function loadGuests(){
 
 function renderGuestsTable(rows){
   $('guestsTable').innerHTML = rows.length ? rows.map(g=>`<tr>
-    <td><strong>${escapeHtml(g.name || 'Без имени')}</strong><div class="small muted">${escapeHtml(g.nickname || '')}</div></td>
-    <td class="mono">${escapeHtml(g.bonus_card_number || '')}</td>
+    <td><strong>${escapeHtml(g.full_name || 'Без имени')}</strong><div class="small muted">${escapeHtml(g.nickname || '')}</div></td>
+    <td class="mono">${escapeHtml(g.prime_hill_card || '')}</td>
     <td>${escapeHtml(g.phone || '')}</td>
     <td>${escapeHtml(g.favorite_table || '')}</td>
     <td>${escapeHtml(g.peak_hours || '')}</td>
@@ -409,12 +410,12 @@ async function openGuest(id){
 function renderGuest(g, hookahs, foods, drinks){
   $('guestHero').innerHTML = `
     <div class="hero">
-      <div class="avatar">${initials(g.name || g.nickname)}</div>
+      <div class="avatar">${initials(g.full_name || g.nickname)}</div>
       <div>
         <div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap">
           <div>
-            <div style="font-size:28px;font-weight:800">${escapeHtml(g.name || 'Без имени')}</div>
-            <div class="muted">nickname: <span class="mono">${escapeHtml(g.nickname || '—')}</span> · карта: <span class="mono">${escapeHtml(g.bonus_card_number || '—')}</span></div>
+            <div style="font-size:28px;font-weight:800">${escapeHtml(g.full_name || 'Без имени')}</div>
+            <div class="muted">nickname: <span class="mono">${escapeHtml(g.nickname || '—')}</span> · карта: <span class="mono">${escapeHtml(g.prime_hill_card || '—')}</span></div>
           </div>
           <div class="pill">Телефон: <span class="mono">${escapeHtml(g.phone || '—')}</span></div>
         </div>
@@ -426,22 +427,22 @@ function renderGuest(g, hookahs, foods, drinks){
     <div class="stat"><div class="stat-v mono">${foods.length}</div><div class="stat-l">Любимых блюд</div></div>
     <div class="stat"><div class="stat-v mono">${drinks.length}</div><div class="stat-l">Любимых напитков</div></div>
     <div class="stat"><div class="stat-v mono">${escapeHtml(g.favorite_table || '—')}</div><div class="stat-l">Любимый стол</div></div>`;
-  $('hookahList').innerHTML = hookahs.length ? hookahs.map(h=>`<div class="item"><div><strong>${escapeHtml(h.brand || 'Без бренда')}</strong><div class="small muted">${escapeHtml(h.flavor_profile || '')} · ${escapeHtml(h.strength || '')} · ${escapeHtml(h.bowl_type || '')}</div></div><div class="small mono">${escapeHtml(h.created_at?.slice(0,10) || '')}</div></div>`).join('') : '<div class="muted small">Кальянов ещё нет.</div>';
+  $('hookahList').innerHTML = hookahs.length ? hookahs.map(h=>`<div class="item"><div><strong>${escapeHtml(h.tobacco_brand || 'Без бренда')}</strong><div class="small muted">${escapeHtml(h.flavor || '')} · ${escapeHtml(h.strength || '')} · ${escapeHtml(h.bowl_type || '')}</div></div><div class="small mono">${escapeHtml(h.created_at?.slice(0,10) || '')}</div></div>`).join('') : '<div class="muted small">Кальянов ещё нет.</div>';
   $('foodList').innerHTML = foods.length ? foods.map(f=>`<div class="item"><div><strong>${escapeHtml(f.dish_name || 'Без названия')}</strong><div class="small muted">${escapeHtml(f.notes || '')}</div></div></div>`).join('') : '<div class="muted small">Любимые блюда ещё не добавлены.</div>';
   $('drinkList').innerHTML = drinks.length ? drinks.map(d=>`<div class="item"><div><strong>${escapeHtml(d.drink_name || 'Без названия')}</strong><div class="small muted">${escapeHtml(d.notes || '')}</div></div></div>`).join('') : '<div class="muted small">Любимые напитки ещё не добавлены.</div>';
   $('notesBox').innerHTML = `
     <div class="small"><strong>Пиковые часы:</strong> ${escapeHtml(g.peak_hours || '—')}</div>
     <div class="small" style="margin-top:8px"><strong>Любимый стол:</strong> ${escapeHtml(g.favorite_table || '—')}</div>
-    <div class="small" style="margin-top:8px"><strong>Личные характеристики и заметки:</strong><br>${escapeHtml(g.notes || '—').replace(/\n/g,'<br>')}</div>`;
+    <div class="small" style="margin-top:8px"><strong>Пометки персонала:</strong><br>${escapeHtml(g.notes || '—').replace(/\n/g,'<br>')}</div><div class="small" style="margin-top:8px"><strong>Что указал сам гость:</strong><br>${escapeHtml(g.self_notes || '—').replace(/\n/g,'<br>')}</div>`;
 }
 
 async function searchGuest(){
   const q = $('globalSearch').value.trim();
   if(!q){ await loadGuests(); toast('Введите номер карты, имя или nickname', false); return; }
   const normalized = q.toLowerCase();
-  const localFound = guestCache.find(g => [g.bonus_card_number, g.name, g.nickname, g.phone].filter(Boolean).some(v => String(v).toLowerCase().includes(normalized)));
+  const localFound = guestCache.find(g => [g.prime_hill_card, g.full_name, g.nickname, g.phone].filter(Boolean).some(v => String(v).toLowerCase().includes(normalized)));
   if(localFound){ await openGuest(localFound.id); return; }
-  const { data, error } = await sbClient.from('guests').select('*').or(`bonus_card_number.ilike.%${q}%,name.ilike.%${q}%,nickname.ilike.%${q}%,phone.ilike.%${q}%`).limit(20);
+  const { data, error } = await sbClient.from('guests').select('*').or(`prime_hill_card.ilike.%${q}%,full_name.ilike.%${q}%,nickname.ilike.%${q}%,phone.ilike.%${q}%`).limit(20);
   if(error){ toast('Ошибка поиска: '+error.message, false); return; }
   if(!data || !data.length){ toast('Гость не найден. Значит в базе бонусной системы он пока не загружен.', false); return; }
   guestCache = data.concat(guestCache.filter(x=>!data.some(y=>y.id===x.id)));
@@ -451,10 +452,10 @@ async function searchGuest(){
 
 async function createGuest(){
   const payload = {
-    name:$('gName').value.trim(), nickname:$('gNick').value.trim(), bonus_card_number:$('gCard').value.trim(), phone:$('gPhone').value.trim(),
-    favorite_table:$('gTable').value.trim(), peak_hours:$('gHours').value.trim(), tags:$('gTags').value.trim(), notes:$('gNotes').value.trim()
+    full_name:$('gName').value.trim(), nickname:$('gNick').value.trim(), prime_hill_card:$('gCard').value.trim(), phone:$('gPhone').value.trim(),
+    favorite_table:$('gTable').value.trim(), peak_hours:$('gHours').value.trim(), tags:$('gTags').value.trim().split(',').map(v=>v.trim()).filter(Boolean), notes:$('gNotes').value.trim()
   };
-  if(!payload.name || !payload.bonus_card_number){ toast('Минимум нужны имя и номер бонусной карты', false); return; }
+  if(!payload.full_name || !payload.prime_hill_card){ toast('Минимум нужны имя и номер бонусной карты', false); return; }
   const { error } = await sbClient.from('guests').insert(payload);
   if(error){ toast('Не удалось сохранить гостя: '+error.message, false); return; }
   ['gName','gNick','gCard','gPhone','gTable','gHours','gTags','gNotes'].forEach(id=>$(id).value='');
@@ -464,8 +465,8 @@ async function createGuest(){
 }
 
 async function createPreorder(){
-  const payload={guest_id:$('poGuestId').value.trim(), preorder_date:$('poDate').value, preorder_time:$('poTime').value.trim(), brand:$('poBrand').value.trim(), flavor:$('poFlavor').value.trim(), strength:$('poStrength').value.trim(), bowl_type:$('poBowl').value.trim(), extras:$('poExtras').value.trim(), status:'new'};
-  if(!payload.guest_id || !payload.preorder_date){ toast('Нужны Guest ID и дата', false); return; }
+  const payload={guest_id:$('poGuestId').value.trim(), visit_date:$('poDate').value, time_slot:$('poTime').value.trim(), tobacco_brand:$('poBrand').value.trim(), flavor:$('poFlavor').value.trim(), strength:$('poStrength').value.trim(), bowl_type:$('poBowl').value.trim(), extras:$('poExtras').value.trim(), status:'pending'};
+  if(!payload.guest_id || !payload.visit_date){ toast('Нужны Guest ID и дата', false); return; }
   const { error } = await sbClient.from('hookah_preorders').insert(payload);
   if(error){ toast('Не удалось создать предзаказ: '+error.message, false); return; }
   ['poGuestId','poDate','poTime','poBrand','poFlavor','poStrength','poBowl','poExtras'].forEach(id=>$(id).value='');
@@ -475,12 +476,12 @@ async function createPreorder(){
 
 async function loadPreorders(){
   if(!sbClient) return;
-  const { data, error } = await sbClient.from('hookah_preorders').select('*, guests(name, bonus_card_number)').order('created_at', {ascending:false}).limit(50);
+  const { data, error } = await sbClient.from('hookah_preorders').select('*, guests(full_name, prime_hill_card)').order('created_at', {ascending:false}).limit(50);
   if(error){ $('preordersTable').innerHTML=`<tr><td colspan="4" class="bad">${escapeHtml(error.message)}</td></tr>`; return; }
   $('preordersTable').innerHTML = (data||[]).length ? data.map(r=>`<tr>
-    <td><strong>${escapeHtml(r.guests?.name || 'Без имени')}</strong><div class="small mono">${escapeHtml(r.guests?.bonus_card_number || '')}</div></td>
-    <td>${escapeHtml(r.preorder_date || '')} ${escapeHtml(r.preorder_time || '')}</td>
-    <td>${escapeHtml([r.brand,r.flavor,r.strength,r.bowl_type].filter(Boolean).join(' · '))}</td>
+    <td><strong>${escapeHtml(r.guests?.full_name || 'Без имени')}</strong><div class="small mono">${escapeHtml(r.guests?.prime_hill_card || '')}</div></td>
+    <td>${escapeHtml(r.visit_date || '')} ${escapeHtml(r.time_slot || '')}</td>
+    <td>${escapeHtml([r.tobacco_brand,r.flavor,r.strength,r.bowl_type].filter(Boolean).join(' · '))}</td>
     <td>${escapeHtml(r.status || 'new')}</td>
   </tr>`).join('') : `<tr><td colspan="4" class="muted">Предзаказов пока нет.</td></tr>`;
 }
@@ -492,7 +493,7 @@ async function addPref(type){
     const flavor=prompt('Вкус / профиль');
     const strength=prompt('Крепость');
     const bowl=prompt('Тип чаши');
-    const { error } = await sbClient.from('hookah_prefs').insert({ guest_id:currentGuest.id, brand, flavor_profile:flavor||'', strength:strength||'', bowl_type:bowl||'' });
+    const { error } = await sbClient.from('hookah_prefs').insert({ guest_id:currentGuest.id, brand, flavor:flavor||'', strength:strength||'', bowl_type:bowl||'' });
     if(error){ toast(error.message, false); return; }
   }
   if(type==='food'){
@@ -515,10 +516,10 @@ async function editNotes(){
   if(!currentGuest){ toast('Сначала откройте гостя', false); return; }
   const notes = prompt('Заметки о госте', currentGuest.notes || '');
   if(notes===null) return;
-  const tags = prompt('Теги через запятую', currentGuest.tags || '');
+  const tags = prompt('Теги через запятую', Array.isArray(currentGuest.tags) ? currentGuest.tags.join(', ') : (currentGuest.tags || ''));
   const table = prompt('Любимый стол', currentGuest.favorite_table || '');
   const hours = prompt('Пиковые часы', currentGuest.peak_hours || '');
-  const { error } = await sbClient.from('guests').update({ notes, tags, favorite_table:table, peak_hours:hours }).eq('id', currentGuest.id);
+  const { error } = await sbClient.from('guests').update({ notes, tags:(tags||'').split(',').map(v=>v.trim()).filter(Boolean), favorite_table:table, peak_hours:hours }).eq('id', currentGuest.id);
   if(error){ toast(error.message, false); return; }
   toast('Профиль гостя обновлён');
   await loadGuests();
