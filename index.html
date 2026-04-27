@@ -201,7 +201,7 @@
   <div class="toast-wrap" id="toasts"></div>
 
 <script>
-let supabase = null;
+let sb = null;
 let currentUser = null;
 let selectedGuest = null;
 let cacheGuests = [];
@@ -223,8 +223,8 @@ async function connectSupabase(){
   const key=document.getElementById('supabaseKey').value.trim();
   if(!url || !key){ toast('Заполните URL и anon key', false); return; }
   try{
-    supabase = window.supabase.createClient(url, key);
-    const { data, error } = await supabase.from('guests').select('id').limit(1);
+    sb = window.supabase.createClient(url, key);
+    const { data, error } = await sb.from('guests').select('id').limit(1);
     if(error) throw error;
     localStorage.setItem('dg_supabase_url', url);
     localStorage.setItem('dg_supabase_key', key);
@@ -244,20 +244,20 @@ async function restoreSupabase(){
   document.getElementById('supabaseUrl').value=url;
   document.getElementById('supabaseKey').value=key;
   try{
-    supabase = window.supabase.createClient(url, key);
-    const { error } = await supabase.from('guests').select('id').limit(1);
+    sb = window.supabase.createClient(url, key);
+    const { error } = await sb.from('guests').select('id').limit(1);
     if(error) throw error;
     document.getElementById('setupStatus').innerHTML='<span class="ok">Сохранённое подключение восстановлено.</span>';
   }catch(e){ console.warn(e); }
 }
 
 async function signupStaff(){
-  if(!supabase){ toast('Сначала подключите Supabase', false); return; }
+  if(!sb){ toast('Сначала подключите Supabase', false); return; }
   const email=document.getElementById('staffEmail').value.trim();
   const password=document.getElementById('staffPassword').value.trim();
   if(!email || password.length<6){ toast('Введите email и пароль от 6 символов', false); return; }
   try{
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await sb.auth.signUp({ email, password });
     if(error) throw error;
     currentUser = data.user;
     await ensureStaffProfile(data.user.id, email, 'Менеджер', 'manager');
@@ -267,11 +267,11 @@ async function signupStaff(){
 }
 
 async function loginStaff(){
-  if(!supabase){ toast('Сначала подключите Supabase', false); return; }
+  if(!sb){ toast('Сначала подключите Supabase', false); return; }
   const email=document.getElementById('staffEmail').value.trim();
   const password=document.getElementById('staffPassword').value.trim();
   try{
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
     if(error) throw error;
     currentUser = data.user;
     await enterApp();
@@ -280,9 +280,9 @@ async function loginStaff(){
 }
 
 async function ensureStaffProfile(id,email,fullName,role){
-  const { data } = await supabase.from('staff').select('id').eq('email', email).maybeSingle();
+  const { data } = await sb.from('staff').select('id').eq('email', email).maybeSingle();
   if(!data){
-    const { error } = await supabase.from('staff').insert({ id, email, full_name: fullName, role, is_active: true });
+    const { error } = await sb.from('staff').insert({ id, email, full_name: fullName, role, is_active: true });
     if(error && !String(error.message).includes('duplicate')) throw error;
   }
 }
@@ -296,7 +296,7 @@ async function enterApp(){
 }
 
 async function logout(){
-  if(supabase) await supabase.auth.signOut();
+  if(supabase) await sb.auth.signOut();
   currentUser=null; selectedGuest=null;
   document.getElementById('app').classList.add('hidden');
   document.getElementById('auth').classList.remove('hidden');
@@ -309,7 +309,7 @@ function showView(view, btn){
 }
 
 async function loadGuests(){
-  const { data, error } = await supabase.from('guests').select('*').order('created_at', { ascending:false });
+  const { data, error } = await sb.from('guests').select('*').order('created_at', { ascending:false });
   if(error){ toast(error.message, false); return; }
   cacheGuests = data || [];
   renderGuests(cacheGuests);
@@ -345,9 +345,9 @@ async function selectGuest(id){
   document.getElementById('selectedGuestWrap').classList.remove('hidden');
 
   const [hookahRes, foodRes, drinkRes] = await Promise.all([
-    supabase.from('hookah_prefs').select('*').eq('guest_id', id).order('created_at', { ascending:false }),
-    supabase.from('food_prefs').select('*').eq('guest_id', id).order('order_count', { ascending:false }),
-    supabase.from('drink_prefs').select('*').eq('guest_id', id).order('order_count', { ascending:false })
+    sb.from('hookah_prefs').select('*').eq('guest_id', id).order('created_at', { ascending:false }),
+    sb.from('food_prefs').select('*').eq('guest_id', id).order('order_count', { ascending:false }),
+    sb.from('drink_prefs').select('*').eq('guest_id', id).order('order_count', { ascending:false })
   ]);
 
   const initials=(guest.full_name||'?').split(' ').map(v=>v[0]).join('').slice(0,2).toUpperCase();
@@ -384,7 +384,7 @@ async function createGuest(){
     tags: val('gTags').split(',').map(v=>v.trim()).filter(Boolean), notes: val('gNotes'), visit_count: 0
   };
   if(!payload.full_name){ toast('Введите имя гостя', false); return; }
-  const { error } = await supabase.from('guests').insert(payload);
+  const { error } = await sb.from('guests').insert(payload);
   if(error){ toast(error.message, false); return; }
   toast('Гость создан');
   ['gName','gNick','gCard','gPhone','gTable','gHours','gTags','gNotes'].forEach(id=>document.getElementById(id).value='');
@@ -394,7 +394,7 @@ async function createGuest(){
 
 async function createPreorder(){
   const payload = { guest_id: val('poGuestId') || null, visit_date: val('poDate') || null, time_slot: val('poTime'), tobacco_brand: val('poBrand'), flavor: val('poFlavor'), strength: val('poStrength'), bowl_type: val('poBowl'), extras: val('poExtras'), status:'pending' };
-  const { error } = await supabase.from('hookah_preorders').insert(payload);
+  const { error } = await sb.from('hookah_preorders').insert(payload);
   if(error){ toast(error.message, false); return; }
   toast('Предзаказ создан');
   ['poGuestId','poDate','poTime','poBrand','poFlavor','poStrength','poBowl','poExtras'].forEach(id=>document.getElementById(id).value='');
@@ -402,7 +402,7 @@ async function createPreorder(){
 }
 
 async function loadPreorders(){
-  const { data, error } = await supabase.from('hookah_preorders').select('*, guests(full_name)').order('created_at', { ascending:false });
+  const { data, error } = await sb.from('hookah_preorders').select('*, guests(full_name)').order('created_at', { ascending:false });
   if(error){ document.getElementById('preordersTable').innerHTML=''; return; }
   document.getElementById('preordersTable').innerHTML = (data||[]).map(p=>`<tr><td>${escapeHtml(p.guests?.full_name || p.guest_id || '—')}</td><td>${escapeHtml(p.visit_date||'—')} ${escapeHtml(p.time_slot||'')}</td><td>${escapeHtml(p.tobacco_brand||'—')} / ${escapeHtml(p.flavor||'—')}</td><td><span class="pill">${escapeHtml(p.status||'pending')}</span></td></tr>`).join('');
 }
@@ -410,9 +410,9 @@ async function loadPreorders(){
 async function createStaff(){
   const email=val('newStaffEmail'), password=val('newStaffPassword'), fullName=val('newStaffName'), role=val('newStaffRole');
   if(!email || password.length<6 || !fullName){ toast('Заполните имя, email и пароль', false); return; }
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const { data, error } = await sb.auth.signUp({ email, password });
   if(error){ toast(error.message, false); return; }
-  const { error: e2 } = await supabase.from('staff').insert({ id:data.user.id, email, full_name: fullName, role, is_active:true });
+  const { error: e2 } = await sb.from('staff').insert({ id:data.user.id, email, full_name: fullName, role, is_active:true });
   if(e2){ toast(e2.message, false); return; }
   toast('Сотрудник создан');
   ['newStaffEmail','newStaffPassword','newStaffName'].forEach(id=>document.getElementById(id).value='');
@@ -420,7 +420,7 @@ async function createStaff(){
 }
 
 async function loadStaff(){
-  const { data, error } = await supabase.from('staff').select('*').order('created_at', { ascending:false });
+  const { data, error } = await sb.from('staff').select('*').order('created_at', { ascending:false });
   if(error){ document.getElementById('staffTable').innerHTML=''; return; }
   cacheStaff = data || [];
   document.getElementById('staffTable').innerHTML = cacheStaff.map(s=>`<tr><td>${escapeHtml(s.full_name||'—')}</td><td>${escapeHtml(s.email||'—')}</td><td><span class="pill">${escapeHtml(s.role||'—')}</span></td></tr>`).join('');
@@ -433,7 +433,7 @@ async function addHookahPrefPrompt(){
   const strength = prompt('Крепость', 'Средний'); if(strength===null) return;
   const bowl_type = prompt('Тип чаши', 'Фанель'); if(bowl_type===null) return;
   const extras = prompt('Дополнительно', '') ?? '';
-  const { error } = await supabase.from('hookah_prefs').insert({ guest_id:selectedGuest.id, tobacco_brand, flavor, strength, bowl_type, extras, is_favorite:true });
+  const { error } = await sb.from('hookah_prefs').insert({ guest_id:selectedGuest.id, tobacco_brand, flavor, strength, bowl_type, extras, is_favorite:true });
   if(error){ toast(error.message, false); return; }
   toast('Кальян добавлен'); await selectGuest(selectedGuest.id);
 }
@@ -443,7 +443,7 @@ async function addFoodPrefPrompt(){
   const dish_name = prompt('Название блюда'); if(dish_name===null) return;
   const category = prompt('Категория', 'Горячее') ?? 'Горячее';
   const order_count = Number(prompt('Сколько раз заказывал', '1') || 1);
-  const { error } = await supabase.from('food_prefs').insert({ guest_id:selectedGuest.id, dish_name, category, order_count });
+  const { error } = await sb.from('food_prefs').insert({ guest_id:selectedGuest.id, dish_name, category, order_count });
   if(error){ toast(error.message, false); return; }
   toast('Блюдо добавлено'); await selectGuest(selectedGuest.id);
 }
@@ -453,7 +453,7 @@ async function addDrinkPrefPrompt(){
   const drink_name = prompt('Название напитка'); if(drink_name===null) return;
   const category = prompt('Категория', 'Напиток') ?? 'Напиток';
   const order_count = Number(prompt('Сколько раз заказывал', '1') || 1);
-  const { error } = await supabase.from('drink_prefs').insert({ guest_id:selectedGuest.id, drink_name, category, order_count });
+  const { error } = await sb.from('drink_prefs').insert({ guest_id:selectedGuest.id, drink_name, category, order_count });
   if(error){ toast(error.message, false); return; }
   toast('Напиток добавлен'); await selectGuest(selectedGuest.id);
 }
@@ -463,7 +463,7 @@ async function saveNotesPrompt(){
   const notes = prompt('Пометки персонала', selectedGuest.notes || ''); if(notes===null) return;
   const self_notes = prompt('Пометки гостя', selectedGuest.self_notes || '') ?? '';
   const tags = prompt('Теги через запятую', (selectedGuest.tags || []).join(', ')); if(tags===null) return;
-  const { error } = await supabase.from('guests').update({ notes, self_notes, tags: tags.split(',').map(v=>v.trim()).filter(Boolean) }).eq('id', selectedGuest.id);
+  const { error } = await sb.from('guests').update({ notes, self_notes, tags: tags.split(',').map(v=>v.trim()).filter(Boolean) }).eq('id', selectedGuest.id);
   if(error){ toast(error.message, false); return; }
   toast('Пометки обновлены'); await loadGuests(); await selectGuest(selectedGuest.id);
 }
@@ -474,8 +474,8 @@ function escapeHtml(str){ return String(str ?? '').replace(/[&<>"]/g, s => ({'&'
 window.addEventListener('DOMContentLoaded', async ()=>{
   iconRefresh();
   await restoreSupabase();
-  if(supabase){
-    const { data } = await supabase.auth.getUser();
+  if(sb){
+    const { data } = await sb.auth.getUser();
     if(data?.user){ currentUser = data.user; await enterApp(); }
   }
 });
