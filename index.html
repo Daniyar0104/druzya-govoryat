@@ -68,39 +68,30 @@
         </div>
       </div>
       <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><div style="font-size:32px;font-weight:800;line-height:1.1">Надёжный вход</div><div class="actions"><button class="btn" id="btnShowStaff">Сотрудник</button><button class="btn btn-primary" id="btnShowGuest">Гость</button></div></div>
-      <div class="page-sub" style="margin-bottom:18px">Выберите режим входа. Для гостя должна быть видна только гостевая анкета, без технических полей и формы входа сотрудников.</div>
+      <div class="page-sub" style="margin-bottom:18px">Для сотрудников оставляем только логин и пароль. Технические поля скрыты из интерфейса.</div>
       <div id="staffLoginBlock">
-      <div class="notice small">
-        1. Введите <strong>Project URL</strong> и <strong>Anon key</strong>.<br>
-        2. Ниже войдите под админской учётной записью сотрудников.<br>
-        3. Затем можно искать гостя по номеру карты Prime Hill.
-      </div>
-      <div class="grid" style="margin-bottom:14px">
-        <div class="field"><div class="label">Supabase Project URL</div><input id="cfgUrl" class="input" placeholder="https://xxxx.supabase.co"></div>
-        <div class="field"><div class="label">Supabase Anon key</div><textarea id="cfgKey" class="textarea" placeholder="eyJhbGciOi..."></textarea></div>
-      </div>
       <div class="grid" style="margin-bottom:14px">
         <div class="field"><div class="label">Логин сотрудников</div><input id="adminLogin" class="input" placeholder="Друзья"></div>
         <div class="field"><div class="label">Пароль</div><input id="adminPassword" type="password" class="input" placeholder="Введите пароль"></div>
       </div>
       <div class="actions">
         <button class="btn btn-primary" id="btnConnectLogin">Подключить и войти</button>
-        <button class="btn" id="btnFillDemo">Подставить URL</button>
+        
         <button class="btn" id="btnGuestRegOpen">Гость: регистрация</button>
         <button class="btn" id="btnToggleTheme">Сменить тему</button>
+      </div>
+      <div id="techConfig" class="hidden">
+        <input id="cfgUrl" value="https://vvmtgpeudmcsddjpktme.supabase.co">
+        <textarea id="cfgKey"></textarea>
       </div>
       <div id="loginStatus" class="page-sub"></div>
       </div>
       <div id="guestRegCard" class="card" style="margin-top:18px">
         <div class="section-title">Анкета гостя</div>
-        <div class="small muted" style="margin-bottom:12px">Гость заполняет только свою информацию. Служебные поля и данные для персонала здесь не показываются.</div>
+        <div class="small muted" style="margin-bottom:12px">Оставьте только имя и номер телефона. Этого достаточно, чтобы мы могли узнать вас при следующем визите.</div>
         <div class="grid">
-          <div class="field"><div class="label">Номер карты Prime Hill</div><input id="grCard" class="input"></div>
           <div class="field"><div class="label">Имя</div><input id="grName" class="input"></div>
-          <div class="field"><div class="label">Nickname</div><input id="grNick" class="input"></div>
           <div class="field"><div class="label">Телефон</div><input id="grPhone" class="input"></div>
-          <div class="field"><div class="label">Когда чаще всего приходите</div><input id="grHours" class="input" placeholder="Например, вечером"></div>
-          <div class="field"><div class="label">Что вам нравится</div><textarea id="grPrefs" class="textarea" placeholder="Любимые блюда, напитки, кальян, пожелания по посадке"></textarea></div>
         </div>
         <div class="actions" style="margin-top:14px"><button class="btn btn-primary" id="btnGuestRegister">Сохранить анкету</button></div>
       </div>
@@ -277,7 +268,7 @@ function initials(name){return (name||'?').trim().split(/\s+/).slice(0,2).map(v=
 function splitTags(tags){if(Array.isArray(tags)) return tags.filter(Boolean); return String(tags||'').split(',').map(v=>v.trim()).filter(Boolean)}
 function showView(view){document.querySelectorAll('[id^="view-"]').forEach(x=>x.classList.add('hidden'));const el=$('view-'+view); if(el) el.classList.remove('hidden'); document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active', b.dataset.view===view));}
 
-function fillDemo(){ $('cfgUrl').value='https://vvmtgpeudmcsddjpktme.supabase.co'; $('adminLogin').value='Друзья'; $('loginStatus').textContent='Осталось вставить anon key и ввести пароль общей админской учётной записи.'; }
+function fillDemo(){ $('adminLogin').value='Друзья'; $('loginStatus').textContent='Введите только логин и пароль сотрудников.'; }
 
 function setAuthMode(mode){
   const staff = $('staffLoginBlock');
@@ -325,26 +316,22 @@ async function guestSelfRegister(){
     sbClient = window.supabase.createClient(url, key);
   }
   const payload = {
-    prime_hill_card:$('grCard').value.trim(),
     full_name:$('grName').value.trim(),
-    nickname:$('grNick').value.trim(),
-    phone:$('grPhone').value.trim(),
-    peak_hours:$('grHours').value.trim(),
-    self_notes:$('grPrefs').value.trim()
+    phone:$('grPhone').value.trim()
   };
-  if(!payload.prime_hill_card || !payload.full_name){ toast('Для гостя нужны минимум номер карты и имя', false); return; }
-  const existing = await sbClient.from('guests').select('id, notes').eq('prime_hill_card', payload.prime_hill_card).maybeSingle();
+  if(!payload.full_name || !payload.phone){ toast('Укажите имя и телефон', false); return; }
+  const existing = await sbClient.from('guests').select('id').eq('phone', payload.phone).maybeSingle();
   if(existing.error && existing.error.code !== 'PGRST116'){ toast(existing.error.message, false); return; }
   if(existing.data?.id){
     const upd = await sbClient.from('guests').update(payload).eq('id', existing.data.id);
     if(upd.error){ toast(upd.error.message, false); return; }
-    toast('Анкета гостя обновлена');
+    toast('Анкета обновлена');
   } else {
     const ins = await sbClient.from('guests').insert(payload);
     if(ins.error){ toast(ins.error.message, false); return; }
-    toast('Гость зарегистрирован');
+    toast('Анкета сохранена');
   }
-  ['grCard','grName','grNick','grPhone','grHours','grPrefs'].forEach(id=>$(id).value='');
+  ['grName','grPhone'].forEach(id=>$(id).value='');
 }
 
 async function connectAndLogin(){
@@ -376,7 +363,7 @@ async function connectAndLogin(){
 
 async function restoreConfig(){
   try{
-    const url=localStorage.getItem('dg_url')||''; const key=localStorage.getItem('dg_key')||''; const login=localStorage.getItem('dg_login')||'Друзья';
+    const url=localStorage.getItem('dg_url')||'https://vvmtgpeudmcsddjpktme.supabase.co'; const key=localStorage.getItem('dg_key')||''; const login=localStorage.getItem('dg_login')||'Друзья';
     if(url) $('cfgUrl').value=url;
     if(key) $('cfgKey').value=key;
     $('adminLogin').value=login;
