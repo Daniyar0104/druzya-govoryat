@@ -67,7 +67,7 @@
           <div class="brand-sub">Единый вход сотрудников и CRM гостя</div>
         </div>
       </div>
-      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><div style="font-size:32px;font-weight:800;line-height:1.1">Надёжный вход</div><div class="actions"><button type="button" class="btn btn-primary" id="btnShowGuest">Гость</button><button type="button" class="btn" id="btnShowStaff">Сотрудник</button></div></div>
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><div style="font-size:32px;font-weight:800;line-height:1.1">Надёжный вход</div><div class="actions auth-tabs"><button type="button" class="btn btn-primary" id="btnShowGuest">Гость</button><button type="button" class="btn" id="btnShowStaff">Сотрудник</button></div></div>
       
       <div id="staffLoginBlock" class="hidden">
       <div class="grid" style="margin-bottom:14px">
@@ -320,13 +320,13 @@ function setAuthMode(mode){
   if(mode==='guest'){
     if(staff) staff.classList.add('hidden');
     if(guest) guest.classList.remove('hidden');
-    if(btnGuest){ btnGuest.classList.add('btn-primary'); btnGuest.setAttribute('aria-pressed','true'); }
-    if(btnStaff){ btnStaff.classList.remove('btn-primary'); btnStaff.setAttribute('aria-pressed','false'); }
+    if(btnGuest){ btnGuest.classList.add('btn-primary'); btnGuest.setAttribute('aria-pressed','true'); btnGuest.blur(); }
+    if(btnStaff){ btnStaff.classList.remove('btn-primary'); btnStaff.setAttribute('aria-pressed','false'); btnStaff.blur(); }
   } else {
     if(staff) staff.classList.remove('hidden');
     if(guest) guest.classList.add('hidden');
-    if(btnStaff){ btnStaff.classList.add('btn-primary'); btnStaff.setAttribute('aria-pressed','true'); }
-    if(btnGuest){ btnGuest.classList.remove('btn-primary'); btnGuest.setAttribute('aria-pressed','false'); }
+    if(btnStaff){ btnStaff.classList.add('btn-primary'); btnStaff.setAttribute('aria-pressed','true'); btnStaff.blur(); }
+    if(btnGuest){ btnGuest.classList.remove('btn-primary'); btnGuest.setAttribute('aria-pressed','false'); btnGuest.blur(); }
   }
 }
 
@@ -776,10 +776,12 @@ function initBookings(){
   renderBookingList();
 }
 
+function fastTap(el, handler){ if(!el) return; ['pointerdown','click','touchstart'].forEach(evt=>el.addEventListener(evt, e=>{ e.preventDefault(); handler(e); }, { passive:false })); }
+
 function bind(){
   $('btnConnectLogin').addEventListener('click', connectAndLogin);
-  $('btnShowStaff').addEventListener('click', ()=>setAuthMode('staff'));
-  $('btnShowGuest').addEventListener('click', ()=>setAuthMode('guest'));
+  fastTap($('btnShowStaff'), ()=>setAuthMode('staff'));
+  fastTap($('btnShowGuest'), ()=>setAuthMode('guest'));
   $('btnToggleTheme').addEventListener('click', toggleTheme);
   $('btnThemeInside').addEventListener('click', toggleTheme);
   $('btnLogout').addEventListener('click', logout);
