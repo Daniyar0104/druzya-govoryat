@@ -85,9 +85,25 @@
       <div class="actions">
         <button class="btn btn-primary" id="btnConnectLogin">Подключить и войти</button>
         <button class="btn" id="btnFillDemo">Подставить URL</button>
+        <button class="btn" id="btnGuestRegOpen">Гость: регистрация</button>
         <button class="btn" id="btnToggleTheme">Сменить тему</button>
       </div>
       <div id="loginStatus" class="page-sub"></div>
+      <div id="guestRegCard" class="card hidden" style="margin-top:18px">
+        <div class="section-title">Регистрация гостя по бонусной карте</div>
+        <div class="small muted" style="margin-bottom:12px">Гость может сам зарегистрироваться по номеру карты и оставить данные о себе. Если гость уже есть, карточка будет обновлена.</div>
+        <div class="grid">
+          <div class="field"><div class="label">Номер бонусной карты</div><input id="grCard" class="input"></div>
+          <div class="field"><div class="label">Имя</div><input id="grName" class="input"></div>
+          <div class="field"><div class="label">Nickname</div><input id="grNick" class="input"></div>
+          <div class="field"><div class="label">Телефон</div><input id="grPhone" class="input"></div>
+          <div class="field"><div class="label">Любимый стол</div><input id="grTable" class="input"></div>
+          <div class="field"><div class="label">Когда чаще всего приходите</div><input id="grHours" class="input" placeholder="18:00–22:00"></div>
+          <div class="field"><div class="label">Любимые блюда, напитки, кальян</div><textarea id="grPrefs" class="textarea"></textarea></div>
+          <div class="field"><div class="label">Личные характеристики / комментарий</div><textarea id="grNotes" class="textarea"></textarea></div>
+        </div>
+        <div class="actions" style="margin-top:14px"><button class="btn btn-primary" id="btnGuestRegister">Сохранить анкету гостя</button></div>
+      </div>
       <div class="card" style="margin-top:18px">
         <div class="section-title">Как работает единый вход</div>
         <div class="small muted">Технически Supabase входит по email и паролю. Поэтому логин <span class="mono">Друзья</span> на сайте будет автоматически переводиться в внутренний email <span class="mono">druzya@staff.local</span>. Пароль задаётся один раз в Supabase для этой общей учётной записи.</div>
@@ -262,6 +278,56 @@ function splitTags(tags){if(Array.isArray(tags)) return tags.filter(Boolean); re
 function showView(view){document.querySelectorAll('[id^="view-"]').forEach(x=>x.classList.add('hidden'));const el=$('view-'+view); if(el) el.classList.remove('hidden'); document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active', b.dataset.view===view));}
 
 function fillDemo(){ $('cfgUrl').value='https://vvmtgpeudmcsddjpktme.supabase.co'; $('adminLogin').value='Друзья'; $('loginStatus').textContent='Осталось вставить anon key и ввести пароль общей админской учётной записи.'; }
+function toggleGuestReg(){ $('guestRegCard').classList.toggle('hidden'); }
+
+
+async function bootstrapSession(){
+  try{
+    const url = (localStorage.getItem('dg_url')||'').trim();
+    const key = (localStorage.getItem('dg_key')||'').trim();
+    if(!url || !key || !window.supabase) return;
+    sbClient = window.supabase.createClient(url, key);
+    const sess = await sbClient.auth.getSession();
+    if(sess.error || !sess.data?.session?.user) return;
+    sessionUser = sess.data.session.user;
+    $('loginView').classList.add('hidden');
+    $('appView').classList.remove('hidden');
+    $('sideStatus').textContent='Сотрудник: Друзья';
+    await refreshAll();
+    toast('Сессия восстановлена');
+  }catch(e){}
+}
+
+async function guestSelfRegister(){
+  const url=$('cfgUrl').value.trim().replace(/\/$/, '');
+  const key=$('cfgKey').value.trim();
+  if(!sbClient){
+    if(!url || !key){ toast('Сначала вставьте Project URL и anon key', false); return; }
+    sbClient = window.supabase.createClient(url, key);
+  }
+  const payload = {
+    bonus_card_number:$('grCard').value.trim(),
+    name:$('grName').value.trim(),
+    nickname:$('grNick').value.trim(),
+    phone:$('grPhone').value.trim(),
+    favorite_table:$('grTable').value.trim(),
+    peak_hours:$('grHours').value.trim(),
+    notes:[$('grPrefs').value.trim(), $('grNotes').value.trim()].filter(Boolean).join('\n\n')
+  };
+  if(!payload.bonus_card_number || !payload.name){ toast('Для гостя нужны минимум номер карты и имя', false); return; }
+  const existing = await sbClient.from('guests').select('id, notes').eq('bonus_card_number', payload.bonus_card_number).maybeSingle();
+  if(existing.error && existing.error.code !== 'PGRST116'){ toast(existing.error.message, false); return; }
+  if(existing.data?.id){
+    const upd = await sbClient.from('guests').update(payload).eq('id', existing.data.id);
+    if(upd.error){ toast(upd.error.message, false); return; }
+    toast('Анкета гостя обновлена');
+  } else {
+    const ins = await sbClient.from('guests').insert(payload);
+    if(ins.error){ toast(ins.error.message, false); return; }
+    toast('Гость зарегистрирован');
+  }
+  ['grCard','grName','grNick','grPhone','grTable','grHours','grPrefs','grNotes'].forEach(id=>$(id).value='');
+}
 
 async function connectAndLogin(){
   const url=$('cfgUrl').value.trim().replace(/\/$/, '');
@@ -462,11 +528,13 @@ async function editNotes(){
 function bind(){
   $('btnConnectLogin').addEventListener('click', connectAndLogin);
   $('btnFillDemo').addEventListener('click', fillDemo);
+  $('btnGuestRegOpen').addEventListener('click', toggleGuestReg);
   $('btnToggleTheme').addEventListener('click', toggleTheme);
   $('btnThemeInside').addEventListener('click', toggleTheme);
   $('btnLogout').addEventListener('click', logout);
   $('btnSearchCard').addEventListener('click', searchGuest);
   $('btnReload').addEventListener('click', refreshAll);
+  $('btnGuestRegister').addEventListener('click', guestSelfRegister);
   $('btnCreateGuest').addEventListener('click', createGuest);
   $('btnCreatePreorder').addEventListener('click', createPreorder);
   $('btnAddHookah').addEventListener('click', ()=>addPref('hookah'));
@@ -481,6 +549,7 @@ window.openGuest = openGuest;
 restoreConfig();
 bind();
 setTheme('dark');
+bootstrapSession();
 </script>
 </body>
 </html>
