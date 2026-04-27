@@ -1,1395 +1,484 @@
 <!DOCTYPE html>
 <html lang="ru" data-theme="dark">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Друзья Говорят — Гостевой профиль</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-
-<style>
-/* ===== DESIGN TOKENS ===== */
-:root {
-  --font-body: 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-
-  --text-xs:   clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
-  --text-sm:   clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
-  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
-  --text-lg:   clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
-  --text-xl:   clamp(1.5rem, 1.2rem + 1.25vw, 2.25rem);
-
-  --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem;
-  --space-4: 1rem;    --space-5: 1.25rem; --space-6: 1.5rem;
-  --space-8: 2rem;    --space-10: 2.5rem; --space-12: 3rem;
-  --space-16: 4rem;
-
-  --radius-sm: 0.375rem; --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;  --radius-xl: 1rem;
-  --radius-full: 9999px;
-
-  --transition: 180ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* ===== DARK MODE PALETTE (Уголь + Золото — для кальянного заведения) ===== */
-[data-theme="dark"], :root {
-  --color-bg:             #111010;
-  --color-surface:        #1a1917;
-  --color-surface-2:      #201f1c;
-  --color-surface-offset: #272522;
-  --color-border:         #333130;
-  --color-divider:        #2a2825;
-
-  --color-text:           #e8e5df;
-  --color-text-muted:     #8a8680;
-  --color-text-faint:     #504e4a;
-  --color-text-inverse:   #111010;
-
-  --color-primary:        #c9933a;   /* тёплое золото */
-  --color-primary-hover:  #e0a84a;
-  --color-primary-active: #f0bc60;
-  --color-primary-highlight: #2d2318;
-
-  --color-success:        #5a9e48;
-  --color-success-bg:     #1a2918;
-  --color-error:          #c04a4a;
-  --color-error-bg:       #2a1515;
-  --color-warning:        #c08030;
-  --color-warning-bg:     #2a1e10;
-  --color-blue:           #4a80c0;
-  --color-blue-bg:        #152035;
-
-  --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.35);
-  --shadow-md: 0 4px 16px oklch(0 0 0 / 0.4);
-  --shadow-lg: 0 12px 40px oklch(0 0 0 / 0.5);
-}
-
-[data-theme="light"] {
-  --color-bg:             #f5f3ef;
-  --color-surface:        #faf9f7;
-  --color-surface-2:      #ffffff;
-  --color-surface-offset: #edeae5;
-  --color-border:         #dcd9d3;
-  --color-divider:        #e5e2dc;
-
-  --color-text:           #1e1c18;
-  --color-text-muted:     #6e6b64;
-  --color-text-faint:     #b0ada6;
-  --color-text-inverse:   #f5f3ef;
-
-  --color-primary:        #9a6820;
-  --color-primary-hover:  #7a5018;
-  --color-primary-active: #5a3a10;
-  --color-primary-highlight: #f0e4cc;
-
-  --color-success:        #3a7a28;
-  --color-success-bg:     #eaf4e7;
-  --color-error:          #a03030;
-  --color-error-bg:       #fae8e8;
-  --color-warning:        #906020;
-  --color-warning-bg:     #faf0df;
-  --color-blue:           #2860a0;
-  --color-blue-bg:        #e0ecf8;
-
-  --shadow-sm: 0 1px 3px oklch(0.2 0.01 80 / 0.08);
-  --shadow-md: 0 4px 16px oklch(0.2 0.01 80 / 0.1);
-  --shadow-lg: 0 12px 40px oklch(0.2 0.01 80 / 0.14);
-}
-
-/* ===== BASE ===== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
-body {
-  min-height: 100dvh; font-family: var(--font-body);
-  font-size: var(--text-sm); color: var(--color-text);
-  background: var(--color-bg); line-height: 1.6;
-}
-img { display: block; max-width: 100%; }
-input, button, textarea, select { font: inherit; color: inherit; }
-button { cursor: pointer; background: none; border: none; }
-:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 3px; border-radius: var(--radius-sm); }
-a, button, input, select, textarea { transition: color var(--transition), background var(--transition), border-color var(--transition), box-shadow var(--transition); }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
-
-/* ===== LAYOUT ===== */
-.app-shell { display: grid; grid-template-columns: 240px 1fr; grid-template-rows: 56px 1fr; min-height: 100dvh; }
-.topbar { grid-column: 1/-1; display: flex; align-items: center; justify-content: space-between; padding: 0 var(--space-6); background: var(--color-surface); border-bottom: 1px solid var(--color-border); position: sticky; top: 0; z-index: 100; }
-.sidebar { background: var(--color-surface); border-right: 1px solid var(--color-border); padding: var(--space-4) 0; display: flex; flex-direction: column; overflow-y: auto; }
-.main-content { padding: var(--space-6); overflow-y: auto; }
-
-/* ===== TOPBAR ===== */
-.logo { display: flex; align-items: center; gap: var(--space-3); font-weight: 700; font-size: var(--text-base); color: var(--color-primary); letter-spacing: -0.02em; }
-.logo svg { width: 32px; height: 32px; }
-.topbar-right { display: flex; align-items: center; gap: var(--space-3); }
-.theme-btn { width: 36px; height: 36px; border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; color: var(--color-text-muted); border: 1px solid var(--color-border); }
-.theme-btn:hover { background: var(--color-surface-offset); color: var(--color-text); }
-
-/* ===== SIDEBAR NAV ===== */
-.nav-section { padding: var(--space-2) var(--space-4); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-faint); font-weight: 600; margin-top: var(--space-4); }
-.nav-item { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) var(--space-4); font-size: var(--text-sm); color: var(--color-text-muted); cursor: pointer; transition: all var(--transition); border-radius: 0; position: relative; }
-.nav-item:hover { color: var(--color-text); background: var(--color-surface-offset); }
-.nav-item.active { color: var(--color-primary); background: var(--color-primary-highlight); }
-.nav-item.active::before { content: ''; position: absolute; left: 0; top: 4px; bottom: 4px; width: 3px; background: var(--color-primary); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
-.nav-item i { width: 18px; height: 18px; flex-shrink: 0; }
-
-/* ===== CARDS ===== */
-.card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-5); box-shadow: var(--shadow-sm); }
-.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-4); }
-.card-title { font-size: var(--text-base); font-weight: 600; color: var(--color-text); display: flex; align-items: center; gap: var(--space-2); }
-.card-title i { width: 18px; height: 18px; color: var(--color-primary); }
-
-/* ===== BUTTONS ===== */
-.btn { display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-4); border-radius: var(--radius-md); font-size: var(--text-sm); font-weight: 500; transition: all var(--transition); white-space: nowrap; }
-.btn i { width: 16px; height: 16px; }
-.btn-primary { background: var(--color-primary); color: var(--color-text-inverse); }
-.btn-primary:hover { background: var(--color-primary-hover); }
-.btn-secondary { background: var(--color-surface-offset); color: var(--color-text); border: 1px solid var(--color-border); }
-.btn-secondary:hover { background: var(--color-border); }
-.btn-ghost { color: var(--color-text-muted); padding: var(--space-2) var(--space-3); }
-.btn-ghost:hover { color: var(--color-text); background: var(--color-surface-offset); }
-.btn-danger { background: var(--color-error-bg); color: var(--color-error); border: 1px solid var(--color-error); }
-.btn-sm { padding: var(--space-1) var(--space-3); font-size: var(--text-xs); }
-
-/* ===== FORMS ===== */
-.form-group { display: flex; flex-direction: column; gap: var(--space-1); margin-bottom: var(--space-4); }
-.form-label { font-size: var(--text-xs); font-weight: 500; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-.form-input { background: var(--color-surface-offset); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-2) var(--space-3); font-size: var(--text-sm); color: var(--color-text); width: 100%; }
-.form-input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px oklch(from var(--color-primary) l c h / 0.15); }
-.form-input::placeholder { color: var(--color-text-faint); }
-select.form-input { cursor: pointer; }
-textarea.form-input { resize: vertical; min-height: 80px; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
-
-/* ===== BADGES ===== */
-.badge { display: inline-flex; align-items: center; gap: var(--space-1); padding: 2px var(--space-2); border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: 500; }
-.badge-gold { background: var(--color-primary-highlight); color: var(--color-primary); }
-.badge-green { background: var(--color-success-bg); color: var(--color-success); }
-.badge-red { background: var(--color-error-bg); color: var(--color-error); }
-.badge-blue { background: var(--color-blue-bg); color: var(--color-blue); }
-.badge-muted { background: var(--color-surface-offset); color: var(--color-text-muted); }
-
-/* ===== GUEST PROFILE CARD ===== */
-.guest-hero { display: flex; align-items: flex-start; gap: var(--space-5); padding: var(--space-6); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); margin-bottom: var(--space-6); }
-.guest-avatar { width: 72px; height: 72px; border-radius: var(--radius-full); background: var(--color-primary-highlight); display: flex; align-items: center; justify-content: center; font-size: var(--text-xl); font-weight: 700; color: var(--color-primary); flex-shrink: 0; }
-.guest-info { flex: 1; min-width: 0; }
-.guest-name { font-size: var(--text-lg); font-weight: 700; color: var(--color-text); margin-bottom: var(--space-1); }
-.guest-card-num { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-text-muted); margin-bottom: var(--space-3); }
-.guest-tags { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-
-/* ===== PREF ITEMS ===== */
-.pref-list { display: flex; flex-direction: column; gap: var(--space-3); }
-.pref-item { display: flex; align-items: center; justify-content: space-between; padding: var(--space-3); background: var(--color-surface-offset); border-radius: var(--radius-md); }
-.pref-item-left { display: flex; flex-direction: column; gap: 2px; }
-.pref-item-name { font-size: var(--text-sm); font-weight: 500; color: var(--color-text); }
-.pref-item-sub { font-size: var(--text-xs); color: var(--color-text-muted); }
-.pref-item-count { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-primary); background: var(--color-primary-highlight); padding: 2px 8px; border-radius: var(--radius-full); }
-
-/* ===== SEARCH BAR ===== */
-.search-area { display: flex; gap: var(--space-3); margin-bottom: var(--space-6); }
-.search-wrap { position: relative; flex: 1; max-width: 420px; }
-.search-input { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-2) var(--space-3) var(--space-2) var(--space-10); font-size: var(--text-sm); color: var(--color-text); width: 100%; }
-.search-input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px oklch(from var(--color-primary) l c h / 0.15); }
-.search-icon { position: absolute; left: var(--space-3); top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--color-text-faint); pointer-events: none; }
-
-/* ===== GRID LAYOUTS ===== */
-.prefs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); margin-bottom: var(--space-5); }
-.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); margin-bottom: var(--space-6); }
-.stat-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-4); }
-.stat-val { font-size: var(--text-xl); font-weight: 700; color: var(--color-primary); font-family: var(--font-mono); margin-bottom: var(--space-1); }
-.stat-label { font-size: var(--text-xs); color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-
-/* ===== VIEWS ===== */
-.view { display: none; }
-.view.active { display: block; }
-.view-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-6); }
-.view-title { font-size: var(--text-xl); font-weight: 700; color: var(--color-text); }
-
-/* ===== TABLE ===== */
-.table-wrap { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
-th { text-align: left; font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-text-faint); padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-border); font-weight: 600; }
-td { padding: var(--space-3) var(--space-4); border-bottom: 1px solid var(--color-divider); color: var(--color-text); vertical-align: middle; }
-tr:hover td { background: var(--color-surface-offset); }
-tr:last-child td { border-bottom: none; }
-.td-card { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-text-muted); }
-
-/* ===== MODAL ===== */
-.modal-overlay { position: fixed; inset: 0; background: oklch(0 0 0 / 0.7); z-index: 1000; display: none; align-items: center; justify-content: center; padding: var(--space-4); backdrop-filter: blur(4px); }
-.modal-overlay.open { display: flex; }
-.modal { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-6); width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
-.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-5); }
-.modal-title { font-size: var(--text-lg); font-weight: 700; }
-.modal-close { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: var(--radius-md); color: var(--color-text-muted); }
-.modal-close:hover { background: var(--color-surface-offset); color: var(--color-text); }
-
-/* ===== PIN LOGIN ===== */
-.login-screen { display: flex; align-items: center; justify-content: center; min-height: 100dvh; background: var(--color-bg); padding: var(--space-4); }
-.login-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-xl); padding: var(--space-8); width: 100%; max-width: 400px; box-shadow: var(--shadow-lg); text-align: center; }
-.login-logo { margin-bottom: var(--space-6); display: flex; flex-direction: column; align-items: center; gap: var(--space-3); }
-.login-logo-mark { width: 64px; height: 64px; }
-.login-title { font-size: var(--text-lg); font-weight: 700; color: var(--color-text); }
-.login-sub { font-size: var(--text-sm); color: var(--color-text-muted); margin-top: var(--space-1); }
-.tab-row { display: flex; background: var(--color-surface-offset); border-radius: var(--radius-md); padding: 3px; margin-bottom: var(--space-5); }
-.tab-btn { flex: 1; padding: var(--space-2) var(--space-3); border-radius: calc(var(--radius-md) - 2px); font-size: var(--text-sm); font-weight: 500; color: var(--color-text-muted); transition: all var(--transition); }
-.tab-btn.active { background: var(--color-primary); color: var(--color-text-inverse); }
-
-/* ===== HOOKAH FORM ===== */
-.hookah-indicator { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3); background: var(--color-primary-highlight); border-radius: var(--radius-md); margin-bottom: var(--space-4); }
-.hookah-indicator i { color: var(--color-primary); width: 20px; height: 20px; }
-.hookah-indicator span { font-size: var(--text-sm); color: var(--color-primary); font-weight: 500; }
-
-/* ===== NOTIFICATIONS ===== */
-.toast-container { position: fixed; bottom: var(--space-6); right: var(--space-6); z-index: 2000; display: flex; flex-direction: column; gap: var(--space-2); }
-.toast { padding: var(--space-3) var(--space-4); border-radius: var(--radius-lg); font-size: var(--text-sm); font-weight: 500; box-shadow: var(--shadow-md); display: flex; align-items: center; gap: var(--space-3); min-width: 260px; animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-@keyframes slideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-.toast-success { background: var(--color-success-bg); border: 1px solid var(--color-success); color: var(--color-success); }
-.toast-error { background: var(--color-error-bg); border: 1px solid var(--color-error); color: var(--color-error); }
-
-/* ===== DIVIDERS & MISC ===== */
-.divider { height: 1px; background: var(--color-divider); margin: var(--space-4) 0; }
-.empty-state { text-align: center; padding: var(--space-12) var(--space-8); color: var(--color-text-muted); }
-.empty-state i { width: 48px; height: 48px; margin: 0 auto var(--space-4); color: var(--color-text-faint); }
-.empty-state p { font-size: var(--text-sm); }
-.section-label { font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-faint); margin-bottom: var(--space-3); }
-
-/* ===== MOBILE ===== */
-@media (max-width: 768px) {
-  .app-shell { grid-template-columns: 1fr; grid-template-rows: 56px 1fr 56px; }
-  .sidebar { display: none; }
-  .main-content { padding: var(--space-4); }
-  .prefs-grid { grid-template-columns: 1fr; }
-  .stats-row { grid-template-columns: 1fr 1fr; }
-  .form-row { grid-template-columns: 1fr; }
-  .mobile-nav { display: flex !important; }
-}
-.mobile-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; height: 56px; background: var(--color-surface); border-top: 1px solid var(--color-border); z-index: 100; }
-.mobile-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 10px; color: var(--color-text-muted); cursor: pointer; transition: color var(--transition); padding: var(--space-2); }
-.mobile-nav-item i { width: 20px; height: 20px; }
-.mobile-nav-item.active { color: var(--color-primary); }
-
-/* ===== SUPABASE CONFIG NOTICE ===== */
-.config-notice { background: var(--color-warning-bg); border: 1px solid var(--color-warning); border-radius: var(--radius-lg); padding: var(--space-4); margin-bottom: var(--space-5); display: flex; gap: var(--space-3); }
-.config-notice i { color: var(--color-warning); width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px; }
-.config-notice p { font-size: var(--text-sm); color: var(--color-text); }
-.config-notice code { font-family: var(--font-mono); font-size: var(--text-xs); background: var(--color-surface-offset); padding: 1px 5px; border-radius: var(--radius-sm); }
-
-.preorder-badge { display: inline-flex; align-items: center; gap: 4px; }
-.role-tag { font-size: var(--text-xs); font-weight: 500; padding: 2px 8px; border-radius: var(--radius-full); }
-.role-hostess { background: var(--color-blue-bg); color: var(--color-blue); }
-.role-waiter { background: var(--color-success-bg); color: var(--color-success); }
-.role-hookah { background: var(--color-primary-highlight); color: var(--color-primary); }
-.role-bartender { background: var(--color-warning-bg); color: var(--color-warning); }
-.role-manager { background: var(--color-error-bg); color: var(--color-error); }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Друзья Говорят</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --bg:#111010; --surface:#1a1917; --surface2:#23211e; --border:#35312d; --text:#efe7dc; --muted:#b3a99b; --faint:#7b7267;
+      --gold:#d6a14a; --gold2:#b98532; --goldbg:#2a2114; --green:#6daf5e; --red:#d76363; --blue:#67a7ff;
+      --radius:16px; --radius-sm:10px; --shadow:0 12px 40px rgba(0,0,0,.35);
+    }
+    [data-theme="light"] {
+      --bg:#f5f1ea; --surface:#fffdfa; --surface2:#f2ece3; --border:#dfd6ca; --text:#1f1b16; --muted:#655d55; --faint:#9a9085;
+      --gold:#a66d1f; --gold2:#8e5a15; --goldbg:#f4e6cf; --green:#2f7d32; --red:#b43e3e; --blue:#2c6ed5;
+      --shadow:0 12px 30px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box} html,body{margin:0;padding:0;font-family:Inter,sans-serif;background:var(--bg);color:var(--text)}
+    body{min-height:100vh}
+    button,input,select,textarea{font:inherit}
+    .app{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+    .sidebar{background:var(--surface);border-right:1px solid var(--border);padding:18px;display:flex;flex-direction:column;gap:18px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:20px;color:var(--gold)}
+    .brand-mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--goldbg),transparent);display:grid;place-items:center;border:1px solid rgba(214,161,74,.35)}
+    .nav{display:flex;flex-direction:column;gap:8px}
+    .nav button{background:transparent;border:1px solid transparent;color:var(--muted);padding:12px 14px;border-radius:12px;text-align:left;cursor:pointer}
+    .nav button.active,.nav button:hover{background:var(--surface2);border-color:var(--border);color:var(--text)}
+    .main{padding:24px}
+    .top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:20px}
+    .title{font-size:38px;font-weight:700}
+    .sub{color:var(--muted);margin-top:6px}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{border:none;border-radius:12px;padding:12px 16px;cursor:pointer;font-weight:600}
+    .btn-primary{background:var(--gold);color:#17120a}.btn-primary:hover{background:var(--gold2)}
+    .btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+    .grid{display:grid;gap:16px}.grid-2{grid-template-columns:1fr 1fr}.grid-3{grid-template-columns:repeat(3,1fr)}
+    .input,.textarea,.select{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:12px;padding:12px 14px}
+    .textarea{min-height:100px;resize:vertical}
+    .label{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:6px;font-weight:600}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .hero{display:grid;grid-template-columns:84px 1fr auto;gap:18px;align-items:start}
+    .avatar{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;background:var(--goldbg);color:var(--gold);font-size:28px;font-weight:700;border:1px solid rgba(214,161,74,.35)}
+    .mono{font-family:"JetBrains Mono",monospace}
+    .muted{color:var(--muted)} .faint{color:var(--faint)}
+    .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.tag{padding:5px 10px;border-radius:999px;background:var(--goldbg);color:var(--gold);font-size:12px;font-weight:600}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}.stat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px}.stat .v{font-size:28px;font-weight:700;color:var(--gold)}.stat .l{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em}
+    .list{display:flex;flex-direction:column;gap:10px}.item{display:flex;justify-content:space-between;gap:10px;padding:12px;border-radius:12px;background:var(--surface2);border:1px solid rgba(255,255,255,.03)}
+    table{width:100%;border-collapse:collapse} th,td{padding:12px 10px;border-bottom:1px solid var(--border);text-align:left} th{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+    .hidden{display:none !important}
+    .pill{display:inline-block;padding:5px 10px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);font-size:12px}
+    .ok{color:var(--green)} .bad{color:var(--red)} .blue{color:var(--blue)}
+    .notice{padding:14px 16px;border-radius:14px;background:var(--goldbg);border:1px solid rgba(214,161,74,.4);color:var(--text);margin-bottom:16px}
+    .auth-wrap{min-height:100vh;display:grid;place-items:center;padding:24px}.auth-card{width:min(560px,100%);background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:28px;box-shadow:var(--shadow)}
+    .tabs{display:flex;gap:8px;margin-bottom:18px}.tabs button{flex:1;padding:12px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer}.tabs button.active{background:var(--gold);color:#17120a;border-color:transparent}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .toast-wrap{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:10px;z-index:40}.toast{padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
+    @media (max-width: 960px){.app{grid-template-columns:1fr}.sidebar{display:none}.grid-2,.grid-3,.row,.stats,.hero{grid-template-columns:1fr}.title{font-size:30px}.main{padding:16px}}
+  </style>
 </head>
 <body>
-
-<!-- ===== TOAST CONTAINER ===== -->
-<div class="toast-container" id="toastContainer"></div>
-
-<!-- ===== LOGIN SCREEN ===== -->
-<div id="loginScreen" class="login-screen">
-  <div class="login-card">
-    <div class="login-logo">
-      <svg class="login-logo-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Друзья Говорят">
-        <!-- Стилизованная кальянная трубка + речевой пузырь -->
-        <rect x="2" y="2" width="60" height="60" rx="16" fill="#c9933a" fill-opacity="0.15"/>
-        <path d="M20 42 C20 42 22 28 32 24 C38 21 42 24 42 24" stroke="#c9933a" stroke-width="2.5" stroke-linecap="round"/>
-        <circle cx="32" cy="20" r="4" fill="#c9933a" fill-opacity="0.6"/>
-        <path d="M20 44 L20 50 Q20 52 22 52 L34 52 Q36 52 36 50 L36 44" stroke="#c9933a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M42 26 Q48 26 48 32 Q48 38 42 38 L38 38 L36 42 L34 38 Q28 38 28 32 Q28 26 34 26 Z" fill="#c9933a" fill-opacity="0.25" stroke="#c9933a" stroke-width="1.5"/>
-        <text x="35" y="35" font-size="9" fill="#c9933a" font-family="Inter, sans-serif" font-weight="700" text-anchor="middle">ДГ</text>
-      </svg>
-      <div>
-        <div class="login-title">Друзья Говорят</div>
-        <div class="login-sub">Платформа персонала</div>
+  <div id="auth" class="auth-wrap">
+    <div class="auth-card">
+      <div class="brand" style="margin-bottom:16px;">
+        <div class="brand-mark"><i data-lucide="flame"></i></div>
+        <div>Друзья Говорят</div>
       </div>
-    </div>
-
-    <!-- Переключатель гость / персонал -->
-    <div class="tab-row" id="loginTabs">
-      <button class="tab-btn active" onclick="setLoginMode('staff')" id="tabStaff">Персонал</button>
-      <button class="tab-btn" onclick="setLoginMode('guest')" id="tabGuest">Гость</button>
-    </div>
-
-    <!-- Вход для персонала -->
-    <div id="staffLoginForm">
-      <div class="form-group">
-        <label class="form-label">Ваша роль</label>
-        <select class="form-input" id="loginRole">
-          <option value="hostess">Хостес</option>
-          <option value="waiter">Официант</option>
-          <option value="hookah">Кальянный мастер</option>
-          <option value="bartender">Бармен</option>
-          <option value="manager">Менеджер</option>
-        </select>
+      <div style="font-size:34px;font-weight:700;margin-bottom:6px">Вход</div>
+      <div class="sub" style="margin-bottom:18px">Рабочая версия с реальным Supabase.</div>
+      <div class="tabs">
+        <button id="tabSetup" class="active" onclick="showAuthTab('setup')">Настройка</button>
+        <button id="tabStaff" onclick="showAuthTab('staff')">Персонал</button>
       </div>
-      <div class="form-group">
-        <label class="form-label">Имя</label>
-        <input type="text" class="form-input" id="loginName" placeholder="Ваше имя" autocomplete="off">
+      <div id="setupTab">
+        <div class="notice">Сначала подключите Supabase. После успешной проверки данные будут сохраняться в базе, а настройки останутся в браузере.</div>
+        <div class="field"><div class="label">Supabase Project URL</div><input id="supabaseUrl" class="input" placeholder="https://xxxx.supabase.co"></div>
+        <div class="field" style="margin-top:12px"><div class="label">Supabase Anon Key</div><textarea id="supabaseKey" class="textarea" placeholder="eyJhbGciOi..."></textarea></div>
+        <div class="actions" style="margin-top:14px">
+          <button class="btn btn-primary" onclick="connectSupabase()">Сохранить и подключить</button>
+          <button class="btn btn-secondary" onclick="fillKnownDemo()">Подставить ваши данные</button>
+        </div>
+        <div id="setupStatus" class="sub" style="margin-top:12px"></div>
       </div>
-      <div class="form-group">
-        <label class="form-label">PIN-код (4 цифры)</label>
-        <input type="password" class="form-input" id="loginPin" placeholder="••••" maxlength="4" inputmode="numeric" autocomplete="off">
+      <div id="staffTab" class="hidden">
+        <div class="field"><div class="label">Email сотрудника</div><input id="staffEmail" class="input" placeholder="manager@druzya.local"></div>
+        <div class="field" style="margin-top:12px"><div class="label">Пароль</div><input id="staffPassword" type="password" class="input" placeholder="Минимум 6 символов"></div>
+        <div class="actions" style="margin-top:14px">
+          <button class="btn btn-primary" onclick="loginStaff()">Войти</button>
+          <button class="btn btn-secondary" onclick="signupStaff()">Создать первого менеджера</button>
+        </div>
+        <div class="sub" style="margin-top:12px">Первый раз: создайте менеджера через кнопку справа, потом войдите.</div>
       </div>
-      <button class="btn btn-primary" style="width:100%; justify-content: center;" onclick="staffLogin()">
-        <i data-lucide="log-in"></i> Войти в систему
-      </button>
-    </div>
-
-    <!-- Вход для гостя -->
-    <div id="guestLoginForm" style="display:none">
-      <div class="form-group">
-        <label class="form-label">Номер карты Prime Hill</label>
-        <input type="text" class="form-input" id="guestCardInput" placeholder="Например: PH-000123" autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Или никнейм / имя</label>
-        <input type="text" class="form-input" id="guestNickInput" placeholder="Ваш никнейм" autocomplete="off">
-      </div>
-      <button class="btn btn-primary" style="width:100%; justify-content: center;" onclick="guestLogin()">
-        <i data-lucide="search"></i> Найти мой профиль
-      </button>
-      <div class="divider"></div>
-      <button class="btn btn-secondary" style="width:100%; justify-content: center;" onclick="showRegister()">
-        <i data-lucide="user-plus"></i> Зарегистрироваться
-      </button>
-    </div>
-    <div style="margin-top: var(--space-5); font-size: var(--text-xs); color: var(--color-text-faint); text-align: center;">
-      Demo-режим: данные хранятся в памяти.<br>Для боевого режима — подключить Supabase.
     </div>
   </div>
-</div>
 
-<!-- ===== APP SHELL (скрыт до входа) ===== -->
-<div id="appShell" class="app-shell" style="display:none">
-
-  <!-- TOPBAR -->
-  <header class="topbar">
-    <div class="logo">
-      <svg viewBox="0 0 32 32" fill="none" aria-label="Логотип">
-        <rect width="32" height="32" rx="8" fill="#c9933a" fill-opacity="0.2"/>
-        <path d="M10 20 C10 20 11 13 16 11 C19 9.5 21 11 21 11" stroke="#c9933a" stroke-width="1.8" stroke-linecap="round"/>
-        <circle cx="16" cy="9" r="2.5" fill="#c9933a" opacity="0.7"/>
-        <path d="M10 21.5L10 25 Q10 26 11 26L17 26 Q18 26 18 25L18 21.5" stroke="#c9933a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M21 12 Q25 12 25 16 Q25 20 21 20L19 20 L18 22 L17 20 Q13 20 13 16 Q13 12 17 12 Z" fill="#c9933a" fill-opacity="0.2" stroke="#c9933a" stroke-width="1.2"/>
-        <text x="18.5" y="17.5" font-size="5" fill="#c9933a" font-family="Inter,sans-serif" font-weight="700" text-anchor="middle">ДГ</text>
-      </svg>
-      Друзья Говорят
-    </div>
-    <div class="topbar-right">
-      <span id="currentUserBadge" class="badge badge-gold" style="font-size: var(--text-xs);"></span>
-      <button class="theme-btn" data-theme-toggle aria-label="Переключить тему">
-        <i data-lucide="sun" style="width:16px;height:16px;"></i>
-      </button>
-      <button class="btn btn-ghost btn-sm" onclick="logout()">
-        <i data-lucide="log-out"></i> Выйти
-      </button>
-    </div>
-  </header>
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebar">
-    <div class="nav-section">Гости</div>
-    <div class="nav-item active" onclick="showView('search')" data-view="search">
-      <i data-lucide="search"></i> Поиск гостя
-    </div>
-    <div class="nav-item" onclick="showView('guests')" data-view="guests">
-      <i data-lucide="users"></i> Все гости
-    </div>
-    <div class="nav-item" onclick="showView('addGuest')" data-view="addGuest">
-      <i data-lucide="user-plus"></i> Добавить гостя
-    </div>
-
-    <div class="nav-section">Заказы</div>
-    <div class="nav-item" onclick="showView('preorders')" data-view="preorders">
-      <i data-lucide="clipboard-list"></i> Предзаказы кальяна
-    </div>
-
-    <div class="nav-section" id="navAdminSection">Настройки</div>
-    <div class="nav-item" onclick="showView('staff')" data-view="staff" id="navStaff">
-      <i data-lucide="shield-check"></i> Сотрудники
-    </div>
-    <div class="nav-item" onclick="showView('setup')" data-view="setup">
-      <i data-lucide="settings"></i> Настройка Supabase
-    </div>
-  </aside>
-
-  <!-- MAIN CONTENT -->
-  <main class="main-content">
-
-    <!-- ===== VIEW: ПОИСК ГОСТЯ ===== -->
-    <div id="view-search" class="view active">
-      <div class="view-header">
-        <div class="view-title">Поиск гостя</div>
+  <div id="app" class="app hidden">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark"><i data-lucide="flame"></i></div>
+        <div>Друзья Говорят</div>
       </div>
-      <div class="search-area">
-        <div class="search-wrap">
-          <i data-lucide="search" class="search-icon"></i>
-          <input type="text" class="search-input" id="mainSearch" placeholder="Номер карты Prime Hill или имя..." oninput="searchGuests(this.value)" style="padding-left: 2.5rem;">
+      <div class="nav">
+        <button class="active" data-view-btn="dashboard" onclick="showView('dashboard', this)">Профиль гостя</button>
+        <button data-view-btn="guests" onclick="showView('guests', this)">Все гости</button>
+        <button data-view-btn="add" onclick="showView('add', this)">Новый гость</button>
+        <button data-view-btn="preorders" onclick="showView('preorders', this)">Предзаказы кальяна</button>
+        <button data-view-btn="staff" onclick="showView('staff', this)">Сотрудники</button>
+      </div>
+      <div style="margin-top:auto;display:flex;flex-direction:column;gap:10px">
+        <button class="btn btn-secondary" onclick="toggleTheme()">Сменить тему</button>
+        <button class="btn btn-secondary" onclick="logout()">Выйти</button>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="top">
+        <div>
+          <div class="title">CRM гостя</div>
+          <div class="sub" id="userLine">Подключено к Supabase</div>
         </div>
-        <button class="btn btn-primary" onclick="searchGuests(document.getElementById('mainSearch').value)">
-          <i data-lucide="search"></i> Найти
-        </button>
+        <div class="actions">
+          <input id="searchInput" class="input" style="width:320px;max-width:100%" placeholder="Поиск по карте, нику, имени" oninput="searchGuests()">
+          <button class="btn btn-primary" onclick="loadGuests()">Обновить</button>
+        </div>
       </div>
-      <div id="searchResults"></div>
 
-      <!-- Быстрый профиль гостя -->
-      <div id="quickProfile" style="display:none">
-        <div class="guest-hero" id="guestHeroSection"></div>
-        <div class="stats-row" id="guestStats"></div>
-        <div class="prefs-grid">
-          <div class="card" id="hookahCard">
-            <div class="card-header">
-              <div class="card-title"><i data-lucide="flame"></i> Кальян</div>
-              <button class="btn btn-ghost btn-sm" onclick="openEditPref('hookah')"><i data-lucide="plus"></i></button>
-            </div>
-            <div id="hookahList" class="pref-list"></div>
+      <section id="view-dashboard">
+        <div id="selectedGuestEmpty" class="card">Сначала выберите гостя из списка или найдите по карте Prime Hill.</div>
+        <div id="selectedGuestWrap" class="hidden">
+          <div class="card">
+            <div id="guestHero"></div>
+            <div id="guestStats" class="stats"></div>
           </div>
-          <div class="card" id="foodCard">
-            <div class="card-header">
-              <div class="card-title"><i data-lucide="utensils"></i> Блюда</div>
-              <button class="btn btn-ghost btn-sm" onclick="openEditPref('food')"><i data-lucide="plus"></i></button>
-            </div>
-            <div id="foodList" class="pref-list"></div>
-          </div>
-          <div class="card" id="drinksCard">
-            <div class="card-header">
-              <div class="card-title"><i data-lucide="glass-water"></i> Напитки</div>
-              <button class="btn btn-ghost btn-sm" onclick="openEditPref('drink')"><i data-lucide="plus"></i></button>
-            </div>
-            <div id="drinkList" class="pref-list"></div>
-          </div>
-          <div class="card" id="notesCard">
-            <div class="card-header">
-              <div class="card-title"><i data-lucide="sticky-note"></i> Пометки</div>
-              <button class="btn btn-ghost btn-sm" onclick="openNotesModal()"><i data-lucide="edit-3"></i></button>
-            </div>
-            <div id="notesList"></div>
+          <div class="grid grid-2" style="margin-top:16px">
+            <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><strong>Кальяны</strong><button class="btn btn-secondary" onclick="addHookahPrefPrompt()">Добавить</button></div><div id="hookahList" class="list"></div></div>
+            <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><strong>Блюда</strong><button class="btn btn-secondary" onclick="addFoodPrefPrompt()">Добавить</button></div><div id="foodList" class="list"></div></div>
+            <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><strong>Напитки</strong><button class="btn btn-secondary" onclick="addDrinkPrefPrompt()">Добавить</button></div><div id="drinkList" class="list"></div></div>
+            <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><strong>Пометки</strong><button class="btn btn-secondary" onclick="saveNotesPrompt()">Изменить</button></div><div id="notesBox"></div></div>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
 
-    <!-- ===== VIEW: ВСЕ ГОСТИ ===== -->
-    <div id="view-guests" class="view">
-      <div class="view-header">
-        <div class="view-title">Гостевая база</div>
-        <button class="btn btn-primary" onclick="showView('addGuest')"><i data-lucide="user-plus"></i> Добавить</button>
-      </div>
-      <div class="card">
-        <div class="table-wrap">
-          <table id="guestsTable">
-            <thead>
-              <tr>
-                <th>Гость</th>
-                <th>Карта Prime Hill</th>
-                <th>Визитов</th>
-                <th>Любимый стол</th>
-                <th>Теги</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="guestsTableBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
+      <section id="view-guests" class="hidden">
+        <div class="card"><table><thead><tr><th>Гость</th><th>Карта</th><th>Телефон</th><th>Визитов</th><th>Стол</th><th></th></tr></thead><tbody id="guestsTable"></tbody></table></div>
+      </section>
 
-    <!-- ===== VIEW: ДОБАВИТЬ ГОСТЯ ===== -->
-    <div id="view-addGuest" class="view">
-      <div class="view-header">
-        <div class="view-title">Новый гость</div>
-      </div>
-      <div class="card" style="max-width: 600px;">
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Имя *</label>
-            <input type="text" class="form-input" id="newGuestName" placeholder="Имя гостя">
+      <section id="view-add" class="hidden">
+        <div class="card">
+          <div class="grid grid-2">
+            <div class="field"><div class="label">Имя гостя</div><input id="gName" class="input"></div>
+            <div class="field"><div class="label">Никнейм</div><input id="gNick" class="input"></div>
+            <div class="field"><div class="label">Карта Prime Hill</div><input id="gCard" class="input"></div>
+            <div class="field"><div class="label">Телефон</div><input id="gPhone" class="input"></div>
+            <div class="field"><div class="label">Любимый стол</div><input id="gTable" class="input"></div>
+            <div class="field"><div class="label">Пиковые часы</div><input id="gHours" class="input" placeholder="18:00-22:00"></div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Никнейм</label>
-            <input type="text" class="form-input" id="newGuestNick" placeholder="@nickname">
-          </div>
+          <div class="field" style="margin-top:12px"><div class="label">Теги через запятую</div><input id="gTags" class="input" placeholder="VIP, постоянный"></div>
+          <div class="field" style="margin-top:12px"><div class="label">Пометки</div><textarea id="gNotes" class="textarea"></textarea></div>
+          <div class="actions" style="margin-top:14px"><button class="btn btn-primary" onclick="createGuest()">Сохранить гостя</button></div>
         </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Карта Prime Hill</label>
-            <input type="text" class="form-input" id="newGuestCard" placeholder="PH-000000">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Телефон</label>
-            <input type="text" class="form-input" id="newGuestPhone" placeholder="+7 900 000 00 00">
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Любимый стол</label>
-            <input type="text" class="form-input" id="newGuestTable" placeholder="Стол №5, VIP-зона">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Пиковые часы</label>
-            <input type="text" class="form-input" id="newGuestHours" placeholder="18:00 – 22:00">
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Теги (через запятую)</label>
-          <input type="text" class="form-input" id="newGuestTags" placeholder="VIP, именинник, без лука">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Пометка персонала</label>
-          <textarea class="form-input" id="newGuestNotes" placeholder="Любые важные заметки..."></textarea>
-        </div>
-        <div style="display:flex; gap: var(--space-3); margin-top: var(--space-2);">
-          <button class="btn btn-primary" onclick="addGuest()"><i data-lucide="check"></i> Сохранить гостя</button>
-          <button class="btn btn-secondary" onclick="showView('guests')">Отмена</button>
-        </div>
-      </div>
-    </div>
+      </section>
 
-    <!-- ===== VIEW: ПРЕДЗАКАЗЫ КАЛЬЯНА ===== -->
-    <div id="view-preorders" class="view">
-      <div class="view-header">
-        <div class="view-title">Предзаказы кальяна</div>
-        <button class="btn btn-primary" onclick="openPreorderModal()"><i data-lucide="plus"></i> Новый предзаказ</button>
-      </div>
-      <div class="card">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Гость</th>
-                <th>Дата / Время</th>
-                <th>Табак / Вкус</th>
-                <th>Крепость</th>
-                <th>Чаша</th>
-                <th>Доп.</th>
-                <th>Статус</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="preordersBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== VIEW: СОТРУДНИКИ ===== -->
-    <div id="view-staff" class="view">
-      <div class="view-header">
-        <div class="view-title">Сотрудники</div>
-        <button class="btn btn-primary" onclick="openAddStaffModal()"><i data-lucide="user-plus"></i> Добавить</button>
-      </div>
-      <div class="card">
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Имя</th><th>Роль</th><th>PIN</th><th>Статус</th><th></th></tr></thead>
-            <tbody id="staffBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- ===== VIEW: НАСТРОЙКА SUPABASE ===== -->
-    <div id="view-setup" class="view">
-      <div class="view-header">
-        <div class="view-title">Настройка Supabase</div>
-      </div>
-      <div class="card" style="max-width: 620px;">
-        <div class="config-notice">
-          <i data-lucide="info"></i>
-          <div>
-            <p><strong>Сейчас приложение работает в demo-режиме</strong> — все данные хранятся в памяти браузера и сбрасываются при обновлении страницы.</p>
-            <p style="margin-top: var(--space-2);">Чтобы данные сохранялись постоянно, введите ключи от вашего бесплатного проекта Supabase.</p>
+      <section id="view-preorders" class="hidden">
+        <div class="card" style="margin-bottom:16px">
+          <div class="grid grid-3">
+            <div class="field"><div class="label">Гость ID</div><input id="poGuestId" class="input" placeholder="UUID гостя"></div>
+            <div class="field"><div class="label">Дата</div><input id="poDate" type="date" class="input"></div>
+            <div class="field"><div class="label">Время</div><input id="poTime" class="input" placeholder="19:00"></div>
+            <div class="field"><div class="label">Бренд табака</div><input id="poBrand" class="input"></div>
+            <div class="field"><div class="label">Вкус</div><input id="poFlavor" class="input"></div>
+            <div class="field"><div class="label">Крепость</div><input id="poStrength" class="input"></div>
+            <div class="field"><div class="label">Тип чаши</div><input id="poBowl" class="input"></div>
+            <div class="field" style="grid-column:span 2"><div class="label">Дополнительно</div><input id="poExtras" class="input"></div>
           </div>
+          <div class="actions" style="margin-top:14px"><button class="btn btn-primary" onclick="createPreorder()">Создать предзаказ</button></div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Supabase Project URL</label>
-          <input type="text" class="form-input" id="cfgUrl" placeholder="https://xxxx.supabase.co" value="">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Supabase Anon Key</label>
-          <input type="text" class="form-input" id="cfgKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." value="">
-        </div>
-        <button class="btn btn-primary" onclick="saveSupabaseConfig()"><i data-lucide="save"></i> Сохранить и подключить</button>
-        <div class="divider"></div>
-        <p class="section-label">Как получить ключи — пошаговая инструкция</p>
-        <ol style="font-size: var(--text-sm); color: var(--color-text-muted); padding-left: var(--space-5); display: flex; flex-direction: column; gap: var(--space-2); line-height: 1.7;">
-          <li>Зайдите на <strong style="color:var(--color-primary)">supabase.com</strong> → "Start your project" → регистрация бесплатна</li>
-          <li>Нажмите "New Project", введите название <code style="font-family: var(--font-mono); background: var(--color-surface-offset); padding: 1px 5px; border-radius: 3px;">druzya-govoryat</code> и придумайте пароль</li>
-          <li>Дождитесь создания проекта (~1 минута)</li>
-          <li>Перейдите в <strong>Settings → API</strong></li>
-          <li>Скопируйте <strong>Project URL</strong> и <strong>anon public key</strong> в поля выше</li>
-          <li>Перейдите в <strong>SQL Editor</strong> и выполните файл <code style="font-family: var(--font-mono); background: var(--color-surface-offset); padding: 1px 5px; border-radius: 3px;">schema.sql</code> из скачанного архива</li>
-        </ol>
-      </div>
-    </div>
+        <div class="card"><table><thead><tr><th>Гость</th><th>Дата</th><th>Кальян</th><th>Статус</th></tr></thead><tbody id="preordersTable"></tbody></table></div>
+      </section>
 
-  </main>
-</div>
-
-<!-- MOBILE BOTTOM NAV -->
-<nav class="mobile-nav" id="mobileNav" style="display:none">
-  <div class="mobile-nav-item active" onclick="showView('search')" data-view="search">
-    <i data-lucide="search"></i> Поиск
+      <section id="view-staff" class="hidden">
+        <div class="card" style="margin-bottom:16px">
+          <div class="row">
+            <div class="field"><div class="label">Email</div><input id="newStaffEmail" class="input" placeholder="waiter@druzya.local"></div>
+            <div class="field"><div class="label">Пароль</div><input id="newStaffPassword" type="password" class="input" placeholder="минимум 6 символов"></div>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <div class="field"><div class="label">Имя</div><input id="newStaffName" class="input"></div>
+            <div class="field"><div class="label">Роль</div><select id="newStaffRole" class="select"><option value="manager">Менеджер</option><option value="hostess">Хостес</option><option value="waiter">Официант</option><option value="hookah_master">Кальянный мастер</option><option value="bartender">Бармен</option></select></div>
+          </div>
+          <div class="actions" style="margin-top:14px"><button class="btn btn-primary" onclick="createStaff()">Создать сотрудника</button></div>
+        </div>
+        <div class="card"><table><thead><tr><th>Имя</th><th>Email</th><th>Роль</th></tr></thead><tbody id="staffTable"></tbody></table></div>
+      </section>
+    </main>
   </div>
-  <div class="mobile-nav-item" onclick="showView('guests')" data-view="guests">
-    <i data-lucide="users"></i> Гости
-  </div>
-  <div class="mobile-nav-item" onclick="showView('addGuest')" data-view="addGuest">
-    <i data-lucide="plus-circle"></i> Новый
-  </div>
-  <div class="mobile-nav-item" onclick="showView('preorders')" data-view="preorders">
-    <i data-lucide="clipboard-list"></i> Заказы
-  </div>
-  <div class="mobile-nav-item" onclick="showView('setup')" data-view="setup">
-    <i data-lucide="settings"></i> Настройки
-  </div>
-</nav>
 
-<!-- ===== MODALS ===== -->
-
-<!-- Модал: добавить предпочтение -->
-<div class="modal-overlay" id="prefModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="prefModalTitle">Добавить предпочтение</div>
-      <button class="modal-close" onclick="closeModal('prefModal')"><i data-lucide="x"></i></button>
-    </div>
-    <div id="prefModalContent"></div>
-    <div style="display:flex; gap: var(--space-3); margin-top: var(--space-5);">
-      <button class="btn btn-primary" onclick="savePref()"><i data-lucide="check"></i> Сохранить</button>
-      <button class="btn btn-secondary" onclick="closeModal('prefModal')">Отмена</button>
-    </div>
-  </div>
-</div>
-
-<!-- Модал: пометки -->
-<div class="modal-overlay" id="notesModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Пометки по гостю</div>
-      <button class="modal-close" onclick="closeModal('notesModal')"><i data-lucide="x"></i></button>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Пометка персонала</label>
-      <textarea class="form-input" id="staffNotesInput" rows="4" placeholder="Служебная информация о госте..."></textarea>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Теги (через запятую)</label>
-      <input type="text" class="form-input" id="tagsInput" placeholder="VIP, именинник, аллергия на орехи">
-    </div>
-    <div style="display:flex; gap: var(--space-3); margin-top: var(--space-4);">
-      <button class="btn btn-primary" onclick="saveNotes()"><i data-lucide="check"></i> Сохранить</button>
-      <button class="btn btn-secondary" onclick="closeModal('notesModal')">Отмена</button>
-    </div>
-  </div>
-</div>
-
-<!-- Модал: предзаказ кальяна -->
-<div class="modal-overlay" id="preorderModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Предзаказ кальяна</div>
-      <button class="modal-close" onclick="closeModal('preorderModal')"><i data-lucide="x"></i></button>
-    </div>
-    <div class="hookah-indicator">
-      <i data-lucide="flame"></i>
-      <span>Заранее подготовьте кальян по предпочтениям гостя</span>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Гость (карта или имя)</label>
-      <input type="text" class="form-input" id="poGuest" placeholder="PH-000123 или имя">
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Дата визита</label>
-        <input type="date" class="form-input" id="poDate">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Время</label>
-        <input type="time" class="form-input" id="poTime">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Марка табака</label>
-        <select class="form-input" id="poBrand">
-          <option value="">Выберите марку</option>
-          <option>Tangiers</option><option>Adalya</option><option>Fumari</option>
-          <option>Starbuzz</option><option>Al Fakher</option><option>WTO</option>
-          <option>Darkside</option><option>Должны</option><option>Другое</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Вкус</label>
-        <input type="text" class="form-input" id="poFlavor" placeholder="Двойное яблоко, мята…">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Крепость</label>
-        <select class="form-input" id="poStrength">
-          <option value="">Выберите</option>
-          <option>Лёгкий</option><option>Средний</option><option>Крепкий</option><option>Очень крепкий</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Тип чаши</label>
-        <select class="form-input" id="poBowl">
-          <option value="">Выберите</option>
-          <option>Фанель</option><option>Клей / Вихрь</option><option>Фарфор</option>
-          <option>Силикон</option><option>Стандарт</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Дополнительно</label>
-      <input type="text" class="form-input" id="poExtras" placeholder="С мятой, без льда, особые пожелания…">
-    </div>
-    <div style="display:flex; gap: var(--space-3); margin-top: var(--space-4);">
-      <button class="btn btn-primary" onclick="savePreorder()"><i data-lucide="check"></i> Оформить предзаказ</button>
-      <button class="btn btn-secondary" onclick="closeModal('preorderModal')">Отмена</button>
-    </div>
-  </div>
-</div>
-
-<!-- Модал: добавить сотрудника -->
-<div class="modal-overlay" id="staffModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">Новый сотрудник</div>
-      <button class="modal-close" onclick="closeModal('staffModal')"><i data-lucide="x"></i></button>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Имя</label>
-        <input type="text" class="form-input" id="staffName" placeholder="Имя сотрудника">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Роль</label>
-        <select class="form-input" id="staffRole">
-          <option value="hostess">Хостес</option>
-          <option value="waiter">Официант</option>
-          <option value="hookah">Кальянный мастер</option>
-          <option value="bartender">Бармен</option>
-          <option value="manager">Менеджер</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">PIN-код (4 цифры)</label>
-      <input type="text" class="form-input" id="staffPin" placeholder="1234" maxlength="4" inputmode="numeric">
-    </div>
-    <div style="display:flex; gap: var(--space-3); margin-top: var(--space-4);">
-      <button class="btn btn-primary" onclick="addStaff()"><i data-lucide="check"></i> Добавить</button>
-      <button class="btn btn-secondary" onclick="closeModal('staffModal')">Отмена</button>
-    </div>
-  </div>
-</div>
-
+  <div class="toast-wrap" id="toasts"></div>
 
 <script>
-// ===== SUPABASE CONFIG =====
-let SUPABASE_URL = '';
-let SUPABASE_KEY = '';
-let supabaseClient = null;
-
-// ===== IN-MEMORY DEMO DATA =====
-let DB = {
-  guests: [
-    { id: 'g1', prime_hill_card: 'PH-001337', nickname: 'Alexei_K', full_name: 'Алексей Кириллов', phone: '+7 900 123 45 67', favorite_table: 'VIP-зона, стол №2', peak_hours: '19:00 – 23:00', visit_count: 24, notes: 'Любит тихий угол. Постоянный гость с 2022 года.', self_notes: 'Прошу не предлагать острые блюда', tags: ['VIP', 'постоянный'], created_at: '2024-01-15' },
-    { id: 'g2', prime_hill_card: 'PH-002048', nickname: 'Marina_V', full_name: 'Марина Волкова', phone: '+7 901 234 56 78', favorite_table: 'Терраса, стол №7', peak_hours: '17:00 – 21:00', visit_count: 12, notes: 'Именинница 14 июля.', self_notes: '', tags: ['именинница'], created_at: '2024-03-20' },
-    { id: 'g3', prime_hill_card: 'PH-003512', nickname: 'Damir_T', full_name: 'Дамир Тагиров', phone: '+7 902 345 67 89', favorite_table: 'Центр зала, стол №5', peak_hours: '20:00 – 00:00', visit_count: 8, notes: '', self_notes: '', tags: ['новый'], created_at: '2024-06-10' },
-  ],
-  hookah_prefs: [
-    { id: 'h1', guest_id: 'g1', tobacco_brand: 'Tangiers', flavor: 'Kashmir Peach', strength: 'Крепкий', bowl_type: 'Фанель', hose_type: 'Washable', coal_type: 'Кокос', extras: 'Побольше льда', is_favorite: true },
-    { id: 'h2', guest_id: 'g1', tobacco_brand: 'Darkside', flavor: 'Dark Berry', strength: 'Средний', bowl_type: 'Клей', hose_type: 'Стандарт', coal_type: 'Кокос', extras: '', is_favorite: false },
-    { id: 'h3', guest_id: 'g2', tobacco_brand: 'Adalya', flavor: 'Love 66', strength: 'Лёгкий', bowl_type: 'Фарфор', hose_type: 'Стандарт', coal_type: 'Быстрые', extras: 'С мятой', is_favorite: true },
-    { id: 'h4', guest_id: 'g3', tobacco_brand: 'Al Fakher', flavor: 'Двойное яблоко', strength: 'Средний', bowl_type: 'Стандарт', hose_type: 'Стандарт', coal_type: 'Кокос', extras: '', is_favorite: true },
-  ],
-  food_prefs: [
-    { id: 'f1', guest_id: 'g1', dish_name: 'Люля-кебаб из баранины', category: 'Горячее', order_count: 18 },
-    { id: 'f2', guest_id: 'g1', dish_name: 'Хумус с питой', category: 'Закуска', order_count: 22 },
-    { id: 'f3', guest_id: 'g1', dish_name: 'Сигарное мороженое', category: 'Десерт', order_count: 9 },
-    { id: 'f4', guest_id: 'g2', dish_name: 'Тартар из лосося', category: 'Закуска', order_count: 8 },
-    { id: 'f5', guest_id: 'g2', dish_name: 'Ризотто с грибами', category: 'Горячее', order_count: 5 },
-    { id: 'f6', guest_id: 'g3', dish_name: 'Цезарь с курицей', category: 'Салат', order_count: 3 },
-  ],
-  drink_prefs: [
-    { id: 'd1', guest_id: 'g1', drink_name: 'Виски Glenfiddich 12', category: 'Алкоголь', order_count: 20 },
-    { id: 'd2', guest_id: 'g1', drink_name: 'Минеральная Evian', category: 'Безалкогольное', order_count: 24 },
-    { id: 'd3', guest_id: 'g2', drink_name: 'Aperol Spritz', category: 'Алкоголь', order_count: 10 },
-    { id: 'd4', guest_id: 'g2', drink_name: 'Мятный лимонад', category: 'Безалкогольное', order_count: 7 },
-    { id: 'd5', guest_id: 'g3', drink_name: 'Чай с чабрецом', category: 'Чай', order_count: 5 },
-  ],
-  preorders: [
-    { id: 'p1', guest_id: 'g1', guest_name: 'Алексей Кириллов', visit_date: '2026-04-28', time_slot: '19:00', tobacco_brand: 'Tangiers', flavor: 'Kashmir Peach', strength: 'Крепкий', bowl_type: 'Фанель', extras: 'Лёд', status: 'confirmed' },
-  ],
-  staff: [
-    { id: 's1', full_name: 'Анна Смирнова', role: 'hostess', pin_code: '1234', is_active: true },
-    { id: 's2', full_name: 'Михаил Потапов', role: 'hookah', pin_code: '5678', is_active: true },
-    { id: 's3', full_name: 'Карина Назарова', role: 'waiter', pin_code: '9012', is_active: true },
-  ]
-};
-
-// ===== APP STATE =====
+let supabase = null;
 let currentUser = null;
-let currentGuest = null;
-let currentPrefType = null;
-let loginMode = 'staff';
+let selectedGuest = null;
+let cacheGuests = [];
+let cacheStaff = [];
 
-// ===== INIT =====
-document.addEventListener('DOMContentLoaded', () => {
-  lucide.createIcons();
-
-  // Тема
-  const savedTheme = 'dark'; // default
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  document.querySelector('[data-theme-toggle]')?.addEventListener('click', toggleTheme);
-
-  // Demo: автовход для удобства тестирования - убрать в продакшн
-  // staffLogin('demo');
-});
-
-function toggleTheme() {
-  const cur = document.documentElement.getAttribute('data-theme');
-  const next = cur === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  lucide.createIcons();
+function iconRefresh(){ lucide.createIcons(); }
+function toast(msg, ok=true){ const el=document.createElement('div'); el.className='toast'; el.innerHTML=`<strong class="${ok?'ok':'bad'}">${ok?'Готово':'Ошибка'}</strong><div style="margin-top:4px">${msg}</div>`; document.getElementById('toasts').appendChild(el); setTimeout(()=>el.remove(),3500); }
+function showAuthTab(name){
+  document.getElementById('setupTab').classList.toggle('hidden', name!=='setup');
+  document.getElementById('staffTab').classList.toggle('hidden', name!=='staff');
+  document.getElementById('tabSetup').classList.toggle('active', name==='setup');
+  document.getElementById('tabStaff').classList.toggle('active', name==='staff');
 }
+function toggleTheme(){ document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme')==='dark' ? 'light':'dark'); }
+function fillKnownDemo(){ document.getElementById('supabaseUrl').value='https://vvmtgpeudmcsddjpktme.supabase.co'; document.getElementById('setupStatus').textContent='Вставьте свой anon key с экрана API Keys.'; }
 
-// ===== LOGIN =====
-function setLoginMode(mode) {
-  loginMode = mode;
-  document.getElementById('tabStaff').classList.toggle('active', mode === 'staff');
-  document.getElementById('tabGuest').classList.toggle('active', mode === 'guest');
-  document.getElementById('staffLoginForm').style.display = mode === 'staff' ? 'block' : 'none';
-  document.getElementById('guestLoginForm').style.display = mode === 'guest' ? 'block' : 'none';
-}
-
-function staffLogin(demo) {
-  const name = demo ? 'Демо' : (document.getElementById('loginName')?.value || '').trim();
-  const role = demo ? 'manager' : (document.getElementById('loginRole')?.value || 'waiter');
-  if (!name && !demo) { showToast('Введите ваше имя', 'error'); return; }
-
-  currentUser = { name: name || 'Демо', role };
-  showApp();
-}
-
-function guestLogin() {
-  const card = document.getElementById('guestCardInput').value.trim();
-  const nick = document.getElementById('guestNickInput').value.trim();
-  if (!card && !nick) { showToast('Введите номер карты или никнейм', 'error'); return; }
-
-  const found = DB.guests.find(g =>
-    (card && g.prime_hill_card?.toLowerCase() === card.toLowerCase()) ||
-    (nick && (g.nickname?.toLowerCase().includes(nick.toLowerCase()) || g.full_name?.toLowerCase().includes(nick.toLowerCase())))
-  );
-
-  if (found) {
-    currentUser = { name: found.full_name, role: 'guest', guestId: found.id };
-    showApp();
-    showView('search');
-    loadGuestProfile(found.id);
-  } else {
-    showToast('Гость не найден. Попробуйте зарегистрироваться', 'error');
+async function connectSupabase(){
+  const url=document.getElementById('supabaseUrl').value.trim().replace(/\/$/, '');
+  const key=document.getElementById('supabaseKey').value.trim();
+  if(!url || !key){ toast('Заполните URL и anon key', false); return; }
+  try{
+    supabase = window.supabase.createClient(url, key);
+    const { data, error } = await supabase.from('guests').select('id').limit(1);
+    if(error) throw error;
+    localStorage.setItem('dg_supabase_url', url);
+    localStorage.setItem('dg_supabase_key', key);
+    document.getElementById('setupStatus').innerHTML='<span class="ok">Подключение успешно. Теперь создайте первого менеджера или войдите.</span>';
+    toast('Подключение к Supabase успешно');
+    showAuthTab('staff');
+  }catch(e){
+    document.getElementById('setupStatus').innerHTML=`<span class="bad">Не удалось подключиться: ${e.message}</span>`;
+    toast('Не удалось подключиться к Supabase', false);
   }
 }
 
-function showRegister() {
-  showApp();
-  showView('addGuest');
+async function restoreSupabase(){
+  const url=localStorage.getItem('dg_supabase_url');
+  const key=localStorage.getItem('dg_supabase_key');
+  if(!url || !key) return;
+  document.getElementById('supabaseUrl').value=url;
+  document.getElementById('supabaseKey').value=key;
+  try{
+    supabase = window.supabase.createClient(url, key);
+    const { error } = await supabase.from('guests').select('id').limit(1);
+    if(error) throw error;
+    document.getElementById('setupStatus').innerHTML='<span class="ok">Сохранённое подключение восстановлено.</span>';
+  }catch(e){ console.warn(e); }
 }
 
-function showApp() {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('appShell').style.display = 'grid';
-  document.getElementById('currentUserBadge').textContent = `${getRoleLabel(currentUser.role)}: ${currentUser.name}`;
+async function signupStaff(){
+  if(!supabase){ toast('Сначала подключите Supabase', false); return; }
+  const email=document.getElementById('staffEmail').value.trim();
+  const password=document.getElementById('staffPassword').value.trim();
+  if(!email || password.length<6){ toast('Введите email и пароль от 6 символов', false); return; }
+  try{
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    if(error) throw error;
+    currentUser = data.user;
+    await ensureStaffProfile(data.user.id, email, 'Менеджер', 'manager');
+    await enterApp();
+    toast('Менеджер создан');
+  }catch(e){ toast(e.message, false); }
+}
 
-  if (window.innerWidth <= 768) {
-    document.getElementById('mobileNav').style.display = 'flex';
+async function loginStaff(){
+  if(!supabase){ toast('Сначала подключите Supabase', false); return; }
+  const email=document.getElementById('staffEmail').value.trim();
+  const password=document.getElementById('staffPassword').value.trim();
+  try{
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if(error) throw error;
+    currentUser = data.user;
+    await enterApp();
+    toast('Вход выполнен');
+  }catch(e){ toast(e.message, false); }
+}
+
+async function ensureStaffProfile(id,email,fullName,role){
+  const { data } = await supabase.from('staff').select('id').eq('email', email).maybeSingle();
+  if(!data){
+    const { error } = await supabase.from('staff').insert({ id, email, full_name: fullName, role, is_active: true });
+    if(error && !String(error.message).includes('duplicate')) throw error;
   }
+}
 
-  // Скрыть секцию сотрудников для не-менеджеров
-  if (currentUser.role !== 'manager') {
-    document.getElementById('navStaff').style.display = 'none';
+async function enterApp(){
+  document.getElementById('auth').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('userLine').textContent = `Подключено к Supabase · ${currentUser?.email || ''}`;
+  await Promise.all([loadGuests(), loadPreorders(), loadStaff()]);
+  iconRefresh();
+}
+
+async function logout(){
+  if(supabase) await supabase.auth.signOut();
+  currentUser=null; selectedGuest=null;
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('auth').classList.remove('hidden');
+}
+
+function showView(view, btn){
+  ['dashboard','guests','add','preorders','staff'].forEach(v=>document.getElementById('view-'+v).classList.toggle('hidden', v!==view));
+  document.querySelectorAll('[data-view-btn]').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+}
+
+async function loadGuests(){
+  const { data, error } = await supabase.from('guests').select('*').order('created_at', { ascending:false });
+  if(error){ toast(error.message, false); return; }
+  cacheGuests = data || [];
+  renderGuests(cacheGuests);
+  if(selectedGuest){
+    const fresh = cacheGuests.find(g=>g.id===selectedGuest.id);
+    if(fresh) await selectGuest(fresh.id);
   }
-
-  renderGuestsTable();
-  renderPreorders();
-  renderStaff();
-  lucide.createIcons();
 }
 
-function logout() {
-  currentUser = null;
-  currentGuest = null;
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('appShell').style.display = 'none';
-  document.getElementById('mobileNav').style.display = 'none';
-  document.getElementById('mainSearch').value = '';
-  document.getElementById('quickProfile').style.display = 'none';
-  document.getElementById('searchResults').innerHTML = '';
+function searchGuests(){
+  const q=document.getElementById('searchInput').value.trim().toLowerCase();
+  const rows=cacheGuests.filter(g => (g.full_name||'').toLowerCase().includes(q) || (g.nickname||'').toLowerCase().includes(q) || (g.prime_hill_card||'').toLowerCase().includes(q));
+  renderGuests(rows);
 }
 
-// ===== NAVIGATION =====
-function showView(viewName) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  const target = document.getElementById('view-' + viewName);
-  if (target) target.classList.add('active');
-
-  document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(item => {
-    item.classList.toggle('active', item.dataset.view === viewName);
-  });
+function renderGuests(rows){
+  const tbody=document.getElementById('guestsTable');
+  tbody.innerHTML = rows.map(g=>`<tr>
+    <td><strong>${escapeHtml(g.full_name||'—')}</strong><div class="faint">${escapeHtml(g.nickname||'')}</div></td>
+    <td class="mono">${escapeHtml(g.prime_hill_card||'—')}</td>
+    <td>${escapeHtml(g.phone||'—')}</td>
+    <td>${g.visit_count||0}</td>
+    <td>${escapeHtml(g.favorite_table||'—')}</td>
+    <td><button class="btn btn-secondary" onclick="selectGuest('${g.id}')">Открыть</button></td>
+  </tr>`).join('');
 }
 
-// ===== SEARCH =====
-function searchGuests(query) {
-  const q = query.trim().toLowerCase();
-  document.getElementById('quickProfile').style.display = 'none';
-  document.getElementById('searchResults').innerHTML = '';
+async function selectGuest(id){
+  const guest = cacheGuests.find(g=>g.id===id);
+  if(!guest) return;
+  selectedGuest = guest;
+  document.getElementById('selectedGuestEmpty').classList.add('hidden');
+  document.getElementById('selectedGuestWrap').classList.remove('hidden');
 
-  if (!q) return;
+  const [hookahRes, foodRes, drinkRes] = await Promise.all([
+    supabase.from('hookah_prefs').select('*').eq('guest_id', id).order('created_at', { ascending:false }),
+    supabase.from('food_prefs').select('*').eq('guest_id', id).order('order_count', { ascending:false }),
+    supabase.from('drink_prefs').select('*').eq('guest_id', id).order('order_count', { ascending:false })
+  ]);
 
-  const results = DB.guests.filter(g =>
-    g.prime_hill_card?.toLowerCase().includes(q) ||
-    g.full_name?.toLowerCase().includes(q) ||
-    g.nickname?.toLowerCase().includes(q) ||
-    g.phone?.includes(q)
-  );
-
-  if (results.length === 0) {
-    document.getElementById('searchResults').innerHTML = `<div class="empty-state"><i data-lucide="user-x"></i><p>Гость не найден по запросу "${query}"</p></div>`;
-    lucide.createIcons();
-    return;
-  }
-
-  if (results.length === 1) {
-    loadGuestProfile(results[0].id);
-    return;
-  }
-
-  const html = `<div class="card"><div class="table-wrap"><table><thead><tr><th>Гость</th><th>Карта</th><th>Визитов</th><th></th></tr></thead><tbody>
-  ${results.map(g => `<tr>
-    <td><strong>${g.full_name}</strong><br><span style="font-size:var(--text-xs);color:var(--color-text-muted);">@${g.nickname||'—'}</span></td>
-    <td class="td-card">${g.prime_hill_card||'—'}</td>
-    <td>${g.visit_count}</td>
-    <td><button class="btn btn-primary btn-sm" onclick="loadGuestProfile('${g.id}')">Открыть</button></td>
-  </tr>`).join('')}
-  </tbody></table></div></div>`;
-
-  document.getElementById('searchResults').innerHTML = html;
-  lucide.createIcons();
-}
-
-// ===== GUEST PROFILE =====
-function loadGuestProfile(guestId) {
-  const g = DB.guests.find(x => x.id === guestId);
-  if (!g) return;
-  currentGuest = g;
-
-  document.getElementById('searchResults').innerHTML = '';
-  document.getElementById('quickProfile').style.display = 'block';
-
-  // Hero
-  const initials = (g.full_name || '?').split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
-  const tagsHtml = (g.tags || []).map(t => `<span class="badge badge-gold">${t}</span>`).join('');
-  document.getElementById('guestHeroSection').innerHTML = `
-    <div class="guest-avatar">${initials}</div>
-    <div class="guest-info">
-      <div class="guest-name">${g.full_name}</div>
-      <div class="guest-card-num">${g.prime_hill_card ? '🃏 Prime Hill: ' + g.prime_hill_card : (g.nickname ? '@' + g.nickname : 'Без карты')}</div>
-      <div class="guest-tags">${tagsHtml}</div>
-    </div>
-    <div style="display:flex; flex-direction:column; gap: var(--space-2); align-items: flex-end;">
-      <span class="badge badge-muted"><i data-lucide="map-pin" style="width:12px;height:12px;"></i> ${g.favorite_table||'—'}</span>
-      <span class="badge badge-muted"><i data-lucide="clock" style="width:12px;height:12px;"></i> ${g.peak_hours||'—'}</span>
-      <button class="btn btn-secondary btn-sm" onclick="openEditGuestModal('${g.id}')"><i data-lucide="edit-3"></i> Редактировать</button>
+  const initials=(guest.full_name||'?').split(' ').map(v=>v[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('guestHero').innerHTML = `
+    <div class="hero">
+      <div class="avatar">${initials}</div>
+      <div>
+        <div style="font-size:28px;font-weight:700">${escapeHtml(guest.full_name||'—')}</div>
+        <div class="mono muted" style="margin-top:6px">${escapeHtml(guest.prime_hill_card||'Без карты')}</div>
+        <div class="tags">${(guest.tags||[]).map(t=>`<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>
+      </div>
+      <div>
+        <div class="pill">Стол: ${escapeHtml(guest.favorite_table||'—')}</div>
+        <div class="pill" style="margin-top:8px">Часы: ${escapeHtml(guest.peak_hours||'—')}</div>
+      </div>
     </div>`;
 
-  // Stats
   document.getElementById('guestStats').innerHTML = `
-    <div class="stat-card"><div class="stat-val">${g.visit_count}</div><div class="stat-label">Визитов</div></div>
-    <div class="stat-card"><div class="stat-val">${DB.hookah_prefs.filter(h=>h.guest_id===g.id).length}</div><div class="stat-label">Видов кальяна</div></div>
-    <div class="stat-card"><div class="stat-val">${DB.food_prefs.filter(f=>f.guest_id===g.id).length}</div><div class="stat-label">Любимых блюд</div></div>
-    <div class="stat-card"><div class="stat-val">${DB.drink_prefs.filter(d=>d.guest_id===g.id).length}</div><div class="stat-label">Любимых напитков</div></div>`;
+    <div class="stat"><div class="v">${guest.visit_count||0}</div><div class="l">Визитов</div></div>
+    <div class="stat"><div class="v">${hookahRes.data?.length||0}</div><div class="l">Кальянов</div></div>
+    <div class="stat"><div class="v">${foodRes.data?.length||0}</div><div class="l">Блюд</div></div>
+    <div class="stat"><div class="v">${drinkRes.data?.length||0}</div><div class="l">Напитков</div></div>`;
 
-  // Hookah
-  const hookahs = DB.hookah_prefs.filter(h => h.guest_id === g.id).sort((a,b) => b.is_favorite - a.is_favorite);
-  document.getElementById('hookahList').innerHTML = hookahs.length ? hookahs.map(h => `
-    <div class="pref-item">
-      <div class="pref-item-left">
-        <div class="pref-item-name">${h.is_favorite ? '⭐ ' : ''}${h.tobacco_brand} — ${h.flavor}</div>
-        <div class="pref-item-sub">${h.strength} · Чаша: ${h.bowl_type} · Уголь: ${h.coal_type}${h.extras?' · '+h.extras:''}</div>
-      </div>
-      ${h.is_favorite ? '<span class="badge badge-gold">Любимый</span>' : ''}
-    </div>`).join('') : '<div class="empty-state" style="padding:var(--space-6)"><p>Нет данных</p></div>';
-
-  // Food
-  const foods = DB.food_prefs.filter(f => f.guest_id === g.id).sort((a,b) => b.order_count - a.order_count);
-  document.getElementById('foodList').innerHTML = foods.length ? foods.map(f => `
-    <div class="pref-item">
-      <div class="pref-item-left">
-        <div class="pref-item-name">${f.dish_name}</div>
-        <div class="pref-item-sub">${f.category}</div>
-      </div>
-      <span class="pref-item-count">×${f.order_count}</span>
-    </div>`).join('') : '<div class="empty-state" style="padding:var(--space-6)"><p>Нет данных</p></div>';
-
-  // Drinks
-  const drinks = DB.drink_prefs.filter(d => d.guest_id === g.id).sort((a,b) => b.order_count - a.order_count);
-  document.getElementById('drinkList').innerHTML = drinks.length ? drinks.map(d => `
-    <div class="pref-item">
-      <div class="pref-item-left">
-        <div class="pref-item-name">${d.drink_name}</div>
-        <div class="pref-item-sub">${d.category}</div>
-      </div>
-      <span class="pref-item-count">×${d.order_count}</span>
-    </div>`).join('') : '<div class="empty-state" style="padding:var(--space-6)"><p>Нет данных</p></div>';
-
-  // Notes
-  document.getElementById('notesList').innerHTML = `
-    ${g.notes ? `<div style="font-size:var(--text-sm);color:var(--color-text);margin-bottom:var(--space-3);">${g.notes}</div>` : ''}
-    ${g.self_notes ? `<div style="font-size:var(--text-xs);color:var(--color-text-muted);border-top:1px solid var(--color-divider);padding-top:var(--space-2);margin-top:var(--space-2);">📝 Гость: ${g.self_notes}</div>` : ''}
-    ${!g.notes && !g.self_notes ? '<div class="empty-state" style="padding:var(--space-6)"><p>Пометок нет</p></div>' : ''}`;
-
-  lucide.createIcons();
+  document.getElementById('hookahList').innerHTML = (hookahRes.data||[]).map(h=>`<div class="item"><div><strong>${escapeHtml(h.tobacco_brand||'—')} — ${escapeHtml(h.flavor||'—')}</strong><div class="muted">${escapeHtml(h.strength||'—')} · ${escapeHtml(h.bowl_type||'—')} · ${escapeHtml(h.extras||'')}</div></div><div class="pill">${h.is_favorite ? 'Любимый' : 'Обычный'}</div></div>`).join('') || '<div class="muted">Нет записей</div>';
+  document.getElementById('foodList').innerHTML = (foodRes.data||[]).map(f=>`<div class="item"><div><strong>${escapeHtml(f.dish_name||'—')}</strong><div class="muted">${escapeHtml(f.category||'—')}</div></div><div class="pill">× ${f.order_count||1}</div></div>`).join('') || '<div class="muted">Нет записей</div>';
+  document.getElementById('drinkList').innerHTML = (drinkRes.data||[]).map(d=>`<div class="item"><div><strong>${escapeHtml(d.drink_name||'—')}</strong><div class="muted">${escapeHtml(d.category||'—')}</div></div><div class="pill">× ${d.order_count||1}</div></div>`).join('') || '<div class="muted">Нет записей</div>';
+  document.getElementById('notesBox').innerHTML = `<div>${escapeHtml(guest.notes||'Нет пометок')}</div><div class="muted" style="margin-top:10px">От гостя: ${escapeHtml(guest.self_notes||'—')}</div>`;
+  showView('dashboard', document.querySelector('[data-view-btn="dashboard"]'));
 }
 
-// ===== ADD GUEST =====
-function addGuest() {
-  const name = document.getElementById('newGuestName').value.trim();
-  if (!name) { showToast('Введите имя гостя', 'error'); return; }
-
-  const tags = document.getElementById('newGuestTags').value.split(',').map(t => t.trim()).filter(Boolean);
-  const newGuest = {
-    id: 'g' + Date.now(),
-    prime_hill_card: document.getElementById('newGuestCard').value.trim() || null,
-    nickname: document.getElementById('newGuestNick').value.trim() || null,
-    full_name: name,
-    phone: document.getElementById('newGuestPhone').value.trim() || null,
-    favorite_table: document.getElementById('newGuestTable').value.trim() || null,
-    peak_hours: document.getElementById('newGuestHours').value.trim() || null,
-    visit_count: 0,
-    notes: document.getElementById('newGuestNotes').value.trim() || null,
-    self_notes: '',
-    tags,
-    created_at: new Date().toISOString().split('T')[0]
+async function createGuest(){
+  const payload = {
+    full_name: val('gName'), nickname: val('gNick'), prime_hill_card: val('gCard'), phone: val('gPhone'), favorite_table: val('gTable'), peak_hours: val('gHours'),
+    tags: val('gTags').split(',').map(v=>v.trim()).filter(Boolean), notes: val('gNotes'), visit_count: 0
   };
-
-  DB.guests.push(newGuest);
-  renderGuestsTable();
-  showToast(`Гость ${name} добавлен!`, 'success');
-  showView('search');
-  document.getElementById('mainSearch').value = newGuest.prime_hill_card || name;
-  loadGuestProfile(newGuest.id);
-
-  ['newGuestName','newGuestNick','newGuestCard','newGuestPhone','newGuestTable','newGuestHours','newGuestTags','newGuestNotes'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
+  if(!payload.full_name){ toast('Введите имя гостя', false); return; }
+  const { error } = await supabase.from('guests').insert(payload);
+  if(error){ toast(error.message, false); return; }
+  toast('Гость создан');
+  ['gName','gNick','gCard','gPhone','gTable','gHours','gTags','gNotes'].forEach(id=>document.getElementById(id).value='');
+  await loadGuests();
+  showView('guests', document.querySelector('[data-view-btn="guests"]'));
 }
 
-// ===== RENDER GUESTS TABLE =====
-function renderGuestsTable() {
-  document.getElementById('guestsTableBody').innerHTML = DB.guests.map(g => `
-    <tr>
-      <td>
-        <strong>${g.full_name}</strong><br>
-        <span style="font-size:var(--text-xs);color:var(--color-text-muted);">${g.nickname ? '@'+g.nickname : ''}</span>
-      </td>
-      <td class="td-card">${g.prime_hill_card || '—'}</td>
-      <td><span style="font-family:var(--font-mono);color:var(--color-primary);">${g.visit_count}</span></td>
-      <td style="color:var(--color-text-muted);font-size:var(--text-xs);">${g.favorite_table || '—'}</td>
-      <td>${(g.tags||[]).map(t=>`<span class="badge badge-gold">${t}</span>`).join(' ')}</td>
-      <td>
-        <button class="btn btn-primary btn-sm" onclick="loadGuestProfile('${g.id}'); showView('search')">
-          <i data-lucide="eye"></i> Профиль
-        </button>
-      </td>
-    </tr>`).join('');
-  lucide.createIcons();
+async function createPreorder(){
+  const payload = { guest_id: val('poGuestId') || null, visit_date: val('poDate') || null, time_slot: val('poTime'), tobacco_brand: val('poBrand'), flavor: val('poFlavor'), strength: val('poStrength'), bowl_type: val('poBowl'), extras: val('poExtras'), status:'pending' };
+  const { error } = await supabase.from('hookah_preorders').insert(payload);
+  if(error){ toast(error.message, false); return; }
+  toast('Предзаказ создан');
+  ['poGuestId','poDate','poTime','poBrand','poFlavor','poStrength','poBowl','poExtras'].forEach(id=>document.getElementById(id).value='');
+  await loadPreorders();
 }
 
-// ===== PREFERENCES =====
-let tempPrefData = {};
-
-function openEditPref(type) {
-  if (!currentGuest) { showToast('Сначала выберите гостя', 'error'); return; }
-  currentPrefType = type;
-
-  const titles = { hookah: 'Добавить кальян', food: 'Добавить блюдо', drink: 'Добавить напиток' };
-  document.getElementById('prefModalTitle').textContent = titles[type];
-
-  let html = '';
-  if (type === 'hookah') {
-    html = `
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Марка табака</label>
-          <select class="form-input" id="pf_brand">
-            <option>Tangiers</option><option>Adalya</option><option>Fumari</option>
-            <option>Starbuzz</option><option>Al Fakher</option><option>Darkside</option><option>WTO</option><option>Другое</option>
-          </select></div>
-        <div class="form-group"><label class="form-label">Вкус</label>
-          <input type="text" class="form-input" id="pf_flavor" placeholder="Kashmir Peach, Love 66..."></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Крепость</label>
-          <select class="form-input" id="pf_strength">
-            <option>Лёгкий</option><option>Средний</option><option>Крепкий</option><option>Очень крепкий</option>
-          </select></div>
-        <div class="form-group"><label class="form-label">Тип чаши</label>
-          <select class="form-input" id="pf_bowl">
-            <option>Фанель</option><option>Клей / Вихрь</option><option>Фарфор</option><option>Силикон</option><option>Стандарт</option>
-          </select></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Уголь</label>
-          <select class="form-input" id="pf_coal"><option>Кокос</option><option>Быстрые</option></select></div>
-        <div class="form-group"><label class="form-label">Особенности</label>
-          <input type="text" class="form-input" id="pf_extras" placeholder="Побольше льда, с мятой..."></div>
-      </div>
-      <label style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-sm);cursor:pointer;">
-        <input type="checkbox" id="pf_fav" checked> Пометить как любимый
-      </label>`;
-  } else if (type === 'food') {
-    html = `
-      <div class="form-group"><label class="form-label">Название блюда</label>
-        <input type="text" class="form-input" id="pf_dish" placeholder="Люля-кебаб, хумус..."></div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Категория</label>
-          <select class="form-input" id="pf_cat">
-            <option>Горячее</option><option>Закуска</option><option>Салат</option><option>Десерт</option><option>Суп</option>
-          </select></div>
-        <div class="form-group"><label class="form-label">Кол-во заказов</label>
-          <input type="number" class="form-input" id="pf_count" value="1" min="1"></div>
-      </div>`;
-  } else {
-    html = `
-      <div class="form-group"><label class="form-label">Напиток</label>
-        <input type="text" class="form-input" id="pf_drink" placeholder="Глинтвейн, лимонад..."></div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Категория</label>
-          <select class="form-input" id="pf_dcat">
-            <option>Алкоголь</option><option>Безалкогольное</option><option>Чай</option><option>Кофе</option><option>Коктейль</option>
-          </select></div>
-        <div class="form-group"><label class="form-label">Кол-во заказов</label>
-          <input type="number" class="form-input" id="pf_dcount" value="1" min="1"></div>
-      </div>`;
-  }
-
-  document.getElementById('prefModalContent').innerHTML = html;
-  openModal('prefModal');
-  lucide.createIcons();
+async function loadPreorders(){
+  const { data, error } = await supabase.from('hookah_preorders').select('*, guests(full_name)').order('created_at', { ascending:false });
+  if(error){ document.getElementById('preordersTable').innerHTML=''; return; }
+  document.getElementById('preordersTable').innerHTML = (data||[]).map(p=>`<tr><td>${escapeHtml(p.guests?.full_name || p.guest_id || '—')}</td><td>${escapeHtml(p.visit_date||'—')} ${escapeHtml(p.time_slot||'')}</td><td>${escapeHtml(p.tobacco_brand||'—')} / ${escapeHtml(p.flavor||'—')}</td><td><span class="pill">${escapeHtml(p.status||'pending')}</span></td></tr>`).join('');
 }
 
-function savePref() {
-  if (!currentGuest || !currentPrefType) return;
-  const gId = currentGuest.id;
-
-  if (currentPrefType === 'hookah') {
-    DB.hookah_prefs.push({
-      id: 'h' + Date.now(), guest_id: gId,
-      tobacco_brand: document.getElementById('pf_brand').value,
-      flavor: document.getElementById('pf_flavor').value,
-      strength: document.getElementById('pf_strength').value,
-      bowl_type: document.getElementById('pf_bowl').value,
-      coal_type: document.getElementById('pf_coal').value,
-      extras: document.getElementById('pf_extras').value,
-      is_favorite: document.getElementById('pf_fav').checked,
-    });
-  } else if (currentPrefType === 'food') {
-    DB.food_prefs.push({
-      id: 'f' + Date.now(), guest_id: gId,
-      dish_name: document.getElementById('pf_dish').value,
-      category: document.getElementById('pf_cat').value,
-      order_count: parseInt(document.getElementById('pf_count').value) || 1,
-    });
-  } else {
-    DB.drink_prefs.push({
-      id: 'd' + Date.now(), guest_id: gId,
-      drink_name: document.getElementById('pf_drink').value,
-      category: document.getElementById('pf_dcat').value,
-      order_count: parseInt(document.getElementById('pf_dcount').value) || 1,
-    });
-  }
-
-  closeModal('prefModal');
-  loadGuestProfile(gId);
-  showToast('Предпочтение сохранено', 'success');
+async function createStaff(){
+  const email=val('newStaffEmail'), password=val('newStaffPassword'), fullName=val('newStaffName'), role=val('newStaffRole');
+  if(!email || password.length<6 || !fullName){ toast('Заполните имя, email и пароль', false); return; }
+  const { data, error } = await supabase.auth.signUp({ email, password });
+  if(error){ toast(error.message, false); return; }
+  const { error: e2 } = await supabase.from('staff').insert({ id:data.user.id, email, full_name: fullName, role, is_active:true });
+  if(e2){ toast(e2.message, false); return; }
+  toast('Сотрудник создан');
+  ['newStaffEmail','newStaffPassword','newStaffName'].forEach(id=>document.getElementById(id).value='');
+  await loadStaff();
 }
 
-// ===== NOTES =====
-function openNotesModal() {
-  if (!currentGuest) return;
-  document.getElementById('staffNotesInput').value = currentGuest.notes || '';
-  document.getElementById('tagsInput').value = (currentGuest.tags || []).join(', ');
-  openModal('notesModal');
+async function loadStaff(){
+  const { data, error } = await supabase.from('staff').select('*').order('created_at', { ascending:false });
+  if(error){ document.getElementById('staffTable').innerHTML=''; return; }
+  cacheStaff = data || [];
+  document.getElementById('staffTable').innerHTML = cacheStaff.map(s=>`<tr><td>${escapeHtml(s.full_name||'—')}</td><td>${escapeHtml(s.email||'—')}</td><td><span class="pill">${escapeHtml(s.role||'—')}</span></td></tr>`).join('');
 }
 
-function saveNotes() {
-  if (!currentGuest) return;
-  const g = DB.guests.find(x => x.id === currentGuest.id);
-  g.notes = document.getElementById('staffNotesInput').value;
-  g.tags = document.getElementById('tagsInput').value.split(',').map(t => t.trim()).filter(Boolean);
-  currentGuest = g;
-  closeModal('notesModal');
-  loadGuestProfile(g.id);
-  showToast('Пометки сохранены', 'success');
+async function addHookahPrefPrompt(){
+  if(!selectedGuest){ toast('Сначала выберите гостя', false); return; }
+  const tobacco_brand = prompt('Марка табака'); if(tobacco_brand===null) return;
+  const flavor = prompt('Вкус'); if(flavor===null) return;
+  const strength = prompt('Крепость', 'Средний'); if(strength===null) return;
+  const bowl_type = prompt('Тип чаши', 'Фанель'); if(bowl_type===null) return;
+  const extras = prompt('Дополнительно', '') ?? '';
+  const { error } = await supabase.from('hookah_prefs').insert({ guest_id:selectedGuest.id, tobacco_brand, flavor, strength, bowl_type, extras, is_favorite:true });
+  if(error){ toast(error.message, false); return; }
+  toast('Кальян добавлен'); await selectGuest(selectedGuest.id);
 }
 
-// ===== PREORDERS =====
-function openPreorderModal() {
-  document.getElementById('poDate').value = new Date().toISOString().split('T')[0];
-  openModal('preorderModal');
+async function addFoodPrefPrompt(){
+  if(!selectedGuest){ toast('Сначала выберите гостя', false); return; }
+  const dish_name = prompt('Название блюда'); if(dish_name===null) return;
+  const category = prompt('Категория', 'Горячее') ?? 'Горячее';
+  const order_count = Number(prompt('Сколько раз заказывал', '1') || 1);
+  const { error } = await supabase.from('food_prefs').insert({ guest_id:selectedGuest.id, dish_name, category, order_count });
+  if(error){ toast(error.message, false); return; }
+  toast('Блюдо добавлено'); await selectGuest(selectedGuest.id);
 }
 
-function savePreorder() {
-  const guestRef = document.getElementById('poGuest').value.trim();
-  const g = DB.guests.find(x =>
-    x.prime_hill_card?.toLowerCase() === guestRef.toLowerCase() ||
-    x.full_name?.toLowerCase().includes(guestRef.toLowerCase())
-  );
-
-  DB.preorders.push({
-    id: 'p' + Date.now(),
-    guest_id: g?.id || null,
-    guest_name: g?.full_name || guestRef,
-    visit_date: document.getElementById('poDate').value,
-    time_slot: document.getElementById('poTime').value,
-    tobacco_brand: document.getElementById('poBrand').value,
-    flavor: document.getElementById('poFlavor').value,
-    strength: document.getElementById('poStrength').value,
-    bowl_type: document.getElementById('poBowl').value,
-    extras: document.getElementById('poExtras').value,
-    status: 'pending',
-  });
-
-  closeModal('preorderModal');
-  renderPreorders();
-  showView('preorders');
-  showToast('Предзаказ кальяна оформлен!', 'success');
+async function addDrinkPrefPrompt(){
+  if(!selectedGuest){ toast('Сначала выберите гостя', false); return; }
+  const drink_name = prompt('Название напитка'); if(drink_name===null) return;
+  const category = prompt('Категория', 'Напиток') ?? 'Напиток';
+  const order_count = Number(prompt('Сколько раз заказывал', '1') || 1);
+  const { error } = await supabase.from('drink_prefs').insert({ guest_id:selectedGuest.id, drink_name, category, order_count });
+  if(error){ toast(error.message, false); return; }
+  toast('Напиток добавлен'); await selectGuest(selectedGuest.id);
 }
 
-function renderPreorders() {
-  const statusMap = { pending: ['badge-muted','Ожидает'], confirmed: ['badge-gold','Подтверждён'], done: ['badge-green','Готов'] };
-  document.getElementById('preordersBody').innerHTML = DB.preorders.map(p => {
-    const [cls, label] = statusMap[p.status] || statusMap.pending;
-    return `<tr>
-      <td><strong>${p.guest_name}</strong></td>
-      <td style="font-family:var(--font-mono);font-size:var(--text-xs);">${p.visit_date} ${p.time_slot||''}</td>
-      <td>${p.tobacco_brand||'—'} / ${p.flavor||'—'}</td>
-      <td><span class="badge badge-muted">${p.strength||'—'}</span></td>
-      <td>${p.bowl_type||'—'}</td>
-      <td style="font-size:var(--text-xs);color:var(--color-text-muted);">${p.extras||'—'}</td>
-      <td><span class="badge ${cls}">${label}</span></td>
-      <td>
-        <button class="btn btn-ghost btn-sm" onclick="updatePreorderStatus('${p.id}','confirmed')" title="Подтвердить"><i data-lucide="check"></i></button>
-        <button class="btn btn-ghost btn-sm" onclick="updatePreorderStatus('${p.id}','done')" title="Готово"><i data-lucide="check-check"></i></button>
-      </td>
-    </tr>`;
-  }).join('') || `<tr><td colspan="8" style="text-align:center;padding:var(--space-8);color:var(--color-text-faint);">Нет предзаказов</td></tr>`;
-  lucide.createIcons();
+async function saveNotesPrompt(){
+  if(!selectedGuest){ toast('Сначала выберите гостя', false); return; }
+  const notes = prompt('Пометки персонала', selectedGuest.notes || ''); if(notes===null) return;
+  const self_notes = prompt('Пометки гостя', selectedGuest.self_notes || '') ?? '';
+  const tags = prompt('Теги через запятую', (selectedGuest.tags || []).join(', ')); if(tags===null) return;
+  const { error } = await supabase.from('guests').update({ notes, self_notes, tags: tags.split(',').map(v=>v.trim()).filter(Boolean) }).eq('id', selectedGuest.id);
+  if(error){ toast(error.message, false); return; }
+  toast('Пометки обновлены'); await loadGuests(); await selectGuest(selectedGuest.id);
 }
 
-function updatePreorderStatus(id, status) {
-  const p = DB.preorders.find(x => x.id === id);
-  if (p) { p.status = status; renderPreorders(); showToast('Статус обновлён', 'success'); }
-}
+function val(id){ return document.getElementById(id).value.trim(); }
+function escapeHtml(str){ return String(str ?? '').replace(/[&<>"]/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[s])); }
 
-// ===== STAFF =====
-function renderStaff() {
-  const roleLabels = { hostess:'Хостес', waiter:'Официант', hookah:'Кальянный мастер', bartender:'Бармен', manager:'Менеджер' };
-  const roleCls = { hostess:'role-hostess', waiter:'role-waiter', hookah:'role-hookah', bartender:'role-bartender', manager:'role-manager' };
-  document.getElementById('staffBody').innerHTML = DB.staff.map(s => `
-    <tr>
-      <td><strong>${s.full_name}</strong></td>
-      <td><span class="role-tag ${roleCls[s.role]||''}">${roleLabels[s.role]||s.role}</span></td>
-      <td><span style="font-family:var(--font-mono);background:var(--color-surface-offset);padding:2px 8px;border-radius:var(--radius-sm);">••••</span></td>
-      <td><span class="badge ${s.is_active?'badge-green':'badge-red'}">${s.is_active?'Активен':'Неактивен'}</span></td>
-      <td><button class="btn btn-ghost btn-sm" onclick="toggleStaffActive('${s.id}')"><i data-lucide="${s.is_active?'user-x':'user-check'}"></i></button></td>
-    </tr>`).join('');
-  lucide.createIcons();
-}
-
-function openAddStaffModal() { openModal('staffModal'); }
-
-function addStaff() {
-  const name = document.getElementById('staffName').value.trim();
-  if (!name) { showToast('Введите имя', 'error'); return; }
-  DB.staff.push({
-    id: 's' + Date.now(),
-    full_name: name,
-    role: document.getElementById('staffRole').value,
-    pin_code: document.getElementById('staffPin').value,
-    is_active: true,
-  });
-  closeModal('staffModal');
-  renderStaff();
-  showToast('Сотрудник добавлен', 'success');
-  ['staffName','staffPin'].forEach(id => document.getElementById(id).value = '');
-}
-
-function toggleStaffActive(id) {
-  const s = DB.staff.find(x => x.id === id);
-  if (s) { s.is_active = !s.is_active; renderStaff(); }
-}
-
-// ===== EDIT GUEST =====
-function openEditGuestModal(gId) {
-  const g = DB.guests.find(x => x.id === gId);
-  if (!g) return;
-  // Для простоты — открываем форму добавления с предзаполнением
-  document.getElementById('newGuestName').value = g.full_name || '';
-  document.getElementById('newGuestNick').value = g.nickname || '';
-  document.getElementById('newGuestCard').value = g.prime_hill_card || '';
-  document.getElementById('newGuestPhone').value = g.phone || '';
-  document.getElementById('newGuestTable').value = g.favorite_table || '';
-  document.getElementById('newGuestHours').value = g.peak_hours || '';
-  document.getElementById('newGuestTags').value = (g.tags||[]).join(', ');
-  document.getElementById('newGuestNotes').value = g.notes || '';
-  showView('addGuest');
-}
-
-// ===== SUPABASE CONFIG =====
-function saveSupabaseConfig() {
-  const url = document.getElementById('cfgUrl').value.trim();
-  const key = document.getElementById('cfgKey').value.trim();
-  if (!url || !key) { showToast('Введите оба поля', 'error'); return; }
-  SUPABASE_URL = url;
-  SUPABASE_KEY = key;
-  showToast('Конфигурация сохранена! Перезагрузите страницу для применения.', 'success');
-}
-
-// ===== MODAL HELPERS =====
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.addEventListener('click', e => {
-  if (e.target.classList.contains('modal-overlay')) {
-    e.target.classList.remove('open');
+window.addEventListener('DOMContentLoaded', async ()=>{
+  iconRefresh();
+  await restoreSupabase();
+  if(supabase){
+    const { data } = await supabase.auth.getUser();
+    if(data?.user){ currentUser = data.user; await enterApp(); }
   }
 });
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
-});
-
-// ===== TOAST =====
-function showToast(msg, type = 'success') {
-  const t = document.createElement('div');
-  t.className = `toast toast-${type}`;
-  t.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" style="width:16px;height:16px;flex-shrink:0;"></i>${msg}`;
-  document.getElementById('toastContainer').appendChild(t);
-  lucide.createIcons();
-  setTimeout(() => t.remove(), 3500);
-}
-
-// ===== UTILS =====
-function getRoleLabel(role) {
-  const m = { hostess:'Хостес', waiter:'Официант', hookah:'Кальянный мастер', bartender:'Бармен', manager:'Менеджер', guest:'Гость' };
-  return m[role] || role;
-}
 </script>
 </body>
 </html>
