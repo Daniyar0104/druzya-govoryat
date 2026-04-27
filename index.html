@@ -67,8 +67,9 @@
           <div class="brand-sub">Единый вход сотрудников и CRM гостя</div>
         </div>
       </div>
-      <div style="font-size:32px;font-weight:800;line-height:1.1">Надёжный вход</div>
-      <div class="page-sub" style="margin-bottom:18px">Регистрация сотрудников на сайте отключена. Вход только через одну админскую учётную запись. Это стабильнее и не упирается в лимиты регистрации Supabase.</div>
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><div style="font-size:32px;font-weight:800;line-height:1.1">Надёжный вход</div><div class="actions"><button class="btn" id="btnShowStaff">Сотрудник</button><button class="btn btn-primary" id="btnShowGuest">Гость</button></div></div>
+      <div class="page-sub" style="margin-bottom:18px">Выберите режим входа. Для гостя должна быть видна только гостевая анкета, без технических полей и формы входа сотрудников.</div>
+      <div id="staffLoginBlock">
       <div class="notice small">
         1. Введите <strong>Project URL</strong> и <strong>Anon key</strong>.<br>
         2. Ниже войдите под админской учётной записью сотрудников.<br>
@@ -89,20 +90,19 @@
         <button class="btn" id="btnToggleTheme">Сменить тему</button>
       </div>
       <div id="loginStatus" class="page-sub"></div>
-      <div id="guestRegCard" class="card hidden" style="margin-top:18px">
-        <div class="section-title">Регистрация гостя по бонусной карте</div>
-        <div class="small muted" style="margin-bottom:12px">Гость может сам зарегистрироваться по номеру карты и оставить данные о себе. Если гость уже есть, карточка будет обновлена.</div>
+      </div>
+      <div id="guestRegCard" class="card" style="margin-top:18px">
+        <div class="section-title">Анкета гостя</div>
+        <div class="small muted" style="margin-bottom:12px">Гость заполняет только свою информацию. Служебные поля и данные для персонала здесь не показываются.</div>
         <div class="grid">
           <div class="field"><div class="label">Номер карты Prime Hill</div><input id="grCard" class="input"></div>
           <div class="field"><div class="label">Имя</div><input id="grName" class="input"></div>
           <div class="field"><div class="label">Nickname</div><input id="grNick" class="input"></div>
           <div class="field"><div class="label">Телефон</div><input id="grPhone" class="input"></div>
-          <div class="field"><div class="label">Любимый стол</div><input id="grTable" class="input"></div>
-          <div class="field"><div class="label">Когда чаще всего приходите</div><input id="grHours" class="input" placeholder="18:00–22:00"></div>
-          <div class="field"><div class="label">Любимые блюда, напитки, кальян</div><textarea id="grPrefs" class="textarea"></textarea></div>
-          <div class="field"><div class="label">Личные характеристики / комментарий</div><textarea id="grNotes" class="textarea"></textarea></div>
+          <div class="field"><div class="label">Когда чаще всего приходите</div><input id="grHours" class="input" placeholder="Например, вечером"></div>
+          <div class="field"><div class="label">Что вам нравится</div><textarea id="grPrefs" class="textarea" placeholder="Любимые блюда, напитки, кальян, пожелания по посадке"></textarea></div>
         </div>
-        <div class="actions" style="margin-top:14px"><button class="btn btn-primary" id="btnGuestRegister">Сохранить анкету гостя</button></div>
+        <div class="actions" style="margin-top:14px"><button class="btn btn-primary" id="btnGuestRegister">Сохранить анкету</button></div>
       </div>
       <div class="card" style="margin-top:18px">
         <div class="section-title">Как работает единый вход</div>
@@ -278,6 +278,25 @@ function splitTags(tags){if(Array.isArray(tags)) return tags.filter(Boolean); re
 function showView(view){document.querySelectorAll('[id^="view-"]').forEach(x=>x.classList.add('hidden'));const el=$('view-'+view); if(el) el.classList.remove('hidden'); document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active', b.dataset.view===view));}
 
 function fillDemo(){ $('cfgUrl').value='https://vvmtgpeudmcsddjpktme.supabase.co'; $('adminLogin').value='Друзья'; $('loginStatus').textContent='Осталось вставить anon key и ввести пароль общей админской учётной записи.'; }
+
+function setAuthMode(mode){
+  const staff = $('staffLoginBlock');
+  const guest = $('guestRegCard');
+  const btnStaff = $('btnShowStaff');
+  const btnGuest = $('btnShowGuest');
+  if(mode==='guest'){
+    staff.classList.add('hidden');
+    guest.classList.remove('hidden');
+    btnGuest.classList.add('btn-primary');
+    btnStaff.classList.remove('btn-primary');
+  } else {
+    staff.classList.remove('hidden');
+    guest.classList.add('hidden');
+    btnStaff.classList.add('btn-primary');
+    btnGuest.classList.remove('btn-primary');
+  }
+}
+
 function toggleGuestReg(){ $('guestRegCard').classList.toggle('hidden'); }
 
 
@@ -310,9 +329,7 @@ async function guestSelfRegister(){
     full_name:$('grName').value.trim(),
     nickname:$('grNick').value.trim(),
     phone:$('grPhone').value.trim(),
-    favorite_table:$('grTable').value.trim(),
     peak_hours:$('grHours').value.trim(),
-    notes:$('grNotes').value.trim(),
     self_notes:$('grPrefs').value.trim()
   };
   if(!payload.prime_hill_card || !payload.full_name){ toast('Для гостя нужны минимум номер карты и имя', false); return; }
@@ -327,7 +344,7 @@ async function guestSelfRegister(){
     if(ins.error){ toast(ins.error.message, false); return; }
     toast('Гость зарегистрирован');
   }
-  ['grCard','grName','grNick','grPhone','grTable','grHours','grPrefs','grNotes'].forEach(id=>$(id).value='');
+  ['grCard','grName','grNick','grPhone','grHours','grPrefs'].forEach(id=>$(id).value='');
 }
 
 async function connectAndLogin(){
@@ -529,7 +546,9 @@ async function editNotes(){
 function bind(){
   $('btnConnectLogin').addEventListener('click', connectAndLogin);
   $('btnFillDemo').addEventListener('click', fillDemo);
-  $('btnGuestRegOpen').addEventListener('click', toggleGuestReg);
+  $('btnGuestRegOpen').addEventListener('click', ()=>setAuthMode('guest'));
+  $('btnShowStaff').addEventListener('click', ()=>setAuthMode('staff'));
+  $('btnShowGuest').addEventListener('click', ()=>setAuthMode('guest'));
   $('btnToggleTheme').addEventListener('click', toggleTheme);
   $('btnThemeInside').addEventListener('click', toggleTheme);
   $('btnLogout').addEventListener('click', logout);
@@ -550,6 +569,7 @@ window.openGuest = openGuest;
 restoreConfig();
 bind();
 setTheme('dark');
+setAuthMode('guest');
 bootstrapSession();
 </script>
 </body>
