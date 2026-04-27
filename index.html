@@ -335,7 +335,7 @@ async function connectAndLogin(){
   const key=$('cfgKey').value.trim();
   const login=$('adminLogin').value.trim();
   const password=$('adminPassword').value;
-  if(!url || !key || !login || !password){toast('Заполните URL, anon key, логин и пароль', false);return}
+  if(!url || !key || !login || !password){toast('Введите логин и пароль', false);return}
   try{
     sbClient = window.supabase.createClient(url, key);
     const health = await sbClient.from('guests').select('id').limit(1);
@@ -528,7 +528,6 @@ async function editNotes(){
 
 function bind(){
   $('btnConnectLogin').addEventListener('click', connectAndLogin);
-  $('btnFillDemo').addEventListener('click', fillDemo);
   $('btnShowStaff').addEventListener('click', ()=>setAuthMode('staff'));
   $('btnShowGuest').addEventListener('click', ()=>setAuthMode('guest'));
   $('btnToggleTheme').addEventListener('click', toggleTheme);
