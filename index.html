@@ -121,6 +121,7 @@
         <button class="active" data-view="guest" type="button">Профиль гостя</button>
         <button data-view="guests" type="button">Все гости</button>
         <button data-view="guest-create" type="button">Новый гость</button>
+        <button data-view="bookings" type="button">Брони</button>
         <button data-view="preorders" type="button">Заявки на предзаказ кальяна</button>
         <button data-view="help" type="button">Что дальше</button>
       </div>
@@ -213,7 +214,42 @@
         </div>
       </section>
 
-      <section id="view-preorders" class="hidden">
+      <section id="view-bookings" class="hidden">
+        <div class="hero">
+          <div class="card">
+            <div class="page-title">Брони</div>
+            <div class="page-sub">Тестовый экран: Малыгина — 12 столов, Новин — 10 столов, по одному залу на локацию.</div>
+          </div>
+          <div class="card">
+            <div class="row between"><div><div class="label">Локация</div><select id="bookingLocation" class="select"><option value="Малыгина">Малыгина</option><option value="Новин">Новин</option></select></div><div><div class="label">Дата</div><input id="bookingDate" type="date" class="input"></div></div>
+            <div class="row" style="margin-top:12px;gap:10px;flex-wrap:wrap"><input id="bookingPhone" class="input" style="max-width:280px" placeholder="Телефон гостя"><input id="bookingName" class="input" style="max-width:240px" placeholder="Имя гостя"><button class="btn" id="btnBookingSearch">Найти гостя</button></div>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top:18px">
+          <div class="card">
+            <div class="section-title">Столы</div>
+            <div id="tableGrid" class="stats" style="margin-top:14px"></div>
+          </div>
+          <div class="card">
+            <div class="section-title">Бронь на день</div>
+            <div class="small muted" style="margin-top:6px">Выберите стол, затем заполните имя и телефон.</div>
+            <div class="grid" style="margin-top:12px">
+              <div class="field"><div class="label">Выбранный стол</div><input id="bookingTable" class="input" readonly></div>
+              <div class="field"><div class="label">Телефон</div><input id="bookingGuestPhone" class="input"></div>
+              <div class="field"><div class="label">Имя гостя</div><input id="bookingGuestName" class="input"></div>
+              <div class="field"><div class="label">Время</div><input id="bookingTime" class="input" placeholder="19:00"></div>
+              <div class="field"><div class="label">Характеристика гостя</div><input id="bookingGuestTraits" class="input" placeholder="Например: любит легкий кальян"></div>
+              <div class="field"><div class="label">Комментарий</div><input id="bookingComment" class="input" placeholder="Комментарий"></div>
+            </div>
+            <div class="actions" style="margin-top:12px"><button class="btn btn-primary" id="btnSaveBooking">Сохранить бронь</button></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:18px">
+          <div class="section-title">Полный список броней на день</div>
+          <div id="bookingList" style="margin-top:14px"></div>
+        </div>
+      </section>
+<section id="view-preorders" class="hidden">
         <div class="card" style="margin-bottom:16px">
           <div class="section-title">Заявка на предзаказ кальяна</div>
           <div class="grid grid-3">
@@ -390,7 +426,8 @@ async function guestSelfRegister(){
         const notes = order.usual === 'yes'
           ? 'Как всегда. Адрес: ' + order.address + '. Время: ' + order.time
           : 'Не как всегда. Адрес: ' + order.address + '. Время: ' + order.time + '. Крепость: ' + order.strength + '. Тип: ' + order.type + '. Вкус: ' + order.flavor;
-        await sbClient.from('hookah_preorders').insert({ guest_id: guestId, visit_date: new Date().toISOString().slice(0,10), time_slot: order.time, tobacco_brand: order.type || 'Как всегда', flavor: order.flavor || 'Как всегда', strength: order.usual === 'yes' ? 'Как всегда' : order.strength, bowl_type: order.address, extras: notes, status: 'pending' });
+        const createdPreorder = await sbClient.from('hookah_preorders').insert({ guest_id: guestId, visit_date: new Date().toISOString().slice(0,10), time_slot: order.time, tobacco_brand: order.type || 'Как всегда', flavor: order.flavor || 'Как всегда', strength: order.usual === 'yes' ? 'Как всегда' : order.strength, bowl_type: order.address, extras: notes, status: 'pending' }).select();
+        if(!createdPreorder.error && sessionUser){ await loadPreorders(); }
       }
     }catch(e){}
   }, 0);
@@ -555,14 +592,18 @@ async function createPreorder(){
 
 async function loadPreorders(){
   if(!sbClient) return;
-  const { data, error } = await sbClient.from('hookah_preorders').select('*, guests(full_name, prime_hill_card)').order('created_at', {ascending:false}).limit(50);
-  if(error){ $('preordersTable').innerHTML=`<tr><td colspan="4" class="bad">${escapeHtml(error.message)}</td></tr>`; return; }
-  $('preordersTable').innerHTML = (data||[]).length ? data.map(r=>`<tr>
-    <td><strong>${escapeHtml(r.guests?.full_name || 'Без имени')}</strong><div class="small mono">${escapeHtml(r.guests?.prime_hill_card || '')}</div></td>
-    <td>${escapeHtml(r.visit_date || '')} ${escapeHtml(r.time_slot || '')}</td>
-    <td>${escapeHtml([r.tobacco_brand,r.flavor,r.strength,r.bowl_type].filter(Boolean).join(' · '))}</td>
-    <td>${escapeHtml(r.status || 'new')}</td>
-  </tr>`).join('') : `<tr><td colspan="4" class="muted">Предзаказов пока нет.</td></tr>`;
+  const box = $('preorderRows');
+  if(box) box.innerHTML = '<div class="small muted">Загрузка заявок...</div>';
+  const { data, error } = await sbClient
+    .from('hookah_preorders')
+    .select('id, visit_date, time_slot, flavor, strength, status, bowl_type, guests(full_name, phone)')
+    .order('visit_date', { ascending:false })
+    .order('time_slot', { ascending:false })
+    .limit(30);
+  if(error){ if(box) box.innerHTML = `<div class="small bad">${escapeHtml(error.message)}</div>`; return; }
+  const rows = data || [];
+  if(!rows.length){ if(box) box.innerHTML = '<div class="small muted">Заявок пока нет.</div>'; return; }
+  if(box) box.innerHTML = rows.map(r=>`<div class="row between" style="padding:12px 0;border-top:1px solid var(--line)"><div><div style="font-weight:700">${escapeHtml(r.guests?.full_name || 'Гость')}</div><div class="small muted">${escapeHtml(r.guests?.phone || '')}</div></div><div>${escapeHtml(r.visit_date || '—')} ${escapeHtml(r.time_slot || '')}</div><div>${escapeHtml(r.flavor || 'Как всегда')}</div><div><span class="pill">${escapeHtml(r.status || 'pending')}</span><div class="small muted">${escapeHtml(r.bowl_type || '')}</div></div></div>`).join('');
 }
 
 async function addPref(type){
@@ -591,6 +632,61 @@ async function addPref(type){
   await openGuest(currentGuest.id);
 }
 
+function parseGuestTraits(notes){
+  const src = String(notes || '');
+  const out = {brand:'', strength:'', bowl:'', pack:'', price:'', other:''};
+  src.split('
+').forEach(line=>{
+    const [k,...rest] = line.split(':');
+    const val = rest.join(':').trim();
+    const key = (k||'').trim().toLowerCase();
+    if(key==='марка кальяна') out.brand = val;
+    if(key==='крепость') out.strength = val;
+    if(key==='чашка') out.bowl = val;
+    if(key==='способ забивки') out.pack = val;
+    if(key==='цена кальяна') out.price = val;
+    if(key==='прочее') out.other = val;
+  });
+  return out;
+}
+
+function traitsToNotes(baseNotes){
+  const free = String(baseNotes || '').split('
+').filter(line=>!/^\s*(марка кальяна|крепость|чашка|способ забивки|цена кальяна|прочее)\s*:/i.test(line)).join('
+').trim();
+  const rows = [
+    ['Марка кальяна', $('staffHookahBrand')?.value.trim() || ''],
+    ['Крепость', $('staffHookahStrength')?.value.trim() || ''],
+    ['Чашка', $('staffHookahBowl')?.value.trim() || ''],
+    ['Способ забивки', $('staffHookahPack')?.value.trim() || ''],
+    ['Цена кальяна', $('staffHookahPrice')?.value.trim() || ''],
+    ['Прочее', $('staffHookahOther')?.value.trim() || '']
+  ].filter(([_,v])=>v).map(([k,v])=>`${k}: ${v}`);
+  return [free, ...rows].filter(Boolean).join('
+');
+}
+
+function fillGuestTraitFields(guest){
+  const traits = parseGuestTraits(guest?.notes || '');
+  if($('staffHookahBrand')) $('staffHookahBrand').value = traits.brand;
+  if($('staffHookahStrength')) $('staffHookahStrength').value = traits.strength;
+  if($('staffHookahBowl')) $('staffHookahBowl').value = traits.bowl;
+  if($('staffHookahPack')) $('staffHookahPack').value = traits.pack;
+  if($('staffHookahPrice')) $('staffHookahPrice').value = traits.price;
+  if($('staffHookahOther')) $('staffHookahOther').value = traits.other;
+}
+
+async function saveGuestTraits(){
+  if(!sbClient || !currentGuest?.id){ toast('Сначала откройте гостя', false); return; }
+  const mergedNotes = traitsToNotes(currentGuest.notes || '');
+  const { data, error } = await sbClient.from('guests').update({ notes: mergedNotes }).eq('id', currentGuest.id).select().single();
+  if(error){ toast(error.message, false); return; }
+  currentGuest = { ...currentGuest, ...data };
+  toast('Характеристики сохранены');
+  await loadGuests();
+  await openGuest(currentGuest.id);
+}
+
 async function editNotes(){
   if(!currentGuest){ toast('Сначала откройте гостя', false); return; }
   const notes = prompt('Заметки о госте', currentGuest.notes || '');
@@ -603,6 +699,81 @@ async function editNotes(){
   toast('Профиль гостя обновлён');
   await loadGuests();
   await openGuest(currentGuest.id);
+}
+
+const TEST_TABLES = {
+  'Малыгина': Array.from({length:12}, (_,i)=>`Стол ${i+1}`),
+  'Новин': Array.from({length:10}, (_,i)=>`Стол ${i+1}`)
+};
+let bookingState = { selectedTable:'', rows:[] };
+
+function todayIso(){ return new Date().toISOString().slice(0,10); }
+
+function loadBookingState(){
+  try{ bookingState.rows = JSON.parse(localStorage.getItem('dg_bookings') || '[]'); }catch(e){ bookingState.rows=[]; }
+}
+
+function saveBookingState(){
+  try{ localStorage.setItem('dg_bookings', JSON.stringify(bookingState.rows)); }catch(e){}
+}
+
+function renderTables(){
+  const location = $('bookingLocation')?.value || 'Малыгина';
+  const date = $('bookingDate')?.value || todayIso();
+  const grid = $('tableGrid');
+  if(!grid) return;
+  const busy = new Set(bookingState.rows.filter(x=>x.location===location && x.date===date).map(x=>x.table));
+  grid.innerHTML = TEST_TABLES[location].map(table=>`<button type="button" class="card" data-table="${table}" style="text-align:left;padding:14px;border:${busy.has(table)?'1px solid #5db3c7':'1px solid var(--line)'};background:${busy.has(table)?'rgba(93,179,199,.12)':'var(--panel)'}"><div style="font-weight:800">${table}</div><div class="small ${busy.has(table)?'':'muted'}">${busy.has(table)?'Забронирован':'Свободен'}</div></button>`).join('');
+  grid.querySelectorAll('[data-table]').forEach(btn=>btn.addEventListener('click', ()=>{ $('bookingTable').value = btn.dataset.table; bookingState.selectedTable = btn.dataset.table; }));
+}
+
+function renderBookingList(){
+  const box = $('bookingList');
+  if(!box) return;
+  const location = $('bookingLocation')?.value || 'Малыгина';
+  const date = $('bookingDate')?.value || todayIso();
+  const rows = bookingState.rows.filter(x=>x.location===location && x.date===date).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  if(!rows.length){ box.innerHTML = '<div class="small muted">Броней на этот день пока нет.</div>'; return; }
+  box.innerHTML = rows.map(r=>`<div class="row between" style="padding:12px 0;border-top:1px solid var(--line)"><div><div style="font-weight:700">${escapeHtml(r.table)}</div><div class="small muted">${escapeHtml(r.name || 'Без имени')} · ${escapeHtml(r.phone || '')}</div></div><div>${escapeHtml(r.time || '')}</div><div style="max-width:320px" class="small muted">${escapeHtml(r.traits || r.comment || '')}</div></div>`).join('');
+}
+
+function syncBookingGuestFromCRM(){
+  const phone = $('bookingPhone')?.value.trim() || $('bookingGuestPhone')?.value.trim() || '';
+  if(!phone){ toast('Введите телефон гостя', false); return; }
+  const guest = guestCache.find(g => String(g.phone||'').replace(/\D/g,'').includes(phone.replace(/\D/g,'')) || phone.replace(/\D/g,'').includes(String(g.phone||'').replace(/\D/g,'')));
+  if(!guest){ toast('Гость не найден в CRM', false); return; }
+  $('bookingGuestPhone').value = guest.phone || phone;
+  $('bookingGuestName').value = guest.full_name || '';
+  $('bookingName').value = guest.full_name || '';
+  $('bookingGuestTraits').value = [guest.notes, guest.favorite_table, guest.peak_hours].filter(Boolean).join(' · ');
+  toast('Гость найден');
+}
+
+function saveBooking(){
+  const row = {
+    location: $('bookingLocation').value,
+    date: $('bookingDate').value || todayIso(),
+    table: $('bookingTable').value.trim(),
+    phone: $('bookingGuestPhone').value.trim(),
+    name: $('bookingGuestName').value.trim(),
+    time: $('bookingTime').value.trim(),
+    traits: $('bookingGuestTraits').value.trim(),
+    comment: $('bookingComment').value.trim()
+  };
+  if(!row.table || !row.name){ toast('Выберите стол и укажите имя гостя', false); return; }
+  bookingState.rows = bookingState.rows.filter(x=>!(x.location===row.location && x.date===row.date && x.table===row.table));
+  bookingState.rows.push(row);
+  saveBookingState();
+  renderTables();
+  renderBookingList();
+  toast('Бронь сохранена');
+}
+
+function initBookings(){
+  loadBookingState();
+  if($('bookingDate') && !$('bookingDate').value) $('bookingDate').value = todayIso();
+  renderTables();
+  renderBookingList();
 }
 
 function bind(){
@@ -618,10 +789,15 @@ function bind(){
   if($('goUsual')) $('goUsual').addEventListener('change', toggleGuestHookahFields);
   $('btnCreateGuest').addEventListener('click', createGuest);
   $('btnCreatePreorder').addEventListener('click', createPreorder);
+  if($('bookingLocation')) $('bookingLocation').addEventListener('change', ()=>{ renderTables(); renderBookingList(); });
+  if($('bookingDate')) $('bookingDate').addEventListener('change', ()=>{ renderTables(); renderBookingList(); });
+  if($('btnBookingSearch')) $('btnBookingSearch').addEventListener('click', syncBookingGuestFromCRM);
+  if($('btnSaveBooking')) $('btnSaveBooking').addEventListener('click', saveBooking);
   $('btnAddHookah').addEventListener('click', ()=>addPref('hookah'));
   $('btnAddFood').addEventListener('click', ()=>addPref('food'));
   $('btnAddDrink').addEventListener('click', ()=>addPref('drink'));
   $('btnEditNotes').addEventListener('click', editNotes);
+  $('btnSaveGuestTraits').addEventListener('click', saveGuestTraits);
   document.querySelectorAll('.nav button').forEach(btn=>btn.addEventListener('click',()=>showView(btn.dataset.view)));
   $('globalSearch').addEventListener('keydown',e=>{ if(e.key==='Enter') searchGuest(); });
 }
@@ -632,6 +808,7 @@ bind();
 setTheme('dark');
 setAuthMode('guest');
 toggleGuestHookahFields();
+initBookings();
 bootstrapSession();
 </script>
 </body>
