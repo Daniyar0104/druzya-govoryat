@@ -91,7 +91,7 @@
           <div class="field"><div class="label">Имя</div><input id="grName" class="input"></div>
           <div class="field"><div class="label">Телефон</div><input id="grPhone" class="input"></div>
         </div>
-        <div class="section-title" style="margin-top:18px">Предзаказ кальяна</div>
+        <div class="section-title" style="margin-top:18px">Предзаказ кальяна</div><div class="small muted" style="margin-bottom:12px">Необязательно. Можно просто сохранить имя и телефон без предзаказа.</div>
         <div class="grid">
           <div class="field"><div class="label">Как всегда?</div><select id="goUsual" class="select"><option value="yes">Да</option><option value="no">Нет</option></select></div>
           <div class="field"><div class="label">Во сколько должен быть кальян</div><input id="goTime" class="input" placeholder="Например, 19:30"></div>
@@ -102,7 +102,7 @@
           <div class="field"><div class="label">Какой кальян</div><select id="goType" class="select"><option value="Стандарт">Стандарт</option><option value="Премиум">Премиум</option><option value="WTO">WTO</option><option value="Hookah Sigar">Hookah Sigar</option><option value="Парфюм">Парфюм</option></select></div>
           <div class="field" style="grid-column:1/-1"><div class="label">Вкус</div><textarea id="goFlavor" class="textarea" placeholder="Опишите вкус кальяна"></textarea></div>
         </div>
-        <div class="actions" style="margin-top:14px"><button class="btn btn-primary" id="btnGuestRegister">Отправить</button></div>
+        <div class="actions" style="margin-top:14px"><button class="btn btn-primary" id="btnGuestRegister">Войти / отправить</button></div>
       </div>
       
     </div>
@@ -343,35 +343,20 @@ function buildTelegramMessage(data){
 
 function openTelegramRoute(address, message){
   const isMalygina = address === 'Малыгина 90';
-  const tg = isMalygina ? 'https://t.me/friendstalk4' : 'https://t.me/friends_talk_tmn';
-  const phone = isMalygina ? '+79129926869' : '+79829888998';
-  window.open(tg + '?text=' + message, '_blank', 'noopener,noreferrer');
-  setTimeout(()=>window.open('tel:' + phone, '_self'), 400);
+  const tg = isMalygina ? 'tg://resolve?domain=friendstalk4&text=' + message : 'tg://resolve?domain=friends_talk_tmn&text=' + message;
+  const fallback = isMalygina ? 'https://t.me/friendstalk4?text=' + message : 'https://t.me/friends_talk_tmn?text=' + message;
+  window.location.href = tg;
+  setTimeout(()=>{ window.location.href = fallback; }, 180);
 }
 
 async function guestSelfRegister(){
   const url=$('cfgUrl').value.trim().replace(/\/$/, '');
   const key=$('cfgKey').value.trim();
-  if(!sbClient){
-    if(!url || !key){ toast('Форма временно недоступна', false); return; }
-    sbClient = window.supabase.createClient(url, key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } });
-  }
   const guest = {
     full_name:$('grName').value.trim(),
     phone:$('grPhone').value.trim()
   };
   if(!guest.full_name || !guest.phone){ toast('Укажите имя и телефон', false); return; }
-  const existing = await sbClient.from('guests').select('id').eq('phone', guest.phone).maybeSingle();
-  if(existing.error && existing.error.code !== 'PGRST116'){ toast(existing.error.message, false); return; }
-  let guestId = existing.data?.id || null;
-  if(guestId){
-    const upd = await sbClient.from('guests').update(guest).eq('id', guestId);
-    if(upd.error){ toast(upd.error.message, false); return; }
-  } else {
-    const ins = await sbClient.from('guests').insert(guest).select('id').single();
-    if(ins.error){ toast(ins.error.message, false); return; }
-    guestId = ins.data?.id || null;
-  }
   const order = {
     usual: $('goUsual').value,
     time: $('goTime').value.trim(),
@@ -380,16 +365,37 @@ async function guestSelfRegister(){
     type: $('goType')?.value || '',
     flavor: $('goFlavor')?.value.trim() || ''
   };
-  if(!order.time){ toast('Укажите время, к которому нужен кальян', false); return; }
-  const notes = order.usual === 'yes'
-    ? 'Как всегда. Адрес: ' + order.address + '. Время: ' + order.time
-    : 'Не как всегда. Адрес: ' + order.address + '. Время: ' + order.time + '. Крепость: ' + order.strength + '. Тип: ' + order.type + '. Вкус: ' + order.flavor;
-  if(guestId){
-    await sbClient.from('hookah_preorders').insert({ guest_id: guestId, visit_date: new Date().toISOString().slice(0,10), time_slot: order.time, tobacco_brand: order.type || 'Как всегда', flavor: order.flavor || 'Как всегда', strength: order.usual === 'yes' ? 'Как всегда' : order.strength, bowl_type: order.address, extras: notes, status: 'pending' });
+  const hasPreorder = !!order.time;
+  if(hasPreorder){
+    const message = buildTelegramMessage({ name: guest.full_name, phone: guest.phone, ...order });
+    openTelegramRoute(order.address, message);
   }
-  const message = buildTelegramMessage({ name: guest.full_name, phone: guest.phone, ...order });
-  openTelegramRoute(order.address, message);
-  toast('Заявка отправлена');
+
+  setTimeout(async ()=>{
+    try{
+      if(!sbClient){
+        if(!url || !key || !window.supabase) return;
+        sbClient = window.supabase.createClient(url, key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } });
+      }
+      const existing = await sbClient.from('guests').select('id').eq('phone', guest.phone).maybeSingle();
+      if(existing.error && existing.error.code !== 'PGRST116') return;
+      let guestId = existing.data?.id || null;
+      if(guestId){
+        await sbClient.from('guests').update(guest).eq('id', guestId);
+      } else {
+        const ins = await sbClient.from('guests').insert(guest).select('id').single();
+        guestId = ins.data?.id || null;
+      }
+      if(guestId && hasPreorder){
+        const notes = order.usual === 'yes'
+          ? 'Как всегда. Адрес: ' + order.address + '. Время: ' + order.time
+          : 'Не как всегда. Адрес: ' + order.address + '. Время: ' + order.time + '. Крепость: ' + order.strength + '. Тип: ' + order.type + '. Вкус: ' + order.flavor;
+        await sbClient.from('hookah_preorders').insert({ guest_id: guestId, visit_date: new Date().toISOString().slice(0,10), time_slot: order.time, tobacco_brand: order.type || 'Как всегда', flavor: order.flavor || 'Как всегда', strength: order.usual === 'yes' ? 'Как всегда' : order.strength, bowl_type: order.address, extras: notes, status: 'pending' });
+      }
+    }catch(e){}
+  }, 0);
+
+  toast(hasPreorder ? 'Данные сохранены, Telegram открывается' : 'Вход в личный кабинет доступен без предзаказа');
   ['grName','grPhone','goTime','goFlavor'].forEach(id=>$(id) && ($(id).value=''));
   if($('goUsual')) $('goUsual').value='yes';
   if($('goAddress')) $('goAddress').value='Малыгина 90';
