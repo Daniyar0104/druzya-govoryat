@@ -87,12 +87,22 @@
       </div>
       <div id="guestRegCard" class="card" style="margin-top:18px">
         <div class="section-title">Гость</div>
-        
         <div class="grid">
           <div class="field"><div class="label">Имя</div><input id="grName" class="input"></div>
           <div class="field"><div class="label">Телефон</div><input id="grPhone" class="input"></div>
         </div>
-        <div class="actions" style="margin-top:14px"><button class="btn btn-primary" id="btnGuestRegister">Сохранить анкету</button></div>
+        <div class="section-title" style="margin-top:18px">Предзаказ кальяна</div>
+        <div class="grid">
+          <div class="field"><div class="label">Как всегда?</div><select id="goUsual" class="select"><option value="yes">Да</option><option value="no">Нет</option></select></div>
+          <div class="field"><div class="label">Во сколько должен быть кальян</div><input id="goTime" class="input" placeholder="Например, 19:30"></div>
+          <div class="field"><div class="label">Адрес</div><select id="goAddress" class="select"><option value="Малыгина 90">Малыгина 90</option><option value="50 лет Октября">50 лет Октября</option></select></div>
+        </div>
+        <div id="guestCustomHookah" class="grid hidden" style="margin-top:10px">
+          <div class="field"><div class="label">Крепость</div><select id="goStrength" class="select"><option value="Легкий">Легкий</option><option value="Ниже среднего">Ниже среднего</option><option value="Средний">Средний</option><option value="Выше среднего">Выше среднего</option><option value="Крепкий">Крепкий</option></select></div>
+          <div class="field"><div class="label">Какой кальян</div><select id="goType" class="select"><option value="Стандарт">Стандарт</option><option value="Премиум">Премиум</option><option value="WTO">WTO</option><option value="Hookah Sigar">Hookah Sigar</option><option value="Парфюм">Парфюм</option></select></div>
+          <div class="field" style="grid-column:1/-1"><div class="label">Вкус</div><textarea id="goFlavor" class="textarea" placeholder="Опишите вкус кальяна"></textarea></div>
+        </div>
+        <div class="actions" style="margin-top:14px"><button class="btn btn-primary" id="btnGuestRegister">Отправить</button></div>
       </div>
       
     </div>
@@ -111,7 +121,7 @@
         <button class="active" data-view="guest" type="button">Профиль гостя</button>
         <button data-view="guests" type="button">Все гости</button>
         <button data-view="guest-create" type="button">Новый гость</button>
-        <button data-view="preorders" type="button">Предзаказы кальяна</button>
+        <button data-view="preorders" type="button">Заявки на предзаказ кальяна</button>
         <button data-view="help" type="button">Что дальше</button>
       </div>
       <div class="sidebar-bottom">
@@ -205,7 +215,7 @@
 
       <section id="view-preorders" class="hidden">
         <div class="card" style="margin-bottom:16px">
-          <div class="section-title">Предзаказ кальяна</div>
+          <div class="section-title">Заявка на предзаказ кальяна</div>
           <div class="grid grid-3">
             <div class="field"><div class="label">Guest ID</div><input id="poGuestId" class="input" placeholder="UUID гостя"></div>
             <div class="field"><div class="label">Дата</div><input id="poDate" type="date" class="input"></div>
@@ -216,10 +226,10 @@
             <div class="field"><div class="label">Чаша</div><input id="poBowl" class="input"></div>
             <div class="field" style="grid-column:span 2"><div class="label">Дополнительно</div><input id="poExtras" class="input"></div>
           </div>
-          <div class="actions" style="margin-top:14px"><button class="btn btn-primary" id="btnCreatePreorder">Создать предзаказ</button></div>
+          <div class="actions" style="margin-top:14px"><button class="btn btn-primary" id="btnCreatePreorder">Создать заявку</button></div>
         </div>
         <div class="card">
-          <div class="section-title">Текущие предзаказы</div>
+          <div class="section-title">Текущие заявки</div>
           <div class="table-wrap">
             <table>
               <thead><tr><th>Гость</th><th>Дата</th><th>Кальян</th><th>Статус</th></tr></thead>
@@ -292,42 +302,100 @@ async function bootstrapSession(){
     const url = (localStorage.getItem('dg_url')||'').trim();
     const key = (localStorage.getItem('dg_key')||'').trim();
     if(!url || !key || !window.supabase) return;
-    sbClient = window.supabase.createClient(url, key);
+    sbClient = window.supabase.createClient(url, key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } });
+    const raw = localStorage.getItem('sb-' + url.replace(/^https?:\/\//,'').split('.')[0] + '-auth-token');
+    if(!raw) return;
+    $('loginStatus').textContent='';
     const sess = await sbClient.auth.getSession();
     if(sess.error || !sess.data?.session?.user) return;
     sessionUser = sess.data.session.user;
     $('loginView').classList.add('hidden');
     $('appView').classList.remove('hidden');
     $('sideStatus').textContent='Сотрудник: Друзья';
-    await refreshAll();
-    toast('Сессия восстановлена');
+    await Promise.all([loadGuests(), loadPreorders()]);
+    showView('guest');
   }catch(e){}
+}
+
+function toggleGuestHookahFields(){
+  const usual = $('goUsual')?.value;
+  const box = $('guestCustomHookah');
+  if(!box) return;
+  box.classList.toggle('hidden', usual !== 'no');
+}
+
+function buildTelegramMessage(data){
+  const parts = [
+    'Новая заявка на кальян',
+    'Имя: ' + (data.name || '—'),
+    'Телефон: ' + (data.phone || '—'),
+    'Как всегда: ' + (data.usual === 'yes' ? 'Да' : 'Нет'),
+    'Во сколько: ' + (data.time || '—'),
+    'Адрес: ' + (data.address || '—')
+  ];
+  if(data.usual === 'no'){
+    parts.push('Крепость: ' + (data.strength || '—'));
+    parts.push('Тип кальяна: ' + (data.type || '—'));
+    parts.push('Вкус: ' + (data.flavor || '—'));
+  }
+  return encodeURIComponent(parts.join('\n'));
+}
+
+function openTelegramRoute(address, message){
+  const isMalygina = address === 'Малыгина 90';
+  const tg = isMalygina ? 'https://t.me/friendstalk4' : 'https://t.me/friends_talk_tmn';
+  const phone = isMalygina ? '+79129926869' : '+79829888998';
+  window.open(tg + '?text=' + message, '_blank', 'noopener,noreferrer');
+  setTimeout(()=>window.open('tel:' + phone, '_self'), 400);
 }
 
 async function guestSelfRegister(){
   const url=$('cfgUrl').value.trim().replace(/\/$/, '');
   const key=$('cfgKey').value.trim();
   if(!sbClient){
-    if(!url || !key){ toast('Сначала вставьте Project URL и anon key', false); return; }
-    sbClient = window.supabase.createClient(url, key);
+    if(!url || !key){ toast('Форма временно недоступна', false); return; }
+    sbClient = window.supabase.createClient(url, key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } });
   }
-  const payload = {
+  const guest = {
     full_name:$('grName').value.trim(),
     phone:$('grPhone').value.trim()
   };
-  if(!payload.full_name || !payload.phone){ toast('Укажите имя и телефон', false); return; }
-  const existing = await sbClient.from('guests').select('id').eq('phone', payload.phone).maybeSingle();
+  if(!guest.full_name || !guest.phone){ toast('Укажите имя и телефон', false); return; }
+  const existing = await sbClient.from('guests').select('id').eq('phone', guest.phone).maybeSingle();
   if(existing.error && existing.error.code !== 'PGRST116'){ toast(existing.error.message, false); return; }
-  if(existing.data?.id){
-    const upd = await sbClient.from('guests').update(payload).eq('id', existing.data.id);
+  let guestId = existing.data?.id || null;
+  if(guestId){
+    const upd = await sbClient.from('guests').update(guest).eq('id', guestId);
     if(upd.error){ toast(upd.error.message, false); return; }
-    toast('Анкета обновлена');
   } else {
-    const ins = await sbClient.from('guests').insert(payload);
+    const ins = await sbClient.from('guests').insert(guest).select('id').single();
     if(ins.error){ toast(ins.error.message, false); return; }
-    toast('Анкета сохранена');
+    guestId = ins.data?.id || null;
   }
-  ['grName','grPhone'].forEach(id=>$(id).value='');
+  const order = {
+    usual: $('goUsual').value,
+    time: $('goTime').value.trim(),
+    address: $('goAddress').value,
+    strength: $('goStrength')?.value || '',
+    type: $('goType')?.value || '',
+    flavor: $('goFlavor')?.value.trim() || ''
+  };
+  if(!order.time){ toast('Укажите время, к которому нужен кальян', false); return; }
+  const notes = order.usual === 'yes'
+    ? 'Как всегда. Адрес: ' + order.address + '. Время: ' + order.time
+    : 'Не как всегда. Адрес: ' + order.address + '. Время: ' + order.time + '. Крепость: ' + order.strength + '. Тип: ' + order.type + '. Вкус: ' + order.flavor;
+  if(guestId){
+    await sbClient.from('hookah_preorders').insert({ guest_id: guestId, visit_date: new Date().toISOString().slice(0,10), time_slot: order.time, tobacco_brand: order.type || 'Как всегда', flavor: order.flavor || 'Как всегда', strength: order.usual === 'yes' ? 'Как всегда' : order.strength, bowl_type: order.address, extras: notes, status: 'pending' });
+  }
+  const message = buildTelegramMessage({ name: guest.full_name, phone: guest.phone, ...order });
+  openTelegramRoute(order.address, message);
+  toast('Заявка отправлена');
+  ['grName','grPhone','goTime','goFlavor'].forEach(id=>$(id) && ($(id).value=''));
+  if($('goUsual')) $('goUsual').value='yes';
+  if($('goAddress')) $('goAddress').value='Малыгина 90';
+  if($('goStrength')) $('goStrength').value='Легкий';
+  if($('goType')) $('goType').value='Стандарт';
+  toggleGuestHookahFields();
 }
 
 async function connectAndLogin(){
@@ -336,24 +404,26 @@ async function connectAndLogin(){
   const login=$('adminLogin').value.trim();
   const password=$('adminPassword').value;
   if(!url || !key || !login || !password){toast('Введите логин и пароль', false);return}
+  const btn = $('btnConnectLogin');
+  const oldText = btn.textContent;
   try{
-    sbClient = window.supabase.createClient(url, key);
-    const health = await sbClient.from('guests').select('id').limit(1);
-    if(health.error) throw health.error;
+    btn.disabled = true; btn.textContent = 'Вход...';
+    sbClient = window.supabase.createClient(url, key, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } });
     const email = mapLoginToEmail(login);
     const authRes = await sbClient.auth.signInWithPassword({ email, password });
     if(authRes.error) throw authRes.error;
     sessionUser = authRes.data.user;
     try{localStorage.setItem('dg_url', url);localStorage.setItem('dg_key', key);localStorage.setItem('dg_login', login);localStorage.setItem('dg_password', password);}catch(e){}
-    $('loginStatus').innerHTML='<span class="ok">Вход выполнен. Загружаю гостей…</span>';
     $('loginView').classList.add('hidden');
     $('appView').classList.remove('hidden');
     $('sideStatus').textContent='Сотрудник: Друзья';
-    await refreshAll();
-    toast('Успешный вход');
+    await Promise.all([loadGuests(), loadPreorders()]);
+    showView('guest');
   }catch(e){
     $('loginStatus').innerHTML=`<span class="bad">${escapeHtml(e.message || 'Не удалось войти')}</span>`;
     toast(e.message || 'Не удалось войти', false);
+  } finally {
+    btn.disabled = false; btn.textContent = oldText;
   }
 }
 
@@ -367,9 +437,12 @@ async function restoreConfig(){
 }
 
 async function logout(){
-  try{ if(sbClient) await sbClient.auth.signOut(); }catch(e){}
+  $('appView').classList.add('hidden');
+  $('loginView').classList.remove('hidden');
   sessionUser=null; currentGuest=null; guestCache=[];
-  $('appView').classList.add('hidden'); $('loginView').classList.remove('hidden');
+  try{
+    if(sbClient) sbClient.auth.signOut({ scope: 'local' });
+  }catch(e){}
   toast('Вы вышли из системы');
 }
 
@@ -536,6 +609,7 @@ function bind(){
   $('btnSearchCard').addEventListener('click', searchGuest);
   $('btnReload').addEventListener('click', refreshAll);
   $('btnGuestRegister').addEventListener('click', guestSelfRegister);
+  if($('goUsual')) $('goUsual').addEventListener('change', toggleGuestHookahFields);
   $('btnCreateGuest').addEventListener('click', createGuest);
   $('btnCreatePreorder').addEventListener('click', createPreorder);
   $('btnAddHookah').addEventListener('click', ()=>addPref('hookah'));
@@ -551,6 +625,7 @@ restoreConfig();
 bind();
 setTheme('dark');
 setAuthMode('guest');
+toggleGuestHookahFields();
 bootstrapSession();
 </script>
 </body>
