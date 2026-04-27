@@ -67,8 +67,8 @@
           <div class="brand-sub">Единый вход сотрудников и CRM гостя</div>
         </div>
       </div>
-      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><div style="font-size:32px;font-weight:800;line-height:1.1">Надёжный вход</div><div class="actions"><button class="btn" id="btnShowStaff">Сотрудник</button><button class="btn btn-primary" id="btnShowGuest">Гость</button></div></div>
-      <div class="page-sub" style="margin-bottom:18px">Для сотрудников оставляем только логин и пароль. Технические поля скрыты из интерфейса.</div>
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><div style="font-size:32px;font-weight:800;line-height:1.1">Надёжный вход</div><div class="actions"><button class="btn btn-primary" id="btnShowGuest">Гость</button><button class="btn" id="btnShowStaff">Сотрудник</button></div></div>
+      
       <div id="staffLoginBlock">
       <div class="grid" style="margin-bottom:14px">
         <div class="field"><div class="label">Логин сотрудников</div><input id="adminLogin" class="input" placeholder="Друзья"></div>
@@ -77,7 +77,6 @@
       <div class="actions">
         <button class="btn btn-primary" id="btnConnectLogin">Подключить и войти</button>
         
-        <button class="btn" id="btnGuestRegOpen">Гость: регистрация</button>
         <button class="btn" id="btnToggleTheme">Сменить тему</button>
       </div>
       <div id="techConfig" class="hidden">
@@ -87,18 +86,15 @@
       <div id="loginStatus" class="page-sub"></div>
       </div>
       <div id="guestRegCard" class="card" style="margin-top:18px">
-        <div class="section-title">Анкета гостя</div>
-        <div class="small muted" style="margin-bottom:12px">Оставьте только имя и номер телефона. Этого достаточно, чтобы мы могли узнать вас при следующем визите.</div>
+        <div class="section-title">Гость</div>
+        
         <div class="grid">
           <div class="field"><div class="label">Имя</div><input id="grName" class="input"></div>
           <div class="field"><div class="label">Телефон</div><input id="grPhone" class="input"></div>
         </div>
         <div class="actions" style="margin-top:14px"><button class="btn btn-primary" id="btnGuestRegister">Сохранить анкету</button></div>
       </div>
-      <div class="card" style="margin-top:18px">
-        <div class="section-title">Как работает единый вход</div>
-        <div class="small muted">Технически Supabase входит по email и паролю. Поэтому логин <span class="mono">Друзья</span> на сайте будет автоматически переводиться в внутренний email <span class="mono">druzya@staff.local</span>. Пароль задаётся один раз в Supabase для этой общей учётной записи.</div>
-      </div>
+      
     </div>
   </div>
 
@@ -533,7 +529,6 @@ async function editNotes(){
 function bind(){
   $('btnConnectLogin').addEventListener('click', connectAndLogin);
   $('btnFillDemo').addEventListener('click', fillDemo);
-  $('btnGuestRegOpen').addEventListener('click', ()=>setAuthMode('guest'));
   $('btnShowStaff').addEventListener('click', ()=>setAuthMode('staff'));
   $('btnShowGuest').addEventListener('click', ()=>setAuthMode('guest'));
   $('btnToggleTheme').addEventListener('click', toggleTheme);
