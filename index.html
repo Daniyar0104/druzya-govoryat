@@ -54,7 +54,7 @@
     .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);font-size:12px;color:var(--muted)}
     .toast-wrap{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:10px;z-index:99}.toast{max-width:360px;padding:13px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
     .small{font-size:13px}
-    @media (max-width:980px){.shell{grid-template-columns:1fr}.sidebar{display:none}.grid-2,.grid-3,.stats,.hero{grid-template-columns:1fr}.main{padding:16px}.page-title{font-size:28px}}
+    @media (max-width:980px){.shell{grid-template-columns:1fr}.sidebar{display:none}.grid-2,.grid-3,.stats,.hero{grid-template-columns:1fr}.main{padding:14px}.page-title{font-size:28px}.login-wrap{padding:12px}.login-card{padding:18px;border-radius:20px}.actions{gap:8px}.actions .btn{flex:1 1 auto}.input,.textarea,.select,.btn{min-height:52px}.brand{align-items:flex-start}.brand-title{font-size:18px}} @media (max-width:640px){.login-card{width:100%}.actions{display:grid;grid-template-columns:1fr 1fr}.actions .btn{width:100%}.page-title{font-size:24px}.section-title{font-size:16px}}
   </style>
 </head>
 <body>
@@ -67,9 +67,9 @@
           <div class="brand-sub">Единый вход сотрудников и CRM гостя</div>
         </div>
       </div>
-      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><div style="font-size:32px;font-weight:800;line-height:1.1">Надёжный вход</div><div class="actions"><button class="btn btn-primary" id="btnShowGuest">Гость</button><button class="btn" id="btnShowStaff">Сотрудник</button></div></div>
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap"><div style="font-size:32px;font-weight:800;line-height:1.1">Надёжный вход</div><div class="actions"><button type="button" class="btn btn-primary" id="btnShowGuest">Гость</button><button type="button" class="btn" id="btnShowStaff">Сотрудник</button></div></div>
       
-      <div id="staffLoginBlock">
+      <div id="staffLoginBlock" class="hidden">
       <div class="grid" style="margin-bottom:14px">
         <div class="field"><div class="label">Логин сотрудников</div><input id="adminLogin" class="input" placeholder="Друзья"></div>
         <div class="field"><div class="label">Пароль</div><input id="adminPassword" type="password" class="input" placeholder="Введите пароль"></div>
@@ -272,15 +272,15 @@ function setAuthMode(mode){
   const btnStaff = $('btnShowStaff');
   const btnGuest = $('btnShowGuest');
   if(mode==='guest'){
-    staff.classList.add('hidden');
-    guest.classList.remove('hidden');
-    btnGuest.classList.add('btn-primary');
-    btnStaff.classList.remove('btn-primary');
+    if(staff) staff.classList.add('hidden');
+    if(guest) guest.classList.remove('hidden');
+    if(btnGuest){ btnGuest.classList.add('btn-primary'); btnGuest.setAttribute('aria-pressed','true'); }
+    if(btnStaff){ btnStaff.classList.remove('btn-primary'); btnStaff.setAttribute('aria-pressed','false'); }
   } else {
-    staff.classList.remove('hidden');
-    guest.classList.add('hidden');
-    btnStaff.classList.add('btn-primary');
-    btnGuest.classList.remove('btn-primary');
+    if(staff) staff.classList.remove('hidden');
+    if(guest) guest.classList.add('hidden');
+    if(btnStaff){ btnStaff.classList.add('btn-primary'); btnStaff.setAttribute('aria-pressed','true'); }
+    if(btnGuest){ btnGuest.classList.remove('btn-primary'); btnGuest.setAttribute('aria-pressed','false'); }
   }
 }
 
@@ -344,7 +344,7 @@ async function connectAndLogin(){
     const authRes = await sbClient.auth.signInWithPassword({ email, password });
     if(authRes.error) throw authRes.error;
     sessionUser = authRes.data.user;
-    try{localStorage.setItem('dg_url', url);localStorage.setItem('dg_key', key);localStorage.setItem('dg_login', login);}catch(e){}
+    try{localStorage.setItem('dg_url', url);localStorage.setItem('dg_key', key);localStorage.setItem('dg_login', login);localStorage.setItem('dg_password', password);}catch(e){}
     $('loginStatus').innerHTML='<span class="ok">Вход выполнен. Загружаю гостей…</span>';
     $('loginView').classList.add('hidden');
     $('appView').classList.remove('hidden');
@@ -359,10 +359,10 @@ async function connectAndLogin(){
 
 async function restoreConfig(){
   try{
-    const url=localStorage.getItem('dg_url')||'https://vvmtgpeudmcsddjpktme.supabase.co'; const key=localStorage.getItem('dg_key')||''; const login=localStorage.getItem('dg_login')||'Друзья';
+    const url=localStorage.getItem('dg_url')||'https://vvmtgpeudmcsddjpktme.supabase.co'; const key=localStorage.getItem('dg_key')||''; const login=localStorage.getItem('dg_login')||'Друзья'; const password=localStorage.getItem('dg_password')||'';
     if(url) $('cfgUrl').value=url;
     if(key) $('cfgKey').value=key;
-    $('adminLogin').value=login;
+    $('adminLogin').value=login; if($('adminPassword')) $('adminPassword').value=password;
   }catch(e){}
 }
 
