@@ -74,7 +74,7 @@ button{cursor:pointer;user-select:none}
 /* ═══════════════ FLOOR MAP ═══════════════ */
 .fm-bar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:9px}
 .fm-tabs{display:flex;background:var(--card);border-radius:999px;padding:3px;gap:2px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
-.fm-tab{padding:5px 13px;border-radius:999px;border:none;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap;flex:0 0 auto}
+.fm-tab{padding:5px 13px;border-radius:999px;border:none;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .12s;white-space:nowrap;flex:0 0 auto;position:relative;z-index:2;pointer-events:auto}
 .fm-tab.on{background:var(--teal);color:#fff}
 .zoom-ctl{display:flex;align-items:center;gap:2px;background:var(--card);border:1.5px solid var(--brd);border-radius:var(--rsm);padding:1px 4px}
 .z-btn{padding:3px 9px;font-size:16px;font-weight:700;border:none;background:none;cursor:pointer;color:var(--txt);line-height:1;border-radius:4px;transition:background .1s}
@@ -654,9 +654,12 @@ function renderBrTabs(){
   wrap.innerHTML='';
   Object.keys(BRANCHES).forEach(k=>{
     const btn=document.createElement('button');
+    btn.type='button';
     btn.className='fm-tab'+(fmSt.br===k?' on':'');
     btn.textContent=BRANCHES[k].name;
-    btn.onclick=()=>fmBr(k);
+    btn.title=BRANCHES[k].name;
+    btn.dataset.br=k;
+    btn.addEventListener('click',function(e){ e.preventDefault(); e.stopPropagation(); fmBr(this.dataset.br); });
     wrap.appendChild(btn);
   });
 }
@@ -728,6 +731,8 @@ function saveBr(){
     let key = base + '_' + Date.now().toString(36).slice(-4);
     while(BRANCHES[key]) key = base + '_' + Math.random().toString(36).slice(2,6);
     BRANCHES[key] = {name, w, h};
+    MEM.tables[key] = [];
+    saveTables(key);
     saveBranchRegistry();
     renderBrTabs();
     renderBranchManager();
@@ -812,6 +817,14 @@ function fmDraw(){
   inner.querySelectorAll('.fm-slot,.lm').forEach(e=>e.remove());
   // Landmarks
   getLMS(br).forEach(m=>{const el=document.createElement('div');el.className='lm'+(m.v?' v':'');el.textContent=m.l;el.style.cssText=`left:${m.x}px;top:${m.y}px;width:${m.w}px;height:${m.h}px`;inner.appendChild(el)});
+  // Empty hall hint
+  if(!tables.length){
+    const hint=document.createElement('div');
+    hint.className='lm';
+    hint.style.cssText='left:50%;top:50%;transform:translate(-50%,-50%);width:420px;max-width:80%;height:auto;padding:18px 22px;text-align:center;color:rgba(255,255,255,.55);background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.12);border-radius:14px;pointer-events:none';
+    hint.innerHTML='<div style="font-size:16px;font-weight:800;margin-bottom:6px;color:rgba(255,255,255,.78)">Пустой зал</div><div style="font-size:12px;line-height:1.45">Нажмите <b>Редактор</b>, затем кликните по пустому полю, чтобы добавить первый стол и начать строить карту зала.</div>';
+    inner.appendChild(hint);
+  }
   // Tables
   tables.forEach(t=>{
     const st=stOf(t.id,br,dt),cnt=getBK(br,dt).filter(r=>r.tid===t.id).length,lbl=lblOf(t.id,br,dt);
@@ -976,7 +989,7 @@ function closeBP(){$('bpanel').classList.add('h');$('rpWrap').style.display='non
 // ──────────────────────────────────────────────────────────────────────────────
 // BRANCH / SUB VIEW SWITCH
 // ──────────────────────────────────────────────────────────────────────────────
-function fmBr(br){fmSt.br=br;fmSt.sel=null;closeBP();edClear();renderBrTabs();applyZoom();fmRedraw()}
+function fmBr(br){ if(!BRANCHES[br]) return; fmSt.br=br; fmSt.sel=null; closeBP(); edClear(); renderBrTabs(); applyZoom(); fmRedraw(); }
 function fmSV(v){fmSt.sub=v;$('fmMapView').classList.toggle('h',v!=='map');$('fmListView').classList.toggle('h',v!=='list');$('vtMap').disabled=v==='map';$('vtList').disabled=v==='list';fmRedraw()}
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -1182,6 +1195,15 @@ const _k=getKey();if($('stKy'))$('stKy').value=_k;
 // Clean up old layout keys from previous versions
 ['dg_tbl_m','dg_tbl_5','dg_tbl5_m','dg_tbl5_5'].forEach(k=>localStorage.removeItem(k));
 restoreSession();
+const _brTabs=document.getElementById('brTabs');
+if(_brTabs){
+  _brTabs.addEventListener('click',function(e){
+    const btn=e.target.closest('[data-br]');
+    if(!btn) return;
+    e.preventDefault();
+    fmBr(btn.dataset.br);
+  });
+}
 // Mouse wheel zoom on floor map
 document.addEventListener('wheel',function(e){
   const outer=$('fmOuter');
