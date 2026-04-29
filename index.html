@@ -98,6 +98,12 @@ button{cursor:pointer;user-select:none}
 
 /* Landmarks */
 .lm{position:absolute;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;letter-spacing:.5px;color:rgba(255,255,255,.28);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:7px;pointer-events:none;z-index:1;user-select:none}
+.lm.editable{pointer-events:auto;z-index:3;color:rgba(255,255,255,.75);background:rgba(255,255,255,.06);cursor:grab}
+.lm.editable:active{cursor:grabbing}
+.lm.sel{box-shadow:0 0 0 2px rgba(79,152,163,.8)}
+.lm-icon{font-size:14px;margin-right:6px}
+.lm-list-item{padding:8px 10px;background:var(--panel);border:1px solid var(--line);border-radius:8px}
+.lm-mini{font-size:11px;color:var(--muted)}
 .lm.v{writing-mode:vertical-rl}
 
 /* Table slot */
@@ -295,6 +301,7 @@ button{cursor:pointer;user-select:none}
         </div>
         <button class="btn btn-sm" onclick="fmFit()" style="font-size:12px;padding:5px 10px" title="Подогнать под экран">⊞ Вписать</button>
         <button class="btn btn-sm" id="btnEd" onclick="fmToggleEd()" style="font-size:12px">✎ Редактор</button>
+        <button class="btn btn-sm" id="btnLm" onclick="toggleLmPanel()" style="font-size:12px">📍 Метки</button>
         <div class="leg">
           <div class="leg-i"><div class="leg-d" style="background:var(--grn)"></div>Свободен</div>
           <div class="leg-i"><div class="leg-d" style="background:var(--teal)"></div>Брони</div>
@@ -353,6 +360,18 @@ button{cursor:pointer;user-select:none}
                   </div>
                 </div>
                 <button class="btn btn-d btn-sm" onclick="edDel()" style="width:100%">🗑 Удалить стол</button>
+              </div>
+            </div>
+            <div id="lmpanel" class="rp h">
+              <div class="rp-hdr"><div><div class="rp-ttl">Метки зала</div><div class="rp-sub">Бар, туалет, кухня, вход</div></div><button class="btn btn-xs" onclick="closeLmPanel()">✕</button></div>
+              <div class="rp-body">
+                <div class="g" style="gap:8px;margin-bottom:10px">
+                  <button class="btn btn-sm" onclick="addLm('Бар')">+ Бар</button>
+                  <button class="btn btn-sm" onclick="addLm('Туалет')">+ Туалет</button>
+                  <button class="btn btn-sm" onclick="addLm('Кухня')">+ Кухня</button>
+                  <button class="btn btn-sm" onclick="addLm('Вход')">+ Вход</button>
+                </div>
+                <div id="lmList" class="g" style="gap:8px"></div>
               </div>
             </div>
           </div>
@@ -574,6 +593,7 @@ const MEM={
   bk:{},       // bk[br+'_'+dt] = array
   bank:null,   // guest bank
   crm:[],      // supabase guests
+  lms:{}       // custom landmarks per branch
 };
 
 function getTables(br){
@@ -647,7 +667,16 @@ function saveBranchRegistry(){
 }
 function getBrName(br){return BRANCHES[br]?BRANCHES[br].name:br}
 function getBrCanvas(br){return BRANCHES[br]?{w:BRANCHES[br].w,h:BRANCHES[br].h}:{w:1200,h:700}}
-function getLMS(br){return BUILTIN_LMS[br]||[]}
+function getLMS(br){
+  const key='dg_lms_'+br;
+  if(!MEM.lms[br]){
+    const saved=localStorage.getItem(key);
+    MEM.lms[br]=saved?JSON.parse(saved):(BUILTIN_LMS[br]?BUILTIN_LMS[br].map(x=>({...x})):[]);
+  }
+  return MEM.lms[br];
+}
+function saveLMS(br){ localStorage.setItem('dg_lms_'+br, JSON.stringify(MEM.lms[br]||[])); }
+function lmIcon(lbl){ return ({'Бар':'🍸','Туалет':'🚻','Кухня':'🍽','Вход':'🚪'})[lbl] || '📍'; }
 
 function renderBrTabs(){
   const wrap=document.getElementById('brTabs');if(!wrap)return;
@@ -756,8 +785,51 @@ function deleteBr(){
   fillBranchForm('5');
   toast('Зал удалён');
 }
-const fmSt={br:'5',sub:'map',sel:null,edit:false,zi:6};
+const fmSt={br:'5',sub:'map',sel:null,edit:false,zi:6,lmSel:null,lmOpen:false};
 
+function toggleLmPanel(){
+  fmSt.lmOpen=!fmSt.lmOpen;
+  if(fmSt.lmOpen){$('lmpanel').classList.remove('h');$('rpWrap').style.display='';renderLmList();}
+  else closeLmPanel();
+}
+function closeLmPanel(){ fmSt.lmOpen=false; fmSt.lmSel=null; $('lmpanel').classList.add('h'); if($('epanel').classList.contains('h')&&$('bpanel').classList.contains('h')) $('rpWrap').style.display='none'; fmDraw(); }
+function addLm(lbl){
+  const {w,h}=getBrCanvas(fmSt.br);
+  const arr=getLMS(fmSt.br);
+  const item={id:'lm'+Date.now()+Math.random().toString(36).slice(2,5),l:lbl,x:Math.max(20,Math.round(w/2)-50),y:Math.max(20,Math.round(h/2)-25),w:lbl==='Вход'?70:110,h:lbl==='Вход'?56:58,v:false};
+  arr.push(item); saveLMS(fmSt.br); fmSt.lmSel=item.id; renderLmList(); fmDraw();
+}
+function renderLmList(){
+  const box=$('lmList'); if(!box) return;
+  const arr=getLMS(fmSt.br); box.innerHTML='';
+  if(!arr.length){ box.innerHTML='<div style="font-size:12px;color:var(--muted)">Метки не добавлены.</div>'; return; }
+  arr.forEach(m=>{
+    const row=document.createElement('div'); row.className='lm-list-item';
+    row.innerHTML=`<div class="rowb" style="margin-bottom:6px"><div style="font-size:12px;font-weight:700">${lmIcon(m.l)} ${esc(m.l)}</div><div class="row" style="gap:5px"><button class="btn btn-xs" onclick="selLm('${m.id}')">Выбрать</button><button class="btn btn-xs btn-d" onclick="delLm('${m.id}')">Удалить</button></div></div>
+    <div class="lm-mini">X: ${m.x} · Y: ${m.y} · ${m.w}×${m.h}</div>`;
+    box.appendChild(row);
+  });
+}
+function selLm(id){ fmSt.lmSel=id; fmDraw(); }
+function delLm(id){ MEM.lms[fmSt.br]=getLMS(fmSt.br).filter(x=>x.id!==id); if(fmSt.lmSel===id) fmSt.lmSel=null; saveLMS(fmSt.br); renderLmList(); fmDraw(); }
+function startLmDrag(e,m){
+  if(!fmSt.edit) return;
+  e.preventDefault(); e.stopPropagation();
+  fmSt.lmSel=m.id; renderLmList();
+  const z=ZOOM_S[fmSt.zi], sx=e.clientX, sy=e.clientY, ox=m.x, oy=m.y;
+  function mv(ev){ const dx=(ev.clientX-sx)/z, dy=(ev.clientY-sy)/z; m.x=Math.max(0,Math.round(ox+dx)); m.y=Math.max(0,Math.round(oy+dy)); saveLMS(fmSt.br); fmDraw(); }
+  function up(){ document.removeEventListener('mousemove',mv); document.removeEventListener('mouseup',up); renderLmList(); }
+  document.addEventListener('mousemove',mv,{passive:true}); document.addEventListener('mouseup',up);
+}
+function startLmTouchDrag(e,m){
+  if(!fmSt.edit) return;
+  e.preventDefault(); e.stopPropagation();
+  fmSt.lmSel=m.id; renderLmList();
+  const z=ZOOM_S[fmSt.zi], t0=e.touches[0], sx=t0.clientX, sy=t0.clientY, ox=m.x, oy=m.y;
+  function mv(ev){ const tc=ev.touches[0]; const dx=(tc.clientX-sx)/z, dy=(tc.clientY-sy)/z; m.x=Math.max(0,Math.round(ox+dx)); m.y=Math.max(0,Math.round(oy+dy)); saveLMS(fmSt.br); fmDraw(); }
+  function up(){ e.target.removeEventListener('touchmove',mv); e.target.removeEventListener('touchend',up); renderLmList(); }
+  e.target.addEventListener('touchmove',mv,{passive:false}); e.target.addEventListener('touchend',up);
+}
 function applyZoom(){
   const z=ZOOM_S[fmSt.zi],br=fmSt.br;
   const {w:cw,h:ch}=getBrCanvas(br);
@@ -816,7 +888,19 @@ function fmDraw(){
   // Remove only table slots and landmarks (keep grid bg)
   inner.querySelectorAll('.fm-slot,.lm').forEach(e=>e.remove());
   // Landmarks
-  getLMS(br).forEach(m=>{const el=document.createElement('div');el.className='lm'+(m.v?' v':'');el.textContent=m.l;el.style.cssText=`left:${m.x}px;top:${m.y}px;width:${m.w}px;height:${m.h}px`;inner.appendChild(el)});
+  getLMS(br).forEach(m=>{
+    const el=document.createElement('div');
+    el.className='lm'+(m.v?' v':'')+(fmSt.edit?' editable':'')+(fmSt.lmSel===m.id?' sel':'');
+    el.style.cssText=`left:${m.x}px;top:${m.y}px;width:${m.w}px;height:${m.h}px`;
+    el.dataset.lmid=m.id||'';
+    el.innerHTML=`<span class="lm-icon">${lmIcon(m.l)}</span><span>${esc(m.l)}</span>`;
+    if(fmSt.edit){
+      el.addEventListener('mousedown',ev=>startLmDrag(ev,m));
+      el.addEventListener('touchstart',ev=>startLmTouchDrag(ev,m),{passive:false});
+      el.addEventListener('click',ev=>{ev.stopPropagation();fmSt.lmSel=m.id;renderLmList();fmDraw();});
+    }
+    inner.appendChild(el)
+  });
   // Empty hall hint
   if(!tables.length){
     const hint=document.createElement('div');
@@ -926,6 +1010,7 @@ function touchStart(e,tbl){
 // ──────────────────────────────────────────────────────────────────────────────
 function fmToggleEd(){
   fmSt.edit=!fmSt.edit;
+  if(fmSt.edit && fmSt.lmOpen){ $('lmpanel').classList.remove('h'); $('rpWrap').style.display=''; renderLmList(); }
   $('btnEd').textContent=fmSt.edit?'✓ Готово':'✎ Редактор';
   $('btnEd').classList.toggle('btn-p',fmSt.edit);
   $('edBanner').classList.toggle('h',!fmSt.edit);
@@ -933,7 +1018,7 @@ function fmToggleEd(){
   fmSt.sel=null;fmDraw();
 }
 function fmSaveLay(){saveTables(fmSt.br);toast('Схема сохранена ✓')}
-function fmReset(){MEM.tables[fmSt.br]=DEF_TABLES[fmSt.br].map(t=>({...t,c:{...t.c}}));['dg_lay6_m','dg_lay6_5','dg_tbl_m','dg_tbl_5','dg_tbl5_m','dg_tbl5_5'].forEach(k=>localStorage.removeItem(k));saveTables(fmSt.br);fmSt.sel=null;edClear();fmDraw();toast('Схема сброшена')}
+function fmReset(){MEM.tables[fmSt.br]=(DEF_TABLES[fmSt.br]||[]).map(t=>({...t,c:{...t.c}}));MEM.lms[fmSt.br]=(BUILTIN_LMS[fmSt.br]?BUILTIN_LMS[fmSt.br].map(x=>({...x})):[]);localStorage.removeItem('dg_lms_'+fmSt.br);['dg_lay6_m','dg_lay6_5','dg_tbl_m','dg_tbl_5','dg_tbl5_m','dg_tbl5_5'].forEach(k=>localStorage.removeItem(k));saveTables(fmSt.br);saveLMS(fmSt.br);fmSt.sel=null;fmSt.lmSel=null;edClear();if(fmSt.lmOpen)renderLmList();fmDraw();toast('Схема сброшена')}
 
 function addTableAt(x,y){
   const tables=getTables(fmSt.br);
@@ -989,7 +1074,7 @@ function closeBP(){$('bpanel').classList.add('h');$('rpWrap').style.display='non
 // ──────────────────────────────────────────────────────────────────────────────
 // BRANCH / SUB VIEW SWITCH
 // ──────────────────────────────────────────────────────────────────────────────
-function fmBr(br){ if(!BRANCHES[br]) return; fmSt.br=br; fmSt.sel=null; closeBP(); edClear(); renderBrTabs(); applyZoom(); fmRedraw(); }
+function fmBr(br){ if(!BRANCHES[br]) return; fmSt.br=br; fmSt.sel=null; fmSt.lmSel=null; closeBP(); edClear(); renderBrTabs(); if(fmSt.lmOpen){$('lmpanel').classList.remove('h');$('rpWrap').style.display='';renderLmList();} applyZoom(); fmRedraw(); }
 function fmSV(v){fmSt.sub=v;$('fmMapView').classList.toggle('h',v!=='map');$('fmListView').classList.toggle('h',v!=='list');$('vtMap').disabled=v==='map';$('vtList').disabled=v==='list';fmRedraw()}
 
 // ──────────────────────────────────────────────────────────────────────────────
