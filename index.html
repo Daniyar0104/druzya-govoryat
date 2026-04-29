@@ -750,9 +750,8 @@ function fmRedraw(){if(fmSt.sub==='map')fmDraw();else fmRenderList()}
 function fmDraw(){
   const br=fmSt.br,dt=fd(),z=ZOOM_S[fmSt.zi];
   const tables=getTables(br);
-  const {w:CW,h:CH}=getBrCanvas(br);
-  inner.style.width=CW+'px';inner.style.height=CH+'px';
   const inner=$('fmInner');
+  if(!inner)return;
   // Remove only table slots and landmarks (keep grid bg)
   inner.querySelectorAll('.fm-slot,.lm').forEach(e=>e.remove());
   // Landmarks
