@@ -81,6 +81,85 @@ img{display:block;max-width:100%}
 .toast{padding:10px 20px;border-radius:999px;font-size:14px;font-weight:600;background:#222;color:#fff;border:1px solid #444;animation:fadeup .25s ease;max-width:90vw;text-align:center}
 .toast.bad{background:#4a1e24;border-color:#c94a59;color:#f88}
 @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* ═══ FLOOR MAP BRONI ═══ */
+.fm-wrap{position:relative;background:rgba(255,255,255,0.025);border:1px solid var(--line);border-radius:16px;overflow:visible;margin-bottom:16px}
+.fm-wrap.malygin{width:100%;aspect-ratio:2.6/1}
+.fm-wrap.let50{width:100%;aspect-ratio:2.2/1}
+.fm-landmark{position:absolute;background:rgba(255,255,255,0.035);border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.5px;pointer-events:none}
+.fm-landmark.v{writing-mode:vertical-rl;text-orientation:mixed}
+.fm-slot{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:pointer;user-select:none}
+.fm-slot:hover .fm-card{transform:scale(1.06)}
+.ch-row{display:flex;gap:3px;padding:2px 0;justify-content:center}
+.ch-mid{display:flex;align-items:center;gap:3px;flex:1}
+.ch{background:rgba(255,255,255,0.08);border-radius:50%;flex-shrink:0}
+.ch.h{width:17px;height:9px}
+.ch.v{width:9px;height:17px}
+.fm-card{background:var(--card);border:1px solid var(--border);border-radius:12px;flex:1;min-height:36px;position:relative;overflow:hidden;transition:transform 150ms ease}
+.fm-card .strip{position:absolute;top:0;left:0;right:0;height:5px;border-radius:12px 12px 0 0}
+.fm-num{position:absolute;top:8px;left:7px;font-size:14px;font-weight:800;line-height:1}
+.fm-cnt{position:absolute;top:6px;right:6px;background:rgba(255,255,255,0.1);border-radius:7px;padding:1px 5px;font-size:9px;font-weight:700;color:var(--muted)}
+.fm-tl{position:absolute;bottom:5px;left:6px;display:flex;align-items:center;gap:3px;font-size:9px;color:var(--muted)}
+.fm-dot{width:5px;height:5px;border-radius:50%}
+.s-free .strip{background:var(--green)}.s-free .fm-dot{background:var(--green)}
+.s-booked .strip{background:var(--red)}.s-booked .fm-dot{background:var(--red)}
+.s-soon .strip{background:#f5a623}.s-soon .fm-dot{background:#f5a623}
+.s-partial .strip{background:var(--teal)}.s-partial .fm-dot{background:var(--teal)}
+/* Branch tabs */
+.fm-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.fm-btabs{display:flex;background:var(--card);border-radius:999px;padding:3px;gap:2px}
+.fm-btab{padding:5px 14px;border-radius:999px;background:none;border:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:all 140ms;font-family:inherit}
+.fm-btab.active{background:var(--teal);color:#fff}
+/* Layout */
+.broni-grid{display:grid;grid-template-columns:1fr 290px;gap:14px;align-items:start}
+@media(max-width:860px){.broni-grid{grid-template-columns:1fr}}
+/* Panel */
+.bp-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;position:sticky;top:16px}
+.bp-hdr{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.bp-title{font-size:14px;font-weight:700}
+.bp-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.bp-body{padding:12px 14px;max-height:460px;overflow-y:auto}
+.bp-foot{padding:10px 14px;border-top:1px solid var(--line)}
+/* Booking cards in panel */
+.bkc{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin-bottom:8px;cursor:pointer;transition:background 130ms}
+.bkc:hover{background:rgba(255,255,255,0.04)}
+.bkc-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.bkc-name{font-size:13px;font-weight:600}
+.bk-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px}
+.bk-active{background:rgba(109,170,69,.2);color:var(--green)}
+.bk-upcoming{background:rgba(79,152,163,.2);color:var(--teal)}
+.bk-done{background:rgba(255,255,255,.06);color:var(--muted)}
+.bkc-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--muted)}
+.bkc-tags{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
+.bkc-tag{padding:2px 7px;border-radius:8px;font-size:10px;font-weight:500;background:rgba(245,166,35,.12);color:#f5a623}
+/* Legend */
+.fm-legend{display:flex;gap:12px;align-items:center;margin-left:auto}
+.fm-li{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
+.fm-ld{width:6px;height:6px;border-radius:50%}
+/* Modal */
+.bm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9998;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.bm-overlay.hidden{display:none!important}
+.bm-box{background:var(--panel);border:1px solid var(--border);border-radius:20px;width:100%;max-width:500px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.bm-hdr{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.bm-ttl{font-size:16px;font-weight:800}
+.bm-body{overflow-y:auto;padding:16px 20px;flex:1}
+.bm-foot{padding:12px 20px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;align-items:center;flex-shrink:0}
+.bm-section{margin-bottom:14px}
+.bm-stitle{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:8px}
+/* Guest autofill */
+.gpc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 12px;margin-top:8px;display:none}
+.gpc.visible{display:block}
+.gpc-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.gpc-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#a855f7);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
+.gpc-nm{font-size:12px;font-weight:700}
+.gpc-sb{font-size:10px;color:var(--muted)}
+.gpc-row{display:flex;gap:6px;font-size:11px;margin-bottom:3px}
+.gpc-lbl{color:var(--faint);min-width:100px;flex-shrink:0}
+.gpc-val{color:var(--text)}
+/* View toggle */
+.vtabs{display:flex;gap:6px;margin-bottom:14px}
+.vtab{padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;background:var(--card);border:1.5px solid var(--border);color:var(--muted);cursor:pointer;transition:all 130ms;font-family:inherit}
+.vtab.active{background:var(--teal);border-color:var(--teal);color:#fff}
+
 /* Table display */
 .table-list{width:100%;border-collapse:collapse}
 .table-list th{text-align:left;font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;padding:8px 10px;border-bottom:1.5px solid var(--line)}
@@ -302,49 +381,105 @@ img{display:block;max-width:100%}
 
     <!-- BOOKINGS -->
     <div id="view-bookings" class="hidden">
-      <div class="row-between" style="margin-bottom:18px">
+      <div class="row-between" style="margin-bottom:16px">
         <div class="page-title">Брони</div>
-        <div class="row">
-          <select id="bLoc" class="select" style="width:160px" onchange="renderBookings()">
-            <option>Малыгина</option>
-            <option>Новин</option>
-          </select>
-          <input id="bDate" type="date" class="input" style="width:160px" onchange="renderBookings()">
+        <div class="row" style="gap:8px">
+          <input id="bDate" type="date" class="input" style="width:155px" onchange="fmRender()">
+          <button class="btn btn-primary btn-sm" onclick="openBm(null,null)">+ Бронь</button>
         </div>
       </div>
-      <div class="grid-2">
-        <div class="card">
-          <div class="section-title">Столы</div>
-          <div id="bookingTableGrid" class="table-grid"></div>
+      <div class="fm-hdr">
+        <div class="fm-btabs">
+          <button class="fm-btab active" id="fmTabMalygin" onclick="fmBranch('malygin')">Малыгина</button>
+          <button class="fm-btab" id="fmTabLet50" onclick="fmBranch('let50')">50 лет</button>
         </div>
-        <div class="card">
-          <div class="section-title">Новая бронь</div>
-          <div class="grid" style="gap:12px">
-            <div class="field"><div class="label">Стол</div><input id="bTable" class="input" readonly placeholder="Нажмите на стол"></div>
-            <div class="field"><div class="label">Телефон гостя</div>
-              <div class="row" style="gap:8px">
-                <input id="bPhone" class="input" style="flex:1" type="tel">
-                <button class="btn btn-sm" onclick="findGuestForBooking()">Найти</button>
+        <div class="vtabs" style="margin-bottom:0">
+          <button class="vtab active" id="vtMap" onclick="fmSubview('map')">Карта</button>
+          <button class="vtab" id="vtList" onclick="fmSubview('list')">Список</button>
+        </div>
+        <div class="fm-legend">
+          <div class="fm-li"><div class="fm-ld" style="background:var(--green)"></div>Свободен</div>
+          <div class="fm-li"><div class="fm-ld" style="background:var(--teal)"></div>Есть брони</div>
+          <div class="fm-li"><div class="fm-ld" style="background:var(--red)"></div>Занят сейчас</div>
+        </div>
+      </div>
+      <div id="fmMapView">
+        <div class="broni-grid">
+          <div id="fmContainer"></div>
+          <div class="bp-panel" id="fmPanel" style="display:none">
+            <div class="bp-hdr">
+              <div>
+                <div class="bp-title" id="fmPTitle">Стол</div>
+                <div class="bp-sub" id="fmPSub"></div>
               </div>
+              <button class="btn btn-sm" onclick="fmClosePanel()" style="padding:4px 10px">✕</button>
             </div>
-            <div class="field"><div class="label">Имя</div><input id="bName" class="input"></div>
-            <div class="field"><div class="label">Время</div><input id="bTime" class="input" placeholder="19:00"></div>
-            <div class="field"><div class="label">Характеристика</div><input id="bTraits" class="input" placeholder="Предпочтения гостя"></div>
-            <div class="field"><div class="label">Комментарий</div><input id="bComment" class="input"></div>
-          </div>
-          <div class="row" style="margin-top:14px">
-            <button class="btn btn-primary" onclick="saveBooking()">Сохранить бронь</button>
-            <button class="btn btn-sm btn-danger" onclick="deleteBooking()">Удалить бронь</button>
+            <div class="bp-body" id="fmPBody"></div>
+            <div class="bp-foot">
+              <button class="btn btn-primary" style="width:100%" onclick="openBm(null,fmSt.tableId)">+ Добавить бронь на этот стол</button>
+            </div>
           </div>
         </div>
       </div>
-      <div class="card" style="margin-top:16px">
-        <div class="section-title">Все брони на день</div>
-        <div id="bookingDayList" style="margin-top:8px"></div>
+      <div id="fmListView" style="display:none">
+        <div style="margin-bottom:10px"><input class="input" id="fmSearch" placeholder="Поиск по имени, телефону..." oninput="fmRenderList()" style="max-width:360px"></div>
+        <div id="fmListBody"></div>
       </div>
     </div>
 
-    <!-- PREORDERS -->
+    <!-- BOOKING MODAL -->
+    <div class="bm-overlay hidden" id="bmOvl">
+      <div class="bm-box">
+        <div class="bm-hdr"><span class="bm-ttl" id="bmTtl">Новая бронь</span><button class="btn btn-sm" onclick="closeBm()">✕</button></div>
+        <div class="bm-body">
+          <div class="bm-section">
+            <div class="bm-stitle">Гость</div>
+            <div class="grid-2" style="gap:10px;margin-bottom:8px">
+              <div class="field"><div class="label">Имя</div><input id="bmNm" class="input" placeholder="Имя гостя" oninput="bmFill()"></div>
+              <div class="field"><div class="label">Телефон</div><input id="bmPh" class="input" type="tel" placeholder="+7"></div>
+            </div>
+            <div class="gpc" id="bmGPC">
+              <div class="gpc-hdr">
+                <div class="gpc-av" id="bmAv">А</div>
+                <div><div class="gpc-nm" id="bmGN"></div><div class="gpc-sb" id="bmGS"></div></div>
+                <span style="margin-left:auto;font-size:9px;font-weight:700;background:rgba(245,166,35,.15);color:#f5a623;padding:2px 7px;border-radius:8px">Prime Hill</span>
+              </div>
+              <div id="bmGRows"></div>
+            </div>
+          </div>
+          <div class="bm-section">
+            <div class="bm-stitle">Бронирование</div>
+            <div class="grid-2" style="gap:10px;margin-bottom:10px">
+              <div class="field"><div class="label">Стол</div><select id="bmTbl" class="select"></select></div>
+              <div class="field"><div class="label">Дата</div><input id="bmDt" class="input" type="date"></div>
+            </div>
+            <div class="grid-2" style="gap:10px;margin-bottom:10px">
+              <div class="field"><div class="label">Начало</div><input id="bmFr" class="input" type="time" value="19:00"></div>
+              <div class="field"><div class="label">Конец</div><input id="bmTo" class="input" type="time" value="22:00"></div>
+            </div>
+            <div class="grid-2" style="gap:10px">
+              <div class="field"><div class="label">Гостей</div><input id="bmGst" class="input" type="number" min="1" max="30" value="2"></div>
+              <div class="field"><div class="label">Статус</div><select id="bmSt" class="select"><option value="confirmed">Подтверждена</option><option value="vip">VIP</option><option value="waiting">Ожидание</option></select></div>
+            </div>
+          </div>
+          <div class="bm-section">
+            <div class="bm-stitle">Предпочтения</div>
+            <div class="grid-2" style="gap:10px;margin-bottom:10px">
+              <div class="field"><div class="label">Кальян</div><input id="bmHk" class="input" placeholder="Любимый кальян..."></div>
+              <div class="field"><div class="label">Блюда</div><input id="bmDs" class="input" placeholder="Топ блюда..."></div>
+            </div>
+            <div class="field"><div class="label">Заметки</div><textarea id="bmNo" class="textarea" placeholder="Пожелания, повод..."></textarea></div>
+          </div>
+        </div>
+        <div class="bm-foot">
+          <button class="btn btn-sm btn-danger" id="bmDelBtn" style="margin-right:auto;display:none" onclick="bmDel()">Удалить</button>
+          <button class="btn btn-sm" onclick="closeBm()">Отмена</button>
+          <button class="btn btn-sm btn-primary" onclick="bmSave()">Сохранить</button>
+        </div>
+      </div>
+    </div>
+
+        <!-- PREORDERS -->
     <div id="view-preorders" class="hidden">
       <div class="row-between" style="margin-bottom:18px">
         <div class="page-title">Заявки на кальян</div>
@@ -527,7 +662,7 @@ function openApp(){
   loadGuests();
   loadPreorders();
   if(!$('bDate').value) $('bDate').value = today();
-  renderBookings();
+  if($('bDate')&&!$('bDate').value) $('bDate').value=today();
 }
 
 async function doLogout(){
@@ -677,78 +812,340 @@ async function loadPreorders(){
   </table>`;
 }
 
-// ── Bookings ──────────────────────────────────────────────────────────────────
-function bookingsKey(){ return `dg_b_${$('bLoc').value}_${$('bDate').value||today()}`; }
-function loadBookingsDay(){ try{ return JSON.parse(localStorage.getItem(bookingsKey())||'[]'); }catch(e){ return []; } }
-function saveBookingsDay(rows){ try{ localStorage.setItem(bookingsKey(), JSON.stringify(rows)); }catch(e){} }
 
-function renderBookings(){
-  const loc  = $('bLoc').value;
-  const rows = loadBookingsDay();
-  const busyMap = {};
-  rows.forEach(r=>{ busyMap[r.table]=r; });
+// ══════════════════════════════════════════════
+// FLOOR MAP — BRONI MODULE
+// ══════════════════════════════════════════════
 
-  const n = TABLES[loc]||12;
-  const grid = $('bookingTableGrid');
-  grid.innerHTML = '';
-  for(let i=1;i<=n;i++){
-    const name=`Стол ${i}`;
-    const busy= !!busyMap[name];
-    const sel = bookingSelected===name;
-    const el = document.createElement('div');
-    el.className = 'table-cell' + (sel?' selected':busy?' busy':'');
-    el.innerHTML = `<div class="table-num">${i}</div><div class="table-status">${sel?'Выбран':busy?busyMap[name].name||'Занят':'Свободен'}</div>`;
-    el.onclick = ()=>{ bookingSelected=name; $('bTable').value=name; if(busyMap[name]){ $('bPhone').value=busyMap[name].phone||''; $('bName').value=busyMap[name].name||''; $('bTime').value=busyMap[name].time||''; $('bTraits').value=busyMap[name].traits||''; $('bComment').value=busyMap[name].comment||''; } renderBookings(); };
-    grid.appendChild(el);
+const FM_FLOORS = {
+  malygin: {
+    name: 'Малыгина',
+    tables: [
+      {id:'M11',num:'11',x:14.5,y:4,  w:9.5, h:21, port:true },
+      {id:'M1', num:'1', x:37,  y:2,  w:9,   h:24, port:true },
+      {id:'M2', num:'2', x:58,  y:9,  w:13,  h:12, port:false},
+      {id:'M3', num:'3', x:73,  y:9,  w:13,  h:12, port:false},
+      {id:'M10',num:'10',x:0,   y:54, w:11.5,h:14, port:false},
+      {id:'M9', num:'9', x:13,  y:55, w:9.5, h:12, port:false},
+      {id:'M8', num:'8', x:24,  y:55, w:9.5, h:12, port:false},
+      {id:'M7', num:'7', x:35,  y:55, w:9.5, h:12, port:false},
+      {id:'M6', num:'6', x:46,  y:55, w:9.5, h:12, port:false},
+      {id:'M5', num:'5', x:61,  y:55, w:9.5, h:12, port:false},
+      {id:'M14',num:'14',x:72,  y:55, w:9.5, h:12, port:false},
+      {id:'M4', num:'4', x:83,  y:55, w:9.5, h:12, port:false},
+    ],
+    marks: [
+      {l:'Кухня',x:0,  y:4,  w:13.5,h:33, v:false},
+      {l:'Вход', x:94.5,y:3.5,w:5,  h:20, v:true },
+    ]
+  },
+  let50: {
+    name: '50 лет',
+    tables: [
+      {id:'L12',num:'12',x:2, y:2, w:12,h:13,port:false},
+      {id:'L11',num:'11',x:16,y:2, w:12,h:13,port:false},
+      {id:'L10',num:'10',x:30,y:2, w:12,h:13,port:false},
+      {id:'L09',num:'09',x:44,y:2, w:12,h:13,port:false},
+      {id:'L08',num:'08',x:65,y:2, w:12,h:13,port:false},
+      {id:'L04',num:'04',x:16,y:21,w:12,h:13,port:false},
+      {id:'L05',num:'05',x:30,y:21,w:12,h:13,port:false},
+      {id:'L06',num:'06',x:44,y:21,w:12,h:13,port:false},
+      {id:'L07',num:'07',x:65,y:18,w:12,h:23,port:true },
+      {id:'L03',num:'03',x:2, y:38,w:12,h:20,port:true },
+      {id:'L02',num:'02',x:16,y:58,w:12,h:13,port:false},
+      {id:'L01',num:'01',x:65,y:79,w:12,h:13,port:false},
+    ],
+    marks: [
+      {l:'Бар',  x:63, y:40,w:9,  h:38,v:false},
+      {l:'Окно', x:-0.5,y:35,w:5.5,h:20,v:true },
+      {l:'Вход', x:-0.5,y:73,w:5.5,h:12,v:true },
+    ]
   }
+};
 
-  const list = $('bookingDayList');
-  if(!rows.length){ list.innerHTML='<div style="color:var(--muted);font-size:14px">Броней на этот день нет.</div>'; return; }
-  const sorted = [...rows].sort((a,b)=>(a.time||'').localeCompare(b.time||''));
-  list.innerHTML = `<table class="table-list">
-    <thead><tr><th>Стол</th><th>Имя</th><th>Телефон</th><th>Время</th><th>Характеристика</th><th>Комментарий</th></tr></thead>
-    <tbody>${sorted.map(r=>`<tr>
-      <td style="font-weight:700">${esc(r.table)}</td>
-      <td>${esc(r.name||'—')}</td>
-      <td style="color:var(--muted)">${esc(r.phone||'—')}</td>
-      <td>${esc(r.time||'—')}</td>
-      <td style="color:var(--muted)">${esc(r.traits||'')}</td>
-      <td style="color:var(--muted)">${esc(r.comment||'')}</td>
-    </tr>`).join('')}</tbody>
-  </table>`;
+const fmSt = { branch:'malygin', subview:'map', tableId:null, editId:null };
+
+function fmKey(branch, date){ return 'dg_b2_'+branch+'_'+(date||fmDate()); }
+function fmDate(){ return $('bDate') ? ($('bDate').value || today()) : today(); }
+function fmLoad(branch, date){ try{ return JSON.parse(localStorage.getItem(fmKey(branch,date))||'[]'); }catch(e){ return []; } }
+function fmSave(branch, date, rows){ try{ localStorage.setItem(fmKey(branch,date), JSON.stringify(rows)); }catch(e){} }
+function fmGenId(){ return 'b'+Math.random().toString(36).slice(2,9); }
+
+function fmStatus(tableId, branch, date){
+  const rows = fmLoad(branch, date);
+  const bks = rows.filter(r=>r.tableId===tableId);
+  if(!bks.length) return 'free';
+  const ds = date || fmDate(), td = today();
+  if(ds !== td) return 'partial';
+  const now = new Date(), mins = now.getHours()*60+now.getMinutes();
+  const active = bks.some(b=>{ const [fh,fm]=b.from.split(':').map(Number),[th,tm]=b.to.split(':').map(Number); return mins>=fh*60+fm && mins<th*60+tm; });
+  if(active) return 'booked';
+  const soon = bks.some(b=>{ const [fh,fm]=b.from.split(':').map(Number),fr=fh*60+fm; return fr>mins && fr-mins<=90; });
+  return soon ? 'soon' : 'partial';
 }
 
-function saveBooking(){
-  const table = $('bTable').value.trim();
-  const name  = $('bName').value.trim();
-  if(!table){ toast('Выберите стол', false); return; }
-  if(!name)  { toast('Введите имя гостя', false); return; }
-  const rows = loadBookingsDay().filter(r=>r.table!==table);
-  rows.push({ table, phone:$('bPhone').value.trim(), name, time:$('bTime').value.trim(), traits:$('bTraits').value.trim(), comment:$('bComment').value.trim() });
-  saveBookingsDay(rows);
-  toast('Бронь сохранена');
-  renderBookings();
+function fmLabel(tableId, branch, date){
+  const rows = fmLoad(branch, date);
+  const bks = rows.filter(r=>r.tableId===tableId);
+  if(!bks.length) return null;
+  const ds = date || fmDate(), td = today();
+  if(ds !== td) return bks.length+'бр';
+  const now = new Date(), mins = now.getHours()*60+now.getMinutes();
+  for(const b of bks){
+    const [fh,fm]=b.from.split(':').map(Number),[th,tm]=b.to.split(':').map(Number);
+    const fr=fh*60+fm, to=th*60+tm;
+    if(mins>=fr && mins<to){ const el=mins-fr; return el<60 ? el+'м' : Math.floor(el/60)+'ч'+(el%60?''+el%60+'м':''); }
+  }
+  const up = bks.filter(b=>{ const [fh,fm]=b.from.split(':').map(Number); return fh*60+fm>mins; }).sort((a,b)=>a.from.localeCompare(b.from));
+  return up.length ? up[0].from : bks.length+'бр';
 }
 
-function deleteBooking(){
-  const table = $('bTable').value.trim();
-  if(!table){ toast('Выберите стол', false); return; }
-  saveBookingsDay(loadBookingsDay().filter(r=>r.table!==table));
-  bookingSelected=''; $('bTable').value=''; $('bPhone').value=''; $('bName').value=''; $('bTime').value=''; $('bTraits').value=''; $('bComment').value='';
+function fmRender(){
+  if(fmSt.subview==='map') fmDrawMap();
+  else fmRenderList();
+  if(fmSt.tableId) fmOpenPanel(fmSt.tableId);
+}
+
+function fmDrawMap(){
+  const fl = FM_FLOORS[fmSt.branch];
+  const c = $('fmContainer');
+  c.innerHTML = '';
+  const map = document.createElement('div');
+  map.className = 'fm-wrap '+fmSt.branch;
+
+  fl.marks.forEach(m=>{
+    const el=document.createElement('div');
+    el.className='fm-landmark'+(m.v?' v':'');
+    el.textContent=m.l;
+    el.style.cssText=`left:${m.x}%;top:${m.y}%;width:${m.w}%;height:${m.h}%`;
+    map.appendChild(el);
+  });
+
+  fl.tables.forEach(t=>{
+    const st = fmStatus(t.id, fmSt.branch, fmDate());
+    const lbl = fmLabel(t.id, fmSt.branch, fmDate());
+    const cnt = fmLoad(fmSt.branch, fmDate()).filter(r=>r.tableId===t.id).length;
+    const topCh = t.port ? 2 : 3;
+    const sideCh = t.port ? 2 : 1;
+
+    const slot = document.createElement('div');
+    slot.className='fm-slot';
+    slot.style.cssText=`left:${t.x}%;top:${t.y}%;width:${t.w}%;height:${t.h}%`;
+
+    const topRow=document.createElement('div'); topRow.className='ch-row';
+    for(let i=0;i<topCh;i++){const c=document.createElement('div');c.className='ch h';topRow.appendChild(c);}
+
+    const mid=document.createElement('div'); mid.className='ch-mid';
+    const lc=document.createElement('div'); lc.className='ch-mid'; lc.style.flexDirection='column'; lc.style.gap='3px';
+    for(let i=0;i<sideCh;i++){const c=document.createElement('div');c.className='ch v';lc.appendChild(c);}
+    const rc=document.createElement('div'); rc.className='ch-mid'; rc.style.flexDirection='column'; rc.style.gap='3px';
+    for(let i=0;i<sideCh;i++){const c=document.createElement('div');c.className='ch v';rc.appendChild(c);}
+
+    const card=document.createElement('div'); card.className='fm-card s-'+st;
+    const strip=document.createElement('div'); strip.className='strip'; card.appendChild(strip);
+    const num=document.createElement('span'); num.className='fm-num'; num.textContent=t.num; card.appendChild(num);
+    if(cnt>0){const b=document.createElement('span');b.className='fm-cnt';b.textContent=cnt;card.appendChild(b);}
+    if(lbl && st!=='free'){const tl=document.createElement('div');tl.className='fm-tl';const dot=document.createElement('div');dot.className='fm-dot';tl.appendChild(dot);tl.appendChild(document.createTextNode(lbl));card.appendChild(tl);}
+
+    mid.appendChild(lc); mid.appendChild(card); mid.appendChild(rc);
+
+    const botRow=document.createElement('div'); botRow.className='ch-row';
+    for(let i=0;i<topCh;i++){const c=document.createElement('div');c.className='ch h';botRow.appendChild(c);}
+
+    slot.appendChild(topRow); slot.appendChild(mid); slot.appendChild(botRow);
+    slot.addEventListener('click',()=>fmOpenPanel(t.id));
+    map.appendChild(slot);
+  });
+
+  c.appendChild(map);
+}
+
+function fmOpenPanel(tableId){
+  fmSt.tableId=tableId;
+  const fl=FM_FLOORS[fmSt.branch];
+  const td=fl.tables.find(t=>t.id===tableId);
+  const bks=fmLoad(fmSt.branch,fmDate()).filter(r=>r.tableId===tableId).sort((a,b)=>a.from.localeCompare(b.from));
+  $('fmPTitle').textContent='Стол '+td.num+' — '+fl.name;
+  $('fmPSub').textContent=bks.length+' брон'+(bks.length===1?'ь':bks.length<5?'и':'ей')+' на '+$('bDate').value;
+  const body=$('fmPBody');
+  if(!bks.length){ body.innerHTML='<div class="broni-empty">Броней нет. Нажмите кнопку ниже чтобы добавить.</div>'; }
+  else{
+    body.innerHTML='';
+    const now=new Date(),mins=now.getHours()*60+now.getMinutes(),td2=today();
+    bks.forEach(b=>{
+      const card=document.createElement('div'); card.className='bkc';
+      const [fh,fm]=b.from.split(':').map(Number),[th,tm]=b.to.split(':').map(Number);
+      const fr=fh*60+fm,to=th*60+tm;
+      let cls='bk-upcoming',lbl=b.from+'–'+b.to;
+      if(fmDate()===td2){
+        if(mins>=fr&&mins<to){cls='bk-active';lbl='● Сейчас';}
+        else if(to<=mins){cls='bk-done';}
+      }
+      const stLbl={confirmed:'Подтверждена',vip:'VIP',waiting:'Ожидание'}[b.status]||'';
+      card.innerHTML=`<div class="bkc-hdr"><span class="bkc-name">${esc(b.name)}</span><span class="bk-badge ${cls}">${lbl}</span></div>
+      <div class="bkc-meta"><span>👥 ${b.guests||1}</span><span>📞 ${esc(b.phone||'—')}</span>${stLbl?`<span style="color:var(--teal)">${stLbl}</span>`:''}</div>
+      ${b.hookah||b.dishes?`<div class="bkc-tags">${b.hookah?`<span class="bkc-tag">🌿 ${esc(b.hookah)}</span>`:''}${b.dishes?`<span class="bkc-tag" style="background:rgba(79,152,163,.12);color:var(--teal)">${esc(b.dishes)}</span>`:''}</div>`:''}
+      ${b.notes?`<div style="margin-top:4px;font-size:11px;color:var(--muted);font-style:italic">"${esc(b.notes)}"</div>`:''}`;
+      card.addEventListener('click',()=>openBm(b.id,tableId));
+      body.appendChild(card);
+    });
+  }
+  $('fmPanel').style.display='';
+}
+
+function fmClosePanel(){ $('fmPanel').style.display='none'; fmSt.tableId=null; }
+
+function fmBranch(branch){
+  fmSt.branch=branch; fmSt.tableId=null;
+  $('fmTabMalygin').classList.toggle('active',branch==='malygin');
+  $('fmTabLet50').classList.toggle('active',branch==='let50');
+  fmClosePanel(); fmRender();
+}
+
+function fmSubview(v){
+  fmSt.subview=v;
+  $('fmMapView').style.display=v==='map'?'':'none';
+  $('fmListView').style.display=v==='list'?'':'none';
+  $('vtMap').classList.toggle('active',v==='map');
+  $('vtList').classList.toggle('active',v==='list');
+  fmRender();
+}
+
+function fmRenderList(){
+  const q=($('fmSearch')?$('fmSearch').value:'').toLowerCase();
+  const date=fmDate();
+  const all=['malygin','let50'].flatMap(br=>fmLoad(br,date).map(b=>({...b,branch:br})));
+  const filtered=q?all.filter(b=>b.name.toLowerCase().includes(q)||b.phone.includes(q)||b.tableId.toLowerCase().includes(q)):all;
+  filtered.sort((a,b)=>a.from.localeCompare(b.from));
+  const body=$('fmListBody');
+  if(!filtered.length){body.innerHTML='<div style="color:var(--muted);padding:24px;font-size:14px">Броней нет на этот день.</div>';return;}
+  const now=new Date(),mins=now.getHours()*60+now.getMinutes(),td2=today();
+  body.innerHTML=`<table class="table-list"><thead><tr><th>Стол</th><th>Гость</th><th>Телефон</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>
+  ${filtered.map(b=>{
+    const fl=FM_FLOORS[b.branch],tbl=fl.tables.find(t=>t.id===b.tableId);
+    const tname=tbl?fl.name+' · '+tbl.num:b.tableId;
+    const [fh,fm]=b.from.split(':').map(Number),[th,tm]=b.to.split(':').map(Number);
+    const fr=fh*60+fm,to2=th*60+tm;
+    let chip='<span style="color:var(--teal)">▲ '+b.from+'</span>';
+    if(date===td2){if(mins>=fr&&mins<to2)chip='<span style="color:var(--green)">● Сейчас</span>';else if(to2<=mins)chip='<span style="color:var(--faint)">Завершена</span>';}
+    const stCl={confirmed:'badge-teal',vip:'',waiting:''}[b.status]||'';
+    return `<tr>
+      <td style="font-weight:700;color:var(--teal)">${esc(tname)}</td>
+      <td style="font-weight:600">${esc(b.name)}</td>
+      <td style="color:var(--muted)">${esc(b.phone||'—')}</td>
+      <td>${esc(b.from)}–${esc(b.to)}</td>
+      <td style="color:var(--muted)">${b.guests||1}</td>
+      <td style="font-size:12px">${esc(b.hookah||'—')}</td>
+      <td>${chip}</td>
+      <td><button class="btn btn-sm" onclick="openBm('${b.id}','${b.tableId}')" style="padding:3px 9px;font-size:12px">✎</button></td>
+    </tr>`;
+  }).join('')}
+  </tbody></table>`;
+}
+
+// ─── BOOKING MODAL ────────────────────────────────────────────────────────────
+function openBm(bookingId, tableId){
+  fmSt.editId=bookingId;
+  // Build table select
+  const sel=$('bmTbl'); sel.innerHTML='';
+  ['malygin','let50'].forEach(br=>{
+    const fl=FM_FLOORS[br],g=document.createElement('optgroup');
+    g.label=fl.name;
+    fl.tables.forEach(t=>{
+      const o=document.createElement('option'); o.value=t.id; o.textContent='Стол '+t.num;
+      if(t.id===(tableId||fmSt.tableId)) o.selected=true;
+      g.appendChild(o);
+    });
+    sel.appendChild(g);
+  });
+  $('bmDt').value=fmDate();
+  if(bookingId){
+    const branch=['malygin','let50'].find(br=>fmLoad(br,fmDate()).find(b=>b.id===bookingId))||fmSt.branch;
+    const b=fmLoad(branch,fmDate()).find(b=>b.id===bookingId);
+    if(b){
+      $('bmTtl').textContent='Редактировать бронь';
+      $('bmDelBtn').style.display='';
+      $('bmNm').value=b.name||'';$('bmPh').value=b.phone||'';$('bmDt').value=b.date||fmDate();
+      const o2=$('bmTbl').querySelector(`option[value="${b.tableId}"]`); if(o2) o2.selected=true;
+      $('bmFr').value=b.from||'19:00';$('bmTo').value=b.to||'22:00';
+      $('bmGst').value=b.guests||2;$('bmSt').value=b.status||'confirmed';
+      $('bmHk').value=b.hookah||'';$('bmDs').value=b.dishes||'';$('bmNo').value=b.notes||'';
+      const g2=guestCache.find(x=>x.phone&&x.phone.replace(/\D/g,'').includes((b.phone||'').replace(/\D/g,'').slice(-7)));
+      if(g2) bmShowGuest(g2); else bmHideGuest();
+    }
+  } else {
+    $('bmTtl').textContent='Новая бронь';
+    $('bmDelBtn').style.display='none';
+    $('bmNm').value='';$('bmPh').value='';$('bmFr').value='19:00';$('bmTo').value='22:00';
+    $('bmGst').value=2;$('bmSt').value='confirmed';$('bmHk').value='';$('bmDs').value='';$('bmNo').value='';
+    bmHideGuest();
+  }
+  $('bmOvl').classList.remove('hidden');
+}
+
+function closeBm(){ $('bmOvl').classList.add('hidden'); }
+
+function bmFill(){
+  const q=$('bmNm').value.trim();
+  if(q.length<2){bmHideGuest();return;}
+  const g=guestCache.find(x=>x.full_name&&x.full_name.toLowerCase().includes(q.toLowerCase()));
+  if(g) bmShowGuest(g); else bmHideGuest();
+}
+
+function bmShowGuest(g){
+  const card=$('bmGPC'); card.classList.add('visible');
+  const ini=(g.full_name||'?').split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase();
+  $('bmAv').textContent=ini;
+  $('bmGN').textContent=g.full_name||'';
+  $('bmGS').textContent=(g.hookah_brand||'')+(g.notes?' · '+g.notes:'');
+  const rows=$('bmGRows'); rows.innerHTML='';
+  if(g.hookah_brand){rows.innerHTML+=`<div class="gpc-row"><span class="gpc-lbl">Любимый кальян</span><span class="gpc-val">${esc(g.hookah_brand)}</span></div>`;}
+  if(g.notes){rows.innerHTML+=`<div class="gpc-row"><span class="gpc-lbl">Заметки</span><span class="gpc-val" style="color:#f5a623">${esc(g.notes)}</span></div>`;}
+  if(g.hookah_brand && !$('bmHk').value) $('bmHk').value=g.hookah_brand;
+  if(g.phone && !$('bmPh').value) $('bmPh').value=g.phone;
+}
+
+function bmHideGuest(){ $('bmGPC').classList.remove('visible'); }
+
+function bmSave(){
+  const name=$('bmNm').value.trim();
+  if(!name){toast('Введите имя гостя',false);return;}
+  const tableId=$('bmTbl').value;
+  const date=$('bmDt').value||fmDate();
+  const branch=['M11','M1','M2','M3','M10','M9','M8','M7','M6','M5','M14','M4'].includes(tableId)?'malygin':'let50';
+  const bk={
+    id:fmSt.editId||fmGenId(), tableId, branch, date,
+    name, phone:$('bmPh').value.trim(),
+    from:$('bmFr').value, to:$('bmTo').value,
+    guests:parseInt($('bmGst').value)||2, status:$('bmSt').value,
+    hookah:$('bmHk').value.trim(), dishes:$('bmDs').value.trim(), notes:$('bmNo').value.trim()
+  };
+  let rows=fmLoad(branch,date);
+  if(fmSt.editId){ rows=rows.filter(r=>r.id!==fmSt.editId); }
+  rows.push(bk);
+  fmSave(branch,date,rows);
+  toast('Бронь сохранена ✓');
+  closeBm(); fmRender();
+  if(fmSt.tableId) fmOpenPanel(fmSt.tableId);
+}
+
+function bmDel(){
+  if(!fmSt.editId) return;
+  ['malygin','let50'].forEach(br=>{
+    const date=$('bmDt').value||fmDate();
+    fmSave(br,date,fmLoad(br,date).filter(r=>r.id!==fmSt.editId));
+  });
   toast('Бронь удалена');
-  renderBookings();
+  closeBm(); fmRender();
+  if(fmSt.tableId) fmOpenPanel(fmSt.tableId);
 }
 
-function findGuestForBooking(){
-  const phone = $('bPhone').value.trim();
-  if(!phone){ toast('Введите телефон', false); return; }
-  const norm = phone.replace(/\D/g,'');
-  const g = guestCache.find(x=>x.phone&&x.phone.replace(/\D/g,'').includes(norm.slice(-7)));
-  if(!g){ toast('Гость не найден в CRM', false); return; }
-  $('bName').value   = g.full_name||'';
-  $('bTraits').value = [g.hookah_brand, g.hookah_strength, g.notes].filter(Boolean).join(' · ');
-  toast('Гость найден');
-}
+// Backward-compat stubs for old bookings functions
+function renderBookings(){}
+function saveBooking(){}
+function deleteBooking(){}
+function findGuestForBooking(){}
+
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 const savedKey = localStorage.getItem('dg_key')||'';
