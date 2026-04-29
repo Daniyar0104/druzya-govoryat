@@ -10,445 +10,363 @@
   --bg:#141413;--panel:#1e1d1b;--card:#252422;--border:#333;--line:#2a2927;
   --text:#d4d3d1;--muted:#888;--faint:#555;
   --teal:#4f98a3;--teal-dark:#1a626b;
-  --red:#c94a59;--green:#6daa45;
+  --red:#c94a59;--green:#6daa45;--orange:#d4853a;
   --font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --r:14px;--r-sm:8px;
 }
 [data-theme="light"]{
-  --bg:#f5f4f1;--panel:#fbfaf8;--card:#fff;--border:#ddd;--line:#e8e6e2;
+  --bg:#f0efec;--panel:#fbfaf8;--card:#fff;--border:#ddd;--line:#e8e6e2;
   --text:#1e1d1a;--muted:#666;--faint:#bbb;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth;touch-action:manipulation}
+html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16px;line-height:1.5;min-height:100dvh}
 button,input,select,textarea{font:inherit;color:inherit;background:none;border:none;outline:none}
-button{cursor:pointer;touch-action:manipulation;user-select:none;-webkit-user-select:none}
-img{display:block;max-width:100%}
+button{cursor:pointer;user-select:none}
 .hidden{display:none!important}
 /* Layout */
-.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
 .login-outer{display:flex;align-items:center;justify-content:center;min-height:100dvh;padding:16px}
 .login-box{width:100%;max-width:480px;background:var(--panel);border:1px solid var(--border);border-radius:24px;padding:28px 24px}
 .shell{display:grid;grid-template-columns:220px 1fr;min-height:100dvh}
-.sidebar{background:var(--panel);border-right:1px solid var(--line);padding:20px 16px;display:flex;flex-direction:column;gap:8px}
-.main{padding:24px;overflow-y:auto}
-/* Brand */
+.sidebar{background:var(--panel);border-right:1px solid var(--line);padding:20px 16px;display:flex;flex-direction:column;gap:6px}
+.main{padding:24px;overflow-y:auto;height:100vh}
 .brand{display:flex;align-items:center;gap:12px;margin-bottom:20px}
 .brand-mark{font-size:28px;line-height:1}
 .brand-title{font-size:16px;font-weight:700}
 .brand-sub{font-size:12px;color:var(--muted)}
-/* Nav */
 .nav-item{display:block;width:100%;text-align:left;padding:10px 12px;border-radius:var(--r-sm);color:var(--text);font-size:14px;font-weight:500;background:none;border:none;cursor:pointer;transition:background .15s}
 .nav-item:hover{background:var(--card)}
 .nav-item.active{background:var(--teal-dark);color:#fff}
-/* Tabs */
+.nav-sep{height:1px;background:var(--line);margin:6px 0}
 .tab-row{display:flex;gap:8px;margin-bottom:20px}
-.tab{padding:9px 20px;border-radius:999px;font-size:15px;font-weight:600;border:1.5px solid var(--border);color:var(--muted);background:none;cursor:pointer;transition:all .15s;touch-action:manipulation}
+.tab{padding:9px 20px;border-radius:999px;font-size:15px;font-weight:600;border:1.5px solid var(--border);color:var(--muted);background:none;cursor:pointer;transition:all .15s}
 .tab.active{background:var(--teal);color:#fff;border-color:var(--teal)}
-/* Inputs */
 .field{display:flex;flex-direction:column;gap:5px}
 .label{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600}
 .input,.select,.textarea{width:100%;padding:11px 14px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);font-size:15px;transition:border-color .15s}
 .input:focus,.select:focus,.textarea:focus{border-color:var(--teal)}
 .textarea{resize:vertical;min-height:80px}
-.select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
-/* Buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:var(--r-sm);font-size:15px;font-weight:600;border:1.5px solid var(--border);color:var(--text);background:var(--card);cursor:pointer;transition:all .15s;touch-action:manipulation;white-space:nowrap}
+.select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:var(--r-sm);font-size:15px;font-weight:600;border:1.5px solid var(--border);color:var(--text);background:var(--card);cursor:pointer;transition:all .15s;white-space:nowrap}
 .btn:hover{border-color:var(--teal);color:var(--teal)}
-.btn:active{opacity:.75}
 .btn-primary{background:var(--teal);color:#fff;border-color:var(--teal)}
 .btn-primary:hover{background:var(--teal-dark);border-color:var(--teal-dark);color:#fff}
 .btn-danger{border-color:var(--red);color:var(--red)}
 .btn-sm{padding:7px 14px;font-size:13px}
-/* Cards */
 .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px}
-.card+.card,.card+.section,.section+.card{margin-top:16px}
 .section-title{font-size:17px;font-weight:700;margin-bottom:12px}
 .page-title{font-size:26px;font-weight:800;margin-bottom:6px}
 .page-sub{font-size:14px;color:var(--muted);margin-bottom:18px}
-/* Grid */
 .grid{display:grid;gap:12px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-/* Flex */
 .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .row-between{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-/* Badge */
 .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
 .badge-teal{background:rgba(79,152,163,.18);color:var(--teal)}
 .badge-green{background:rgba(109,170,69,.18);color:var(--green)}
-/* Toast */
 .toast-box{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
 .toast{padding:10px 20px;border-radius:999px;font-size:14px;font-weight:600;background:#222;color:#fff;border:1px solid #444;animation:fadeup .25s ease;max-width:90vw;text-align:center}
 .toast.bad{background:#4a1e24;border-color:#c94a59;color:#f88}
 @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-/* ═══ FLOOR MAP BRONI ═══ */
-.fm-wrap{position:relative;background:rgba(255,255,255,0.025);border:1px solid var(--line);border-radius:16px;overflow:visible;margin-bottom:16px}
-.fm-wrap.malygin{width:100%;aspect-ratio:2.6/1}
-.fm-wrap.let50{width:100%;aspect-ratio:2.2/1}
-.fm-landmark{position:absolute;background:rgba(255,255,255,0.035);border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.5px;pointer-events:none}
-.fm-landmark.v{writing-mode:vertical-rl;text-orientation:mixed}
-.fm-slot{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:pointer;user-select:none}
-.fm-slot:hover .fm-card{transform:scale(1.06)}
-.ch-row{display:flex;gap:3px;padding:2px 0;justify-content:center}
-.ch-mid{display:flex;align-items:center;gap:3px;flex:1}
-.ch{background:rgba(255,255,255,0.08);border-radius:50%;flex-shrink:0}
-.ch.h{width:17px;height:9px}
-.ch.v{width:9px;height:17px}
-.fm-card{background:var(--card);border:1px solid var(--border);border-radius:12px;flex:1;min-height:36px;position:relative;overflow:hidden;transition:transform 150ms ease}
-.fm-card .strip{position:absolute;top:0;left:0;right:0;height:5px;border-radius:12px 12px 0 0}
-.fm-num{position:absolute;top:8px;left:7px;font-size:14px;font-weight:800;line-height:1}
-.fm-cnt{position:absolute;top:6px;right:6px;background:rgba(255,255,255,0.1);border-radius:7px;padding:1px 5px;font-size:9px;font-weight:700;color:var(--muted)}
-.fm-tl{position:absolute;bottom:5px;left:6px;display:flex;align-items:center;gap:3px;font-size:9px;color:var(--muted)}
-.fm-dot{width:5px;height:5px;border-radius:50%}
-.s-free .strip{background:var(--green)}.s-free .fm-dot{background:var(--green)}
-.s-booked .strip{background:var(--red)}.s-booked .fm-dot{background:var(--red)}
-.s-soon .strip{background:#f5a623}.s-soon .fm-dot{background:#f5a623}
-.s-partial .strip{background:var(--teal)}.s-partial .fm-dot{background:var(--teal)}
-/* Branch tabs */
-.fm-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.fm-btabs{display:flex;background:var(--card);border-radius:999px;padding:3px;gap:2px}
-.fm-btab{padding:5px 14px;border-radius:999px;background:none;border:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:all 140ms;font-family:inherit}
-.fm-btab.active{background:var(--teal);color:#fff}
-/* Layout */
-.broni-grid{display:grid;grid-template-columns:1fr 290px;gap:14px;align-items:start}
-@media(max-width:860px){.broni-grid{grid-template-columns:1fr}}
-/* Panel */
-.bp-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;position:sticky;top:16px}
-.bp-hdr{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
-.bp-title{font-size:14px;font-weight:700}
-.bp-sub{font-size:11px;color:var(--muted);margin-top:1px}
-.bp-body{padding:12px 14px;max-height:460px;overflow-y:auto}
-.bp-foot{padding:10px 14px;border-top:1px solid var(--line)}
-/* Booking cards in panel */
-.bkc{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin-bottom:8px;cursor:pointer;transition:background 130ms}
-.bkc:hover{background:rgba(255,255,255,0.04)}
-.bkc-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
-.bkc-name{font-size:13px;font-weight:600}
-.bk-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px}
-.bk-active{background:rgba(109,170,69,.2);color:var(--green)}
-.bk-upcoming{background:rgba(79,152,163,.2);color:var(--teal)}
-.bk-done{background:rgba(255,255,255,.06);color:var(--muted)}
-.bkc-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--muted)}
-.bkc-tags{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
-.bkc-tag{padding:2px 7px;border-radius:8px;font-size:10px;font-weight:500;background:rgba(245,166,35,.12);color:#f5a623}
-/* Legend */
-.fm-legend{display:flex;gap:12px;align-items:center;margin-left:auto}
-.fm-li{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
-.fm-ld{width:6px;height:6px;border-radius:50%}
-/* Modal */
-.bm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:9998;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
-.bm-overlay.hidden{display:none!important}
-.bm-box{background:var(--panel);border:1px solid var(--border);border-radius:20px;width:100%;max-width:500px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.6)}
-.bm-hdr{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.bm-ttl{font-size:16px;font-weight:800}
-.bm-body{overflow-y:auto;padding:16px 20px;flex:1}
-.bm-foot{padding:12px 20px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;align-items:center;flex-shrink:0}
-.bm-section{margin-bottom:14px}
-.bm-stitle{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:8px}
-/* Guest autofill */
-.gpc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 12px;margin-top:8px;display:none}
-.gpc.visible{display:block}
-.gpc-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.gpc-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#a855f7);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0}
-.gpc-nm{font-size:12px;font-weight:700}
-.gpc-sb{font-size:10px;color:var(--muted)}
-.gpc-row{display:flex;gap:6px;font-size:11px;margin-bottom:3px}
-.gpc-lbl{color:var(--faint);min-width:100px;flex-shrink:0}
-.gpc-val{color:var(--text)}
-/* View toggle */
-.vtabs{display:flex;gap:6px;margin-bottom:14px}
-.vtab{padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;background:var(--card);border:1.5px solid var(--border);color:var(--muted);cursor:pointer;transition:all 130ms;font-family:inherit}
-.vtab.active{background:var(--teal);border-color:var(--teal);color:#fff}
-
-/* Table display */
 .table-list{width:100%;border-collapse:collapse}
 .table-list th{text-align:left;font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;padding:8px 10px;border-bottom:1.5px solid var(--line)}
 .table-list td{padding:10px 10px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
 .table-list tr:last-child td{border-bottom:none}
-/* Table grid */
-.table-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin-top:12px}
-.table-cell{padding:14px 10px;border-radius:var(--r-sm);border:1.5px solid var(--border);background:var(--panel);cursor:pointer;text-align:center;transition:all .15s}
-.table-cell:hover{border-color:var(--teal)}
-.table-cell.busy{border-color:var(--teal);background:rgba(79,152,163,.12)}
-.table-cell.selected{border-color:var(--teal);background:var(--teal);color:#fff}
-.table-num{font-size:18px;font-weight:800}
-.table-status{font-size:11px;margin-top:3px;color:var(--muted)}
-.table-cell.busy .table-status{color:var(--teal)}
-.table-cell.selected .table-status{color:rgba(255,255,255,.8)}
-/* Hookah toggle */
 .toggle-row{display:flex;gap:0;border-radius:var(--r-sm);overflow:hidden;border:1.5px solid var(--border);width:fit-content}
-.toggle-btn{padding:9px 22px;font-size:15px;font-weight:600;border:none;background:none;cursor:pointer;color:var(--muted);transition:all .15s;touch-action:manipulation}
+.toggle-btn{padding:9px 22px;font-size:15px;font-weight:600;border:none;background:none;cursor:pointer;color:var(--muted);transition:all .15s}
 .toggle-btn.active{background:var(--teal);color:#fff}
+/* ━━━━━ FLOOR MAP ━━━━━ */
+.fm-outer{position:relative}
+.fm-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.fm-btabs{display:flex;background:var(--card);border-radius:999px;padding:3px;gap:2px}
+.fm-btab{padding:6px 16px;border-radius:999px;border:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:all 150ms;font-family:inherit}
+.fm-btab.active{background:var(--teal);color:#fff}
+.fm-vtabs{display:flex;gap:6px}
+.fm-vtab{padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;background:var(--card);border:1.5px solid var(--border);color:var(--muted);cursor:pointer;transition:all 140ms;font-family:inherit}
+.fm-vtab.active{background:var(--teal);border-color:var(--teal);color:#fff}
+.fm-legend{display:flex;gap:14px;align-items:center;margin-left:auto;flex-wrap:wrap}
+.fm-li{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
+.fm-ld{width:8px;height:8px;border-radius:50%}
+/* Floor canvas */
+.fm-canvas{position:relative;border-radius:16px;overflow:hidden;user-select:none;background:#111218;border:2px solid rgba(255,255,255,0.08)}
+.fm-canvas.malygin{width:100%;aspect-ratio:2.6/1}
+.fm-canvas.let50{width:100%;aspect-ratio:2.3/1}
+.fm-canvas.edit-mode{cursor:crosshair}
+/* Grid lines on floor */
+.fm-canvas::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:5% 5%;pointer-events:none}
+/* Landmark labels */
+.fm-lm{position:absolute;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;letter-spacing:.5px;color:rgba(255,255,255,0.35);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;pointer-events:none;z-index:1}
+.fm-lm.vert{writing-mode:vertical-rl}
+/* TABLE SLOT */
+.fm-tslot{position:absolute;z-index:5;display:flex;flex-direction:column;align-items:center;transition:filter 150ms}
+.fm-tslot:not(.editing):hover{filter:brightness(1.3)}
+.fm-tslot.dragging{z-index:20;opacity:.85;pointer-events:none}
+.fm-tslot.editing{cursor:grab}
+.fm-tslot.editing:active{cursor:grabbing}
+/* Chair rows/cols */
+.ch-row{display:flex;gap:4px;justify-content:center;padding:3px 0}
+.ch-col{display:flex;flex-direction:column;gap:4px;padding:0 3px;align-self:center}
+.ch-mid{display:flex;align-items:center}
+.ch{background:rgba(255,255,255,0.18);border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,0.08)}
+.ch.h{width:20px;height:11px}
+.ch.v{width:11px;height:20px}
+/* Table CARD */
+.fm-tc{flex:1;border-radius:12px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.5);transition:transform 120ms;border:2px solid rgba(255,255,255,0.12)}
+.fm-tc:not(.editing):hover{transform:scale(1.05)}
+.fm-tc.editing{transform:none !important}
+/* Status variants */
+.fm-tc.s-free{background:#1e2a1a;border-color:rgba(109,170,69,0.5)}
+.fm-tc.s-partial{background:#1a2228;border-color:rgba(79,152,163,0.5)}
+.fm-tc.s-soon{background:#2a2110;border-color:rgba(212,133,58,0.5)}
+.fm-tc.s-booked{background:#2a1518;border-color:rgba(201,74,89,0.5)}
+.fm-tc .st-strip{position:absolute;top:0;left:0;right:0;height:6px}
+.fm-tc.s-free .st-strip{background:var(--green)}
+.fm-tc.s-partial .st-strip{background:var(--teal)}
+.fm-tc.s-soon .st-strip{background:var(--orange)}
+.fm-tc.s-booked .st-strip{background:var(--red)}
+.fm-tn{position:absolute;top:11px;left:9px;font-size:16px;font-weight:900;line-height:1;color:rgba(255,255,255,0.9)}
+.fm-tcnt{position:absolute;top:8px;right:7px;background:rgba(255,255,255,0.15);border-radius:8px;padding:2px 6px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.7)}
+.fm-ttl{position:absolute;bottom:6px;left:8px;display:flex;align-items:center;gap:3px;font-size:10px;color:rgba(255,255,255,0.5)}
+.fm-tdot{width:5px;height:5px;border-radius:50%}
+.fm-tc.s-free .fm-tdot{background:var(--green)}
+.fm-tc.s-partial .fm-tdot{background:var(--teal)}
+.fm-tc.s-soon .fm-tdot{background:var(--orange)}
+.fm-tc.s-booked .fm-tdot{background:var(--red)}
+/* Edit mode badge */
+.edit-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:8px;background:rgba(212,133,58,0.15);border:1.5px solid var(--orange);color:var(--orange);font-size:12px;font-weight:700}
+/* Right panel */
+.broni-layout{display:grid;grid-template-columns:1fr 300px;gap:14px;align-items:start}
+@media(max-width:900px){.broni-layout{grid-template-columns:1fr}}
+.bp{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;position:sticky;top:0}
+.bp-hdr{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.bp-title{font-size:14px;font-weight:700}
+.bp-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.bp-body{padding:12px 16px;max-height:50vh;overflow-y:auto}
+.bp-foot{padding:10px 16px;border-top:1px solid var(--line)}
+/* Booking card in panel */
+.bkc{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;transition:background 120ms}
+.bkc:hover{background:rgba(255,255,255,0.04)}
+.bkc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.bkc-name{font-size:13px;font-weight:700}
+.bkc-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px}
+.bb-active{background:rgba(109,170,69,.22);color:var(--green)}
+.bb-up{background:rgba(79,152,163,.22);color:var(--teal)}
+.bb-done{background:rgba(255,255,255,.07);color:var(--muted)}
+.bkc-meta{font-size:11px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+.bkc-tags{margin-top:5px;display:flex;gap:4px;flex-wrap:wrap}
+.bktag{padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600}
+.bktag-h{background:rgba(212,133,58,.15);color:var(--orange)}
+.bktag-d{background:rgba(79,152,163,.12);color:var(--teal)}
+/* Booking modal */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9990;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.mo.hidden{display:none!important}
+.mo-box{background:var(--panel);border:1px solid var(--border);border-radius:20px;width:100%;max-width:500px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.65)}
+.mo-hdr{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.mo-ttl{font-size:16px;font-weight:800}
+.mo-body{overflow-y:auto;padding:16px 20px;flex:1}
+.mo-foot{padding:12px 20px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-shrink:0}
+.mo-sec{margin-bottom:16px}
+.mo-stitle{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700;margin-bottom:10px}
+/* Guest profile autofill */
+.gpa{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:8px;display:none}
+.gpa.on{display:block}
+.gpa-hdr{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.gpa-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#7c4dff);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
+.gpa-nm{font-size:13px;font-weight:700}
+.gpa-sub{font-size:11px;color:var(--muted)}
+.gpa-row{display:flex;gap:8px;font-size:12px;margin-bottom:3px}
+.gpa-lbl{color:var(--faint);min-width:96px;flex-shrink:0}
+.gpa-val{color:var(--text)}
+/* ━━━━━ LOCAL GUEST BANK ━━━━━ */
+.gb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px;cursor:pointer;transition:border-color 150ms}
+.gb-card:hover{border-color:var(--teal)}
+.gb-card-hdr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.gb-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#7c4dff);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0}
+.gb-name{font-size:14px;font-weight:700}
+.gb-phone{font-size:12px;color:var(--muted)}
+.gb-prefs{display:flex;flex-direction:column;gap:4px}
+.gb-prow{display:flex;gap:8px;font-size:12px}
+.gb-pl{color:var(--muted);min-width:90px;flex-shrink:0}
+.gb-pv{color:var(--text)}
+.gb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+/* Preorders */
+.po-row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
+.po-row:last-child{border-bottom:none}
+.po-time{font-size:13px;font-weight:700;color:var(--teal);min-width:60px;flex-shrink:0}
+.po-name{font-size:14px;font-weight:600}
+.po-detail{font-size:12px;color:var(--muted);margin-top:2px}
+.po-tag{display:inline-block;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:600;background:rgba(79,152,163,.15);color:var(--teal);margin-top:4px}
+/* Sidebar bottom */
+.sidebar-bottom{margin-top:auto;padding-top:12px;border-top:1px solid var(--line)}
 /* Responsive */
 @media(max-width:800px){
   .shell{grid-template-columns:1fr}
-  .sidebar{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;padding:12px 10px;border-right:none;border-bottom:1px solid var(--line);gap:4px;scrollbar-width:none}
+  .sidebar{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;padding:10px;border-right:none;border-bottom:1px solid var(--line);gap:4px;scrollbar-width:none}
   .sidebar::-webkit-scrollbar{display:none}
-  .sidebar .nav-item{white-space:nowrap;flex-shrink:0}
-  .sidebar .brand,.sidebar .sidebar-bottom{display:none}
+  .sidebar .nav-item{white-space:nowrap;flex-shrink:0;padding:7px 10px}
+  .sidebar .brand,.sidebar .sidebar-bottom,.sidebar .nav-sep{display:none}
   .main{padding:16px}
   .grid-2{grid-template-columns:1fr}
-  .login-box{padding:22px 18px}
+  .fm-canvas.malygin{aspect-ratio:1.6/1}
+  .fm-canvas.let50{aspect-ratio:1.4/1}
 }
 </style>
 </head>
 <body>
 <div id="toastBox" class="toast-box"></div>
 
-<!-- LOGIN VIEW -->
+<!-- LOGIN -->
 <div id="loginView" class="login-outer">
   <div class="login-box">
     <div class="brand" style="margin-bottom:20px">
       <div class="brand-mark">🔥</div>
-      <div>
-        <div class="brand-title">Друзья Говорят</div>
-        <div class="brand-sub">CRM · Брони · Предзаказ кальяна</div>
-      </div>
+      <div><div class="brand-title">Друзья Говорят</div><div class="brand-sub">CRM · Брони · Кальян</div></div>
     </div>
-
     <div class="row-between" style="margin-bottom:20px">
       <div style="font-size:26px;font-weight:800">Вход</div>
       <div class="tab-row" style="margin-bottom:0">
-        <button type="button" class="tab active" id="tabGuest" onclick="switchMode('guest')">Гость</button>
-        <button type="button" class="tab" id="tabStaff" onclick="switchMode('staff')">Сотрудник</button>
+        <button class="tab active" id="tabGuest" onclick="switchMode('guest')">Гость</button>
+        <button class="tab" id="tabStaff" onclick="switchMode('staff')">Сотрудник</button>
       </div>
     </div>
-
-    <!-- GUEST FORM -->
+    <!-- GUEST -->
     <div id="modeGuest">
       <div class="grid" style="gap:14px">
-        <div class="field">
-          <div class="label">Имя</div>
-          <input id="grName" class="input" placeholder="Ваше имя">
-        </div>
-        <div class="field">
-          <div class="label">Телефон</div>
-          <input id="grPhone" class="input" type="tel" placeholder="+7 000 000 0000">
-        </div>
+        <div class="field"><div class="label">Имя</div><input id="grName" class="input" placeholder="Ваше имя"></div>
+        <div class="field"><div class="label">Телефон</div><input id="grPhone" class="input" type="tel" placeholder="+7 000 000 0000"></div>
       </div>
-
       <div style="margin-top:20px">
         <div style="font-size:16px;font-weight:700;margin-bottom:4px">Предзаказ кальяна</div>
-        <div style="font-size:13px;color:var(--muted);margin-bottom:14px">Необязательно — можно просто войти</div>
-
+        <div style="font-size:13px;color:var(--muted);margin-bottom:14px">Необязательно</div>
         <div class="field" style="margin-bottom:12px">
           <div class="label">Как всегда?</div>
           <div class="toggle-row">
-            <button type="button" class="toggle-btn active" id="btnUsualYes" onclick="setUsual('yes')">Да</button>
-            <button type="button" class="toggle-btn" id="btnUsualNo" onclick="setUsual('no')">Нет</button>
+            <button class="toggle-btn active" id="btnUsualYes" onclick="setUsual('yes')">Да</button>
+            <button class="toggle-btn" id="btnUsualNo" onclick="setUsual('no')">Нет</button>
           </div>
         </div>
-
         <div class="grid" style="gap:12px">
-          <div class="field">
-            <div class="label">Во сколько нужен кальян</div>
-            <input id="grTime" class="input" placeholder="Например, 19:30">
-          </div>
-          <div class="field">
-            <div class="label">Адрес</div>
+          <div class="field"><div class="label">Во сколько нужен кальян</div><input id="grTime" class="input" placeholder="19:30"></div>
+          <div class="field"><div class="label">Адрес</div>
             <select id="grAddress" class="select">
               <option value="Малыгина 90">Малыгина 90</option>
               <option value="50 лет Октября">50 лет Октября</option>
             </select>
           </div>
         </div>
-
         <div id="customHookah" class="grid hidden" style="gap:12px;margin-top:12px">
-          <div class="field">
-            <div class="label">Крепость</div>
-            <select id="grStrength" class="select">
-              <option>Лёгкий</option>
-              <option>Ниже среднего</option>
-              <option>Средний</option>
-              <option>Выше среднего</option>
-              <option>Крепкий</option>
-            </select>
-          </div>
-          <div class="field">
-            <div class="label">Тип кальяна</div>
-            <select id="grType" class="select">
-              <option>Стандарт</option>
-              <option>Премиум</option>
-              <option>WTO</option>
-              <option>Hookah Sigar</option>
-              <option>Парфюм</option>
-            </select>
-          </div>
-          <div class="field" style="grid-column:1/-1">
-            <div class="label">Вкус (открытый ответ)</div>
-            <textarea id="grFlavor" class="textarea" placeholder="Опишите желаемый вкус..."></textarea>
-          </div>
+          <div class="field"><div class="label">Марка / вкус кальяна</div><input id="grBrand" class="input" placeholder="Что хотите?"></div>
+          <div class="field"><div class="label">Крепость</div><input id="grStrength" class="input" placeholder="Лёгкий / Средний / Сильный"></div>
         </div>
       </div>
-
-      <button type="button" class="btn btn-primary" style="width:100%;margin-top:20px" onclick="submitGuest()">
-        Войти / Отправить заявку
-      </button>
-      <div id="guestStatus" style="font-size:13px;color:var(--muted);margin-top:10px;text-align:center"></div>
+      <button class="btn btn-primary" style="width:100%;margin-top:20px" onclick="submitGuest()">Войти / Отправить заявку</button>
     </div>
-
-    <!-- STAFF FORM -->
+    <!-- STAFF -->
     <div id="modeStaff" class="hidden">
-      <div id="techCfg" class="hidden">
-        <input id="cfgUrl" value="https://vvmtgpeudmcsddjpktme.supabase.co">
-        <textarea id="cfgKey"></textarea>
-      </div>
       <div class="grid" style="gap:14px">
-        <div class="field">
-          <div class="label">Логин</div>
-          <input id="staffLogin" class="input" placeholder="Друзья" value="Друзья">
-        </div>
-        <div class="field">
-          <div class="label">Пароль</div>
-          <input id="staffPass" class="input" type="password" placeholder="Пароль">
-        </div>
+        <div class="field"><div class="label">API-ключ Supabase (необязательно)</div><input id="staffPass" class="input" type="password" placeholder="eyJ..."></div>
       </div>
-      <button type="button" class="btn btn-primary" style="width:100%;margin-top:18px" onclick="doLogin()">
-        Войти в кабинет
-      </button>
-      <div id="staffStatus" style="font-size:13px;color:var(--muted);margin-top:10px;text-align:center"></div>
+      <button class="btn btn-primary" style="width:100%;margin-top:20px" onclick="doLogin()">Войти как сотрудник</button>
     </div>
   </div>
 </div>
 
-<!-- APP VIEW -->
+<!-- APP -->
 <div id="appView" class="shell hidden">
-  <div class="sidebar">
+  <nav class="sidebar">
     <div class="brand">
       <div class="brand-mark">🔥</div>
-      <div>
-        <div class="brand-title">Друзья Говорят</div>
-        <div class="brand-sub" id="sideStatus">Сотрудник</div>
-      </div>
+      <div><div class="brand-title">Друзья говорят</div><div class="brand-sub" id="sbRole">Сотрудник</div></div>
     </div>
-    <button class="nav-item active" onclick="showView('guests')">Гости (CRM)</button>
+    <button class="nav-item active" onclick="showView('bookings')">Брони</button>
+    <button class="nav-item" onclick="showView('guestbank')">Банк гостей</button>
+    <div class="nav-sep"></div>
+    <button class="nav-item" onclick="showView('guests')">Гости (CRM)</button>
     <button class="nav-item" onclick="showView('guest-card')">Карточка гостя</button>
     <button class="nav-item" onclick="showView('new-guest')">Новый гость</button>
-    <button class="nav-item" onclick="showView('bookings')">Брони</button>
+    <div class="nav-sep"></div>
     <button class="nav-item" onclick="showView('preorders')">Заявки на кальян</button>
-    <div style="flex:1"></div>
-    <div class="sidebar-bottom" style="display:flex;flex-direction:column;gap:8px">
-      <button class="btn btn-sm" onclick="toggleTheme()">Тема</button>
-      <button class="btn btn-sm btn-danger" onclick="doLogout()">Выйти</button>
+    <div class="sidebar-bottom">
+      <button class="nav-item" onclick="toggleTheme()" style="font-size:13px;color:var(--muted)">🌙 Тема</button>
+      <button class="nav-item" onclick="doLogout()" style="font-size:13px;color:var(--muted)">← Выйти</button>
     </div>
-  </div>
+  </nav>
 
-  <div class="main">
-    <!-- GUESTS LIST -->
-    <div id="view-guests">
-      <div class="row-between" style="margin-bottom:18px">
-        <div class="page-title">CRM Гостей</div>
-        <div class="row">
-          <input id="searchInput" class="input" style="width:280px" placeholder="Имя / телефон / nickname">
-          <button class="btn" onclick="searchGuests()">Найти</button>
-          <button class="btn" onclick="loadGuests()">Обновить</button>
-        </div>
-      </div>
-      <div class="card">
-        <div id="guestListBody">
-          <div style="color:var(--muted);font-size:14px">Загрузка...</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- GUEST CARD -->
-    <div id="view-guest-card" class="hidden">
-      <div class="row-between" style="margin-bottom:18px">
-        <div class="page-title">Карточка гостя</div>
-        <button class="btn btn-sm" onclick="showView('guests')">← Назад к списку</button>
-      </div>
-      <div id="guestCardContent">
-        <div style="color:var(--muted)">Выберите гостя из списка</div>
-      </div>
-    </div>
-
-    <!-- NEW GUEST -->
-    <div id="view-new-guest" class="hidden">
-      <div class="page-title" style="margin-bottom:18px">Новый гость</div>
-      <div class="card" style="max-width:500px">
-        <div class="grid" style="gap:14px">
-          <div class="field"><div class="label">Имя</div><input id="newName" class="input"></div>
-          <div class="field"><div class="label">Телефон</div><input id="newPhone" class="input"></div>
-          <div class="field"><div class="label">Nickname</div><input id="newNick" class="input"></div>
-          <div class="field"><div class="label">Любимый стол</div><input id="newTable" class="input"></div>
-          <div class="field"><div class="label">Пиковые часы</div><input id="newHours" class="input"></div>
-        </div>
-        <div style="margin-top:14px">
-          <button class="btn btn-primary" onclick="createGuest()">Создать гостя</button>
-        </div>
-      </div>
-    </div>
+  <main class="main">
 
     <!-- BOOKINGS -->
-    <div id="view-bookings" class="hidden">
-      <div class="row-between" style="margin-bottom:16px">
+    <div id="view-bookings">
+      <div class="row-between" style="margin-bottom:14px">
         <div class="page-title">Брони</div>
         <div class="row" style="gap:8px">
           <input id="bDate" type="date" class="input" style="width:155px" onchange="fmRender()">
           <button class="btn btn-primary btn-sm" onclick="openBm(null,null)">+ Бронь</button>
         </div>
       </div>
-      <div class="fm-hdr">
+      <div class="fm-toolbar">
         <div class="fm-btabs">
-          <button class="fm-btab active" id="fmTabMalygin" onclick="fmBranch('malygin')">Малыгина</button>
-          <button class="fm-btab" id="fmTabLet50" onclick="fmBranch('let50')">50 лет</button>
+          <button class="fm-btab active" id="fmTM" onclick="fmBranch('malygin')">Малыгина</button>
+          <button class="fm-btab" id="fmT5" onclick="fmBranch('let50')">50 лет</button>
         </div>
-        <div class="vtabs" style="margin-bottom:0">
-          <button class="vtab active" id="vtMap" onclick="fmSubview('map')">Карта</button>
-          <button class="vtab" id="vtList" onclick="fmSubview('list')">Список</button>
+        <div class="fm-vtabs">
+          <button class="fm-vtab active" id="vtMap" onclick="fmSub('map')">Карта</button>
+          <button class="fm-vtab" id="vtList" onclick="fmSub('list')">Список</button>
         </div>
+        <button class="btn btn-sm" id="btnEditLayout" onclick="fmToggleEdit()" style="padding:6px 12px;font-size:12px">✎ Схема</button>
         <div class="fm-legend">
           <div class="fm-li"><div class="fm-ld" style="background:var(--green)"></div>Свободен</div>
-          <div class="fm-li"><div class="fm-ld" style="background:var(--teal)"></div>Есть брони</div>
-          <div class="fm-li"><div class="fm-ld" style="background:var(--red)"></div>Занят сейчас</div>
+          <div class="fm-li"><div class="fm-ld" style="background:var(--teal)"></div>Брони</div>
+          <div class="fm-li"><div class="fm-ld" style="background:var(--orange)"></div>Скоро</div>
+          <div class="fm-li"><div class="fm-ld" style="background:var(--red)"></div>Занят</div>
+        </div>
+      </div>
+      <div id="editBanner" class="hidden" style="margin-bottom:10px">
+        <div class="edit-badge">✎ Режим редактирования — перетащите столы чтобы изменить схему
+          <button class="btn btn-sm" onclick="fmResetLayout()" style="padding:4px 10px;font-size:11px;margin-left:8px">Сброс</button>
+          <button class="btn btn-sm btn-primary" onclick="fmSaveLayout()" style="padding:4px 10px;font-size:11px;margin-left:4px">Сохранить</button>
         </div>
       </div>
       <div id="fmMapView">
-        <div class="broni-grid">
+        <div class="broni-layout">
           <div id="fmContainer"></div>
-          <div class="bp-panel" id="fmPanel" style="display:none">
+          <div class="bp" id="fmPanel" style="display:none">
             <div class="bp-hdr">
-              <div>
-                <div class="bp-title" id="fmPTitle">Стол</div>
-                <div class="bp-sub" id="fmPSub"></div>
-              </div>
-              <button class="btn btn-sm" onclick="fmClosePanel()" style="padding:4px 10px">✕</button>
+              <div><div class="bp-title" id="fmPT">Стол</div><div class="bp-sub" id="fmPS"></div></div>
+              <button class="btn btn-sm" onclick="fmClosePan()" style="padding:4px 10px">✕</button>
             </div>
-            <div class="bp-body" id="fmPBody"></div>
-            <div class="bp-foot">
-              <button class="btn btn-primary" style="width:100%" onclick="openBm(null,fmSt.tableId)">+ Добавить бронь на этот стол</button>
-            </div>
+            <div class="bp-body" id="fmPB"></div>
+            <div class="bp-foot"><button class="btn btn-primary" style="width:100%" onclick="openBm(null,fmSt.tid)">+ Добавить бронь</button></div>
           </div>
         </div>
       </div>
       <div id="fmListView" style="display:none">
-        <div style="margin-bottom:10px"><input class="input" id="fmSearch" placeholder="Поиск по имени, телефону..." oninput="fmRenderList()" style="max-width:360px"></div>
+        <div style="margin-bottom:10px"><input class="input" id="fmSrch" placeholder="Поиск по имени, телефону..." oninput="fmRenderList()" style="max-width:360px"></div>
         <div id="fmListBody"></div>
       </div>
     </div>
 
     <!-- BOOKING MODAL -->
-    <div class="bm-overlay hidden" id="bmOvl">
-      <div class="bm-box">
-        <div class="bm-hdr"><span class="bm-ttl" id="bmTtl">Новая бронь</span><button class="btn btn-sm" onclick="closeBm()">✕</button></div>
-        <div class="bm-body">
-          <div class="bm-section">
-            <div class="bm-stitle">Гость</div>
+    <div class="mo hidden" id="bmOvl">
+      <div class="mo-box">
+        <div class="mo-hdr"><span class="mo-ttl" id="bmTtl">Новая бронь</span><button class="btn btn-sm" onclick="closeBm()">✕</button></div>
+        <div class="mo-body">
+          <div class="mo-sec">
+            <div class="mo-stitle">Гость</div>
             <div class="grid-2" style="gap:10px;margin-bottom:8px">
-              <div class="field"><div class="label">Имя</div><input id="bmNm" class="input" placeholder="Имя гостя" oninput="bmFill()"></div>
+              <div class="field"><div class="label">Имя</div><input id="bmNm" class="input" placeholder="Начните вводить..." oninput="bmFill()"></div>
               <div class="field"><div class="label">Телефон</div><input id="bmPh" class="input" type="tel" placeholder="+7"></div>
             </div>
-            <div class="gpc" id="bmGPC">
-              <div class="gpc-hdr">
-                <div class="gpc-av" id="bmAv">А</div>
-                <div><div class="gpc-nm" id="bmGN"></div><div class="gpc-sb" id="bmGS"></div></div>
-                <span style="margin-left:auto;font-size:9px;font-weight:700;background:rgba(245,166,35,.15);color:#f5a623;padding:2px 7px;border-radius:8px">Prime Hill</span>
+            <div class="gpa" id="bmGPA">
+              <div class="gpa-hdr">
+                <div class="gpa-av" id="bmAv">А</div>
+                <div><div class="gpa-nm" id="bmGN"></div><div class="gpa-sub" id="bmGS"></div></div>
+                <span style="margin-left:auto;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;background:rgba(212,133,58,.15);color:var(--orange)">Банк гостей</span>
               </div>
               <div id="bmGRows"></div>
             </div>
           </div>
-          <div class="bm-section">
-            <div class="bm-stitle">Бронирование</div>
+          <div class="mo-sec">
+            <div class="mo-stitle">Бронирование</div>
             <div class="grid-2" style="gap:10px;margin-bottom:10px">
               <div class="field"><div class="label">Стол</div><select id="bmTbl" class="select"></select></div>
               <div class="field"><div class="label">Дата</div><input id="bmDt" class="input" type="date"></div>
@@ -462,16 +380,16 @@ img{display:block;max-width:100%}
               <div class="field"><div class="label">Статус</div><select id="bmSt" class="select"><option value="confirmed">Подтверждена</option><option value="vip">VIP</option><option value="waiting">Ожидание</option></select></div>
             </div>
           </div>
-          <div class="bm-section">
-            <div class="bm-stitle">Предпочтения</div>
+          <div class="mo-sec">
+            <div class="mo-stitle">Кальян и предпочтения <span style="font-weight:400;color:var(--muted)">(заполняет сотрудник или гость)</span></div>
             <div class="grid-2" style="gap:10px;margin-bottom:10px">
-              <div class="field"><div class="label">Кальян</div><input id="bmHk" class="input" placeholder="Любимый кальян..."></div>
+              <div class="field"><div class="label">Кальян (описание)</div><input id="bmHk" class="input" placeholder="Марка, вкус, крепость..."></div>
               <div class="field"><div class="label">Блюда</div><input id="bmDs" class="input" placeholder="Топ блюда..."></div>
             </div>
             <div class="field"><div class="label">Заметки</div><textarea id="bmNo" class="textarea" placeholder="Пожелания, повод..."></textarea></div>
           </div>
         </div>
-        <div class="bm-foot">
+        <div class="mo-foot">
           <button class="btn btn-sm btn-danger" id="bmDelBtn" style="margin-right:auto;display:none" onclick="bmDel()">Удалить</button>
           <button class="btn btn-sm" onclick="closeBm()">Отмена</button>
           <button class="btn btn-sm btn-primary" onclick="bmSave()">Сохранить</button>
@@ -479,369 +397,321 @@ img{display:block;max-width:100%}
       </div>
     </div>
 
-        <!-- PREORDERS -->
-    <div id="view-preorders" class="hidden">
-      <div class="row-between" style="margin-bottom:18px">
-        <div class="page-title">Заявки на кальян</div>
-        <button class="btn" onclick="loadPreorders()">Обновить</button>
+    <!-- GUEST BANK -->
+    <div id="view-guestbank" class="hidden">
+      <div class="row-between" style="margin-bottom:14px">
+        <div><div class="page-title">Банк гостей</div><div class="page-sub">Местная база — кальян, предпочтения. Не из Prime Hill.</div></div>
+        <div class="row" style="gap:8px">
+          <button class="btn btn-sm" onclick="gbImportFromCRM()" style="font-size:12px">⬇ Из CRM</button>
+          <button class="btn btn-sm btn-primary" onclick="openGbModal(null)">+ Гость</button>
+        </div>
       </div>
-      <div class="card">
-        <div id="preorderListBody">
-          <div style="color:var(--muted);font-size:14px">Загрузка...</div>
+      <div style="margin-bottom:14px"><input class="input" id="gbSrch" placeholder="Поиск гостя..." oninput="renderGB()" style="max-width:340px"></div>
+      <div class="gb-grid" id="gbGrid"></div>
+    </div>
+
+    <!-- GUEST BANK MODAL -->
+    <div class="mo hidden" id="gbOvl">
+      <div class="mo-box">
+        <div class="mo-hdr"><span class="mo-ttl" id="gbTtl">Гость</span><button class="btn btn-sm" onclick="closeGbModal()">✕</button></div>
+        <div class="mo-body">
+          <div class="mo-sec">
+            <div class="mo-stitle">Основное</div>
+            <div class="grid-2" style="gap:10px;margin-bottom:10px">
+              <div class="field"><div class="label">Имя</div><input id="gbNm" class="input" placeholder="Полное имя"></div>
+              <div class="field"><div class="label">Телефон</div><input id="gbPh" class="input" type="tel" placeholder="+7"></div>
+            </div>
+            <div class="grid-2" style="gap:10px">
+              <div class="field"><div class="label">Карта (Prime Hill)</div><input id="gbCard" class="input" placeholder="#00000"></div>
+              <div class="field"><div class="label">Любимый филиал</div>
+                <select id="gbBranch" class="select"><option value="">—</option><option>Малыгина</option><option>50 лет</option></select>
+              </div>
+            </div>
+          </div>
+          <div class="mo-sec">
+            <div class="mo-stitle">Кальян <span style="font-weight:400;color:var(--muted)">(заполняет гость или сотрудник вручную)</span></div>
+            <div class="field" style="margin-bottom:10px"><div class="label">Что курит (полное описание)</div><textarea id="gbHk" class="textarea" style="min-height:64px" placeholder="Марка, вкус, крепость, чашка, способ забивки..."></textarea></div>
+          </div>
+          <div class="mo-sec">
+            <div class="mo-stitle">Предпочтения и заметки</div>
+            <div class="grid-2" style="gap:10px;margin-bottom:10px">
+              <div class="field"><div class="label">Любимые блюда</div><input id="gbDs" class="input" placeholder="Через запятую"></div>
+              <div class="field"><div class="label">Любимый стол</div><input id="gbTbl" class="input" placeholder="Стол 7..."></div>
+            </div>
+            <div class="field"><div class="label">Заметки сотрудника</div><textarea id="gbNotes" class="textarea" style="min-height:64px" placeholder="Важная информация, аллергии, особые пожелания..."></textarea></div>
+          </div>
+        </div>
+        <div class="mo-foot">
+          <button class="btn btn-sm btn-danger" id="gbDelBtn" style="margin-right:auto;display:none" onclick="gbDel()">Удалить</button>
+          <button class="btn btn-sm" onclick="closeGbModal()">Отмена</button>
+          <button class="btn btn-sm btn-primary" onclick="gbSave()">Сохранить</button>
         </div>
       </div>
     </div>
-  </div>
+
+    <!-- CRM GUESTS LIST -->
+    <div id="view-guests" class="hidden">
+      <div class="row-between" style="margin-bottom:14px">
+        <div class="page-title">Гости (CRM)</div>
+        <button class="btn btn-sm" onclick="loadGuests()">↻ Обновить</button>
+      </div>
+      <div style="margin-bottom:12px"><input class="input" id="gSrch" placeholder="Поиск по имени, телефону..." oninput="searchGuests()" style="max-width:340px"></div>
+      <div class="card"><div id="guestListBody"><div style="color:var(--muted);font-size:14px">Загрузка...</div></div></div>
+    </div>
+
+    <!-- GUEST CARD -->
+    <div id="view-guest-card" class="hidden">
+      <div style="margin-bottom:14px"><button class="btn btn-sm" onclick="showView('guests')">← Назад</button></div>
+      <div id="guestCardContent"></div>
+    </div>
+
+    <!-- NEW GUEST (CRM) -->
+    <div id="view-new-guest" class="hidden">
+      <div class="page-title" style="margin-bottom:6px">Новый гость в CRM</div>
+      <div class="page-sub">Основные данные. Кальян — добавьте через Банк гостей.</div>
+      <div class="card">
+        <div class="grid" style="gap:14px">
+          <div class="grid-2" style="gap:12px">
+            <div class="field"><div class="label">Имя</div><input id="newName" class="input"></div>
+            <div class="field"><div class="label">Телефон</div><input id="newPhone" class="input" type="tel"></div>
+          </div>
+          <div class="grid-2" style="gap:12px">
+            <div class="field"><div class="label">Никнейм</div><input id="newNick" class="input"></div>
+            <div class="field"><div class="label">Любимый стол</div><input id="newTable" class="input"></div>
+          </div>
+          <div class="field"><div class="label">Пиковые часы</div><input id="newHours" class="input" placeholder="Вечер, по пятницам..."></div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:16px" onclick="createGuest()">Создать гостя</button>
+      </div>
+    </div>
+
+    <!-- PREORDERS -->
+    <div id="view-preorders" class="hidden">
+      <div class="row-between" style="margin-bottom:14px">
+        <div><div class="page-title">Заявки на кальян</div><div class="page-sub">Заявки от гостей через форму входа</div></div>
+        <button class="btn btn-sm" onclick="loadPreorders()">↻ Обновить</button>
+      </div>
+      <div class="card"><div id="preorderListBody"><div style="color:var(--muted);font-size:14px">Загрузка...</div></div></div>
+    </div>
+
+  </main>
 </div>
 
 <script>
 'use strict';
 const SUPABASE_URL = 'https://vvmtgpeudmcsddjpktme.supabase.co';
-const ADMIN_EMAIL  = 'druzya@staff.local';
 const TG = {
-  'Малыгина 90':   { link:'https://t.me/friendstalk4',      phone:'+79129926869' },
-  '50 лет Октября':{ link:'https://t.me/friends_talk_tmn', phone:'+79829888998'  }
+  'Малыгина 90':    { link:'https://t.me/friendstalk4',     phone:'+79129926869' },
+  '50 лет Октября': { link:'https://t.me/friends_talk_tmn', phone:'+79829888998' }
 };
-const TABLES = { 'Малыгина':12, 'Новин':10 };
 
 let sb = null;
 let guestCache = [];
 let currentGuest = null;
 let hookahUsual = 'yes';
-let bookingSelected = '';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 function $(id){ return document.getElementById(id); }
-function toast(msg, ok=true){
-  const box = $('toastBox');
-  const el = document.createElement('div');
-  el.className = 'toast' + (ok ? '' : ' bad');
-  el.textContent = msg;
-  box.appendChild(el);
-  setTimeout(()=>el.remove(), 3000);
-}
+function toast(msg,ok=true){ const b=$('toastBox'),e=document.createElement('div'); e.className='toast'+(ok?'':' bad'); e.textContent=msg; b.appendChild(e); setTimeout(()=>e.remove(),3000); }
 function esc(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
 function today(){ return new Date().toISOString().slice(0,10); }
 function getKey(){ return (localStorage.getItem('dg_key')||'').trim(); }
+function fDate(){ return $('bDate')?($('bDate').value||today()):today(); }
+
 function initSB(){
   if(sb) return;
-  const key = getKey();
-  if(!key || !window.supabase) return;
-  sb = window.supabase.createClient(SUPABASE_URL, key, {
-    auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:false }
-  });
+  const key=getKey();
+  if(!key||!window.supabase) return;
+  sb=window.supabase.createClient(SUPABASE_URL,key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
 }
 
-// ── Theme ─────────────────────────────────────────────────────────────────────
-let theme = 'dark';
-function toggleTheme(){
-  theme = theme==='dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', theme);
+let theme='dark';
+function toggleTheme(){ theme=theme==='dark'?'light':'dark'; document.documentElement.setAttribute('data-theme',theme); }
+
+function switchMode(m){
+  $('modeGuest').classList.toggle('hidden',m!=='guest');
+  $('modeStaff').classList.toggle('hidden',m!=='staff');
+  $('tabGuest').classList.toggle('active',m==='guest');
+  $('tabStaff').classList.toggle('active',m==='staff');
 }
 
-// ── Mode switch ───────────────────────────────────────────────────────────────
-function switchMode(mode){
-  $('modeGuest').classList.toggle('hidden', mode!=='guest');
-  $('modeStaff').classList.toggle('hidden', mode!=='staff');
-  $('tabGuest').classList.toggle('active', mode==='guest');
-  $('tabStaff').classList.toggle('active', mode==='staff');
-}
+function setUsual(v){ hookahUsual=v; $('btnUsualYes').classList.toggle('active',v==='yes'); $('btnUsualNo').classList.toggle('active',v==='no'); $('customHookah').classList.toggle('hidden',v==='yes'); }
 
-// ── Hookah toggle ─────────────────────────────────────────────────────────────
-function setUsual(v){
-  hookahUsual = v;
-  $('btnUsualYes').classList.toggle('active', v==='yes');
-  $('btnUsualNo').classList.toggle('active', v==='no');
-  $('customHookah').classList.toggle('hidden', v==='yes');
-}
-
-// ── Guest submit ──────────────────────────────────────────────────────────────
 async function submitGuest(){
-  const name  = $('grName').value.trim();
-  const phone = $('grPhone').value.trim();
-  if(!name || !phone){ toast('Укажите имя и телефон', false); return; }
-
-  $('guestStatus').textContent = 'Сохраняю...';
-  const time    = $('grTime').value.trim();
-  const address = $('grAddress').value;
-  const hasOrder= !!time;
-
-  if(hasOrder){
-    const order = { usual:hookahUsual, time, address,
-      strength: hookahUsual==='no' ? $('grStrength').value : 'Как всегда',
-      type:     hookahUsual==='no' ? $('grType').value     : 'Как всегда',
-      flavor:   hookahUsual==='no' ? $('grFlavor').value.trim() : '' };
-    const parts = [
-      '🔥 Новая заявка на кальян',
-      `👤 ${name}`, `📞 ${phone}`,
-      `⏰ ${time}`, `📍 ${address}`,
-      `Как всегда: ${hookahUsual==='yes'?'Да':'Нет'}`,
-      hookahUsual==='no' ? `Крепость: ${order.strength}` : null,
-      hookahUsual==='no' ? `Тип: ${order.type}` : null,
-      hookahUsual==='no' && order.flavor ? `Вкус: ${order.flavor}` : null
-    ].filter(Boolean).join('\n');
-    const tgInfo = TG[address] || TG['Малыгина 90'];
-    window.location.href = tgInfo.link + '?text=' + encodeURIComponent(parts);
-    $('guestStatus').textContent = '';
-    setTimeout(()=> _saveToDB(name, phone, order, parts), 200);
-    return;
-  }
-
-  await _saveToDB(name, phone, null, '');
-  $('guestStatus').textContent = 'Данные сохранены ✓';
-  $('grName').value=''; $('grPhone').value=''; $('grTime').value='';
-}
-
-async function _saveToDB(name, phone, order, notes){
-  initSB();
-  if(!sb) return;
+  const name=$('grName').value.trim(), phone=$('grPhone').value.trim();
+  if(!name){ toast('Введите имя',false); return; }
+  const time=$('grTime').value.trim(), addr=$('grAddress').value;
+  const brand=hookahUsual==='yes'?'Как всегда':($('grBrand').value.trim()||'');
+  const strength=$('grStrength')?.value.trim()||'';
+  // Try to save to Supabase if available, otherwise just log to localStorage
+  let saved=false;
   try{
-    const { data:ex } = await sb.from('guests').select('id').eq('phone', phone).maybeSingle();
-    let gid = ex?.id;
-    if(gid){
-      await sb.from('guests').update({full_name:name}).eq('id',gid);
-    } else {
-      const { data:ins } = await sb.from('guests').insert({full_name:name,phone}).select('id').single();
-      gid = ins?.id;
+    const anonKey='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2bXRncGV1ZG1jc2RkanBrdG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU3NTQwMjEsImV4cCI6MjA2MTMzMDAyMX0.oO4RUPUi2BYJjqSMKtNRCzaToaFv-O5MxjvKqIjQq1M';
+    const cli=window.supabase.createClient(SUPABASE_URL,anonKey);
+    // Find or create guest
+    let gid=null;
+    const {data:found}=await cli.from('guests').select('id').eq('phone',phone.replace(/\D/g,'')).limit(1);
+    if(found?.length){ gid=found[0].id; }
+    else{
+      const {data:ng}=await cli.from('guests').insert({full_name:name,phone}).select('id').single();
+      gid=ng?.id||null;
     }
-    if(order && gid){
-      await sb.from('hookah_preorders').insert({
-        guest_id:gid, visit_date:today(), time_slot:order.time,
-        tobacco_brand:order.type, flavor:order.flavor,
-        strength:order.strength, bowl_type:order.address,
-        extras:notes, status:'pending'
-      });
+    if(gid&&time){
+      await cli.from('hookah_preorders').insert({guest_id:gid,time_slot:time,address:addr,tobacco_brand:brand,strength,usual_order:hookahUsual==='yes'});
     }
-  }catch(e){ console.error(e); }
+    saved=true;
+  }catch(e){}
+  // Save to localStorage for offline
+  const orders=JSON.parse(localStorage.getItem('dg_po')||'[]');
+  orders.unshift({name,phone,time,addr,brand,strength,usual:hookahUsual==='yes',ts:Date.now()});
+  localStorage.setItem('dg_po',JSON.stringify(orders.slice(0,100)));
+  toast(saved?'Заявка принята ✓':'Заявка сохранена локально');
+  openApp();
 }
 
-// ── Staff login ───────────────────────────────────────────────────────────────
 async function doLogin(){
-  const key   = getKey();
-  const pass  = $('staffPass').value;
-  if(!pass){ toast('Введите пароль', false); return; }
-  const btn = document.querySelector('#modeStaff .btn-primary');
-  btn.textContent='Вхожу...'; btn.disabled=true;
-  $('staffStatus').textContent='';
-  try{
-    if(!window.supabase){ throw new Error('Supabase не загружен'); }
-    sb = window.supabase.createClient(SUPABASE_URL, key||'anon', {
-      auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:false }
-    });
-    const { data, error } = await sb.auth.signInWithPassword({ email:ADMIN_EMAIL, password:pass });
-    if(error) throw error;
-    try{ localStorage.setItem('dg_pass', pass); }catch(e){}
-    openApp();
-  } catch(e){
-    $('staffStatus').textContent = e.message || 'Ошибка входа';
-    toast(e.message || 'Ошибка входа', false);
-  } finally{
-    btn.textContent='Войти в кабинет'; btn.disabled=false;
-  }
+  const key=($('staffPass').value||'').trim();
+  if(key) localStorage.setItem('dg_key',key);
+  initSB();
+  openApp();
 }
 
 async function restoreSession(){
-  const pass = localStorage.getItem('dg_pass')||'';
-  if(!pass) return;
-  try{
-    sb = window.supabase.createClient(SUPABASE_URL, 'anon', {
-      auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:false }
-    });
-    const { data } = await sb.auth.getSession();
-    if(data?.session?.user){ openApp(); return; }
-    const { error } = await sb.auth.signInWithPassword({ email:ADMIN_EMAIL, password:pass });
-    if(!error) openApp();
-  }catch(e){}
+  const key=getKey();
+  if(key&&window.supabase){
+    try{ sb=window.supabase.createClient(SUPABASE_URL,key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}}); } catch(e){}
+  }
+  openApp();
 }
 
 function openApp(){
   $('loginView').classList.add('hidden');
   $('appView').classList.remove('hidden');
-  $('staffPass').value='';
-  showView('guests');
+  if(!$('bDate').value) $('bDate').value=today();
+  showView('bookings');
   loadGuests();
-  loadPreorders();
-  if(!$('bDate').value) $('bDate').value = today();
-  if($('bDate')&&!$('bDate').value) $('bDate').value=today();
 }
 
 async function doLogout(){
+  if(sb) try{ await sb.auth.signOut(); }catch(e){}
+  localStorage.removeItem('dg_key');
+  sb=null; guestCache=[]; currentGuest=null;
   $('appView').classList.add('hidden');
   $('loginView').classList.remove('hidden');
-  try{ if(sb) sb.auth.signOut({scope:'local'}); }catch(e){}
-  sb=null; guestCache=[]; currentGuest=null;
 }
 
-// ── View switching ────────────────────────────────────────────────────────────
-function showView(view){
-  ['guests','guest-card','new-guest','bookings','preorders'].forEach(v=>{
-    $('view-'+v)?.classList.toggle('hidden', v!==view);
+function showView(v){
+  ['bookings','guestbank','guests','guest-card','new-guest','preorders'].forEach(id=>{
+    $('view-'+id).classList.toggle('hidden',id!==v);
   });
   document.querySelectorAll('.nav-item').forEach(el=>{
-    const map = { 'guests':'Гости (CRM)','guest-card':'Карточка гостя','new-guest':'Новый гость','bookings':'Брони','preorders':'Заявки на кальян' };
-    el.classList.toggle('active', el.textContent.trim()===map[view]);
+    const map={'bookings':'Брони','guestbank':'Банк гостей','guests':'Гости (CRM)','guest-card':'Карточка гостя','new-guest':'Новый гость','preorders':'Заявки на кальян'};
+    const txt=el.textContent.trim();
+    el.classList.toggle('active', Object.entries(map).some(([k,t])=>k===v&&txt===t));
+  });
+  if(v==='bookings'){ if(!$('bDate').value) $('bDate').value=today(); fmRender(); }
+  if(v==='guests') loadGuests();
+  if(v==='guestbank') renderGB();
+  if(v==='preorders') loadPreorders();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// LOCAL GUEST BANK
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function gbLoad(){ try{ return JSON.parse(localStorage.getItem('dg_bank')||'[]'); }catch(e){ return []; } }
+function gbSaveAll(arr){ localStorage.setItem('dg_bank',JSON.stringify(arr)); }
+function gbFind(q){ const lq=(q||'').toLowerCase(); return gbLoad().filter(g=>g.name.toLowerCase().includes(lq)||g.phone.includes(q||'')); }
+function gbInitials(name){ return (name||'?').split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase(); }
+
+let gbEditId=null;
+function openGbModal(id){
+  gbEditId=id;
+  const arr=gbLoad();
+  const g=id?arr.find(x=>x.id===id):null;
+  $('gbTtl').textContent=g?'Гость: '+g.name:'Новый гость';
+  $('gbNm').value=g?.name||''; $('gbPh').value=g?.phone||''; $('gbCard').value=g?.card||'';
+  $('gbBranch').value=g?.branch||''; $('gbHk').value=g?.hookah||''; $('gbDs').value=g?.dishes||'';
+  $('gbTbl').value=g?.favTable||''; $('gbNotes').value=g?.notes||'';
+  $('gbDelBtn').style.display=id?'':'none';
+  $('gbOvl').classList.remove('hidden');
+}
+function closeGbModal(){ $('gbOvl').classList.add('hidden'); }
+function gbSave(){
+  const name=$('gbNm').value.trim();
+  if(!name){ toast('Введите имя',false); return; }
+  const arr=gbLoad();
+  const data={name,phone:$('gbPh').value.trim(),card:$('gbCard').value.trim(),branch:$('gbBranch').value,hookah:$('gbHk').value.trim(),dishes:$('gbDs').value.trim(),favTable:$('gbTbl').value.trim(),notes:$('gbNotes').value.trim()};
+  if(gbEditId){ const i=arr.findIndex(x=>x.id===gbEditId); if(i>=0) Object.assign(arr[i],data); }
+  else{ arr.push({id:'g'+Date.now(),createdAt:today(),...data}); }
+  gbSaveAll(arr); closeGbModal(); renderGB(); toast('Сохранено ✓');
+}
+function gbDel(){
+  if(!gbEditId) return;
+  gbSaveAll(gbLoad().filter(x=>x.id!==gbEditId));
+  closeGbModal(); renderGB(); toast('Удалено');
+}
+function renderGB(){
+  const q=($('gbSrch')?$('gbSrch').value.trim():'');
+  const list=q?gbFind(q):gbLoad();
+  const grid=$('gbGrid'); grid.innerHTML='';
+  if(!list.length){ grid.innerHTML='<div style="color:var(--muted);padding:32px;font-size:14px">Банк пуст. Нажмите "+ Гость" чтобы добавить.</div>'; return; }
+  list.forEach(g=>{
+    const card=document.createElement('div'); card.className='gb-card';
+    card.innerHTML=`<div class="gb-card-hdr"><div class="gb-av">${gbInitials(g.name)}</div><div><div class="gb-name">${esc(g.name)}</div><div class="gb-phone">${esc(g.phone||'—')} ${g.card?'· '+esc(g.card):''}</div></div></div>
+    <div class="gb-prefs">
+      ${g.hookah?`<div class="gb-prow"><span class="gb-pl">🌿 Кальян:</span><span class="gb-pv">${esc(g.hookah)}</span></div>`:''}
+      ${g.dishes?`<div class="gb-prow"><span class="gb-pl">🍽 Блюда:</span><span class="gb-pv">${esc(g.dishes)}</span></div>`:''}
+      ${g.branch?`<div class="gb-prow"><span class="gb-pl">📍 Филиал:</span><span class="gb-pv">${esc(g.branch)}</span></div>`:''}
+      ${g.notes?`<div class="gb-prow" style="margin-top:4px"><span style="font-size:11px;color:var(--orange);font-style:italic">"${esc(g.notes)}"</span></div>`:''}
+    </div>`;
+    card.addEventListener('click',()=>openGbModal(g.id));
+    grid.appendChild(card);
   });
 }
 
-// ── Guests ────────────────────────────────────────────────────────────────────
-async function loadGuests(){
-  if(!sb) return;
-  const { data, error } = await sb.from('guests').select('*').order('full_name');
-  if(error){ toast(error.message, false); return; }
-  guestCache = data || [];
-  renderGuestList(guestCache);
-}
-
-function renderGuestList(list){
-  const box = $('guestListBody');
-  if(!list.length){ box.innerHTML='<div style="color:var(--muted);font-size:14px">Гостей пока нет.</div>'; return; }
-  box.innerHTML = `<table class="table-list">
-    <thead><tr><th>Имя</th><th>Телефон</th><th>Заметки</th><th></th></tr></thead>
-    <tbody>${list.map(g=>`<tr>
-      <td style="font-weight:600">${esc(g.full_name||'—')}</td>
-      <td style="color:var(--muted)">${esc(g.phone||'—')}</td>
-      <td style="color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc((g.notes||'').split('\n')[0]||'')}</td>
-      <td><button class="btn btn-sm" onclick="openGuestCard(${g.id})">Открыть</button></td>
-    </tr>`).join('')}</tbody>
-  </table>`;
-}
-
-function searchGuests(){
-  const q = ($('searchInput').value||'').toLowerCase().trim();
-  if(!q){ renderGuestList(guestCache); return; }
-  renderGuestList(guestCache.filter(g=>
-    (g.full_name||'').toLowerCase().includes(q) ||
-    (g.phone||'').includes(q) ||
-    (g.nickname||'').toLowerCase().includes(q)
-  ));
-}
-
-async function openGuestCard(id){
-  currentGuest = guestCache.find(g=>g.id===id) || null;
-  if(!currentGuest){ toast('Гость не найден', false); return; }
-  renderGuestCard();
-  showView('guest-card');
-}
-
-function renderGuestCard(){
-  if(!currentGuest){ $('guestCardContent').innerHTML='<div style="color:var(--muted)">Выберите гостя</div>'; return; }
-  const g = currentGuest;
-  $('guestCardContent').innerHTML = `
-  <div class="grid-2" style="gap:16px">
-    <div class="card">
-      <div class="section-title">${esc(g.full_name||'Гость')}</div>
-      <div style="font-size:14px;color:var(--muted);margin-bottom:12px">${esc(g.phone||'')}</div>
-      <div class="grid" style="gap:8px">
-        <div><span style="color:var(--muted);font-size:12px">ЗАМЕТКИ</span><div style="font-size:14px;white-space:pre-wrap">${esc(g.notes||'—')}</div></div>
-        <div><span style="color:var(--muted);font-size:12px">ЛЮБИМЫЙ СТОЛ</span><div style="font-size:14px">${esc(g.favorite_table||'—')}</div></div>
-        <div><span style="color:var(--muted);font-size:12px">ПИКОВЫЕ ЧАСЫ</span><div style="font-size:14px">${esc(g.peak_hours||'—')}</div></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="section-title">Характеристики кальяна</div>
-      <div class="grid" style="gap:12px">
-        <div class="field"><div class="label">Марка кальяна</div><input class="input" id="tBrand" value="${esc(g.hookah_brand||'')}"></div>
-        <div class="field"><div class="label">Крепость</div><input class="input" id="tStrength" value="${esc(g.hookah_strength||'')}"></div>
-        <div class="field"><div class="label">Чашка</div><input class="input" id="tBowl" value="${esc(g.hookah_bowl||'')}"></div>
-        <div class="field"><div class="label">Способ забивки</div><input class="input" id="tPack" value="${esc(g.hookah_pack||'')}"></div>
-        <div class="field"><div class="label">Цена кальяна</div><input class="input" id="tPrice" value="${esc(g.hookah_price||'')}"></div>
-        <div class="field"><div class="label">Прочее</div><input class="input" id="tOther" value="${esc(g.hookah_other||'')}"></div>
-        <div class="field"><div class="label">Заметки сотрудника</div><textarea class="textarea" id="tNotes">${esc(g.notes||'')}</textarea></div>
-      </div>
-      <button class="btn btn-primary" style="margin-top:14px" onclick="saveGuestCard()">Сохранить</button>
-    </div>
-  </div>`;
-}
-
-async function saveGuestCard(){
-  if(!sb || !currentGuest) return;
-  const payload = {
-    notes:$('tNotes')?.value,
-    hookah_brand:$('tBrand')?.value,
-    hookah_strength:$('tStrength')?.value,
-    hookah_bowl:$('tBowl')?.value,
-    hookah_pack:$('tPack')?.value,
-    hookah_price:$('tPrice')?.value,
-    hookah_other:$('tOther')?.value,
-  };
-  const { error } = await sb.from('guests').update(payload).eq('id', currentGuest.id);
-  if(error){ toast(error.message, false); return; }
-  toast('Сохранено');
-  await loadGuests();
-  currentGuest = guestCache.find(g=>g.id===currentGuest.id)||currentGuest;
-}
-
-async function createGuest(){
-  if(!sb){ toast('Нет подключения', false); return; }
-  const name = $('newName').value.trim();
-  const phone= $('newPhone').value.trim();
-  if(!name){ toast('Укажите имя', false); return; }
-  const { error } = await sb.from('guests').insert({
-    full_name:name, phone, nickname:$('newNick').value.trim(),
-    favorite_table:$('newTable').value.trim(), peak_hours:$('newHours').value.trim()
+async function gbImportFromCRM(){
+  if(!guestCache.length){ toast('Сначала загрузите CRM гостей',false); return; }
+  const bank=gbLoad();
+  let added=0;
+  guestCache.forEach(g=>{
+    if(!g.phone) return;
+    const exists=bank.find(b=>b.phone===g.phone);
+    if(!exists){
+      bank.push({id:'gc'+g.id, createdAt:today(), name:g.full_name||'', phone:g.phone||'', card:'', branch:'', hookah:'', dishes:'', favTable:g.favorite_table||'', notes:g.notes||''});
+      added++;
+    }
   });
-  if(error){ toast(error.message, false); return; }
-  toast('Гость создан');
-  ['newName','newPhone','newNick','newTable','newHours'].forEach(id=>$(id).value='');
-  await loadGuests();
-  showView('guests');
+  gbSaveAll(bank); renderGB(); toast(`Импортировано: ${added} гостей`);
 }
 
-// ── Preorders ─────────────────────────────────────────────────────────────────
-async function loadPreorders(){
-  if(!sb) return;
-  const box = $('preorderListBody');
-  box.innerHTML = '<div style="color:var(--muted);font-size:14px">Загрузка...</div>';
-  const { data, error } = await sb.from('hookah_preorders')
-    .select('*, guests(full_name, phone)')
-    .order('visit_date', {ascending:false})
-    .order('time_slot', {ascending:false})
-    .limit(40);
-  if(error){ box.innerHTML=`<div style="color:var(--red)">${esc(error.message)}</div>`; return; }
-  if(!data?.length){ box.innerHTML='<div style="color:var(--muted);font-size:14px">Заявок пока нет.</div>'; return; }
-  box.innerHTML = `<table class="table-list">
-    <thead><tr><th>Гость</th><th>Телефон</th><th>Дата / время</th><th>Кальян</th><th>Адрес</th><th>Статус</th></tr></thead>
-    <tbody>${data.map(r=>`<tr>
-      <td style="font-weight:600">${esc(r.guests?.full_name||'—')}</td>
-      <td style="color:var(--muted)">${esc(r.guests?.phone||'—')}</td>
-      <td>${esc(r.visit_date||'')}<br><span style="color:var(--muted)">${esc(r.time_slot||'')}</span></td>
-      <td>${esc(r.tobacco_brand||'')} ${r.strength?`<br><span style="color:var(--muted)">${esc(r.strength)}</span>`:''}</td>
-      <td style="color:var(--muted)">${esc(r.bowl_type||'')}</td>
-      <td><span class="badge ${r.status==='done'?'badge-green':'badge-teal'}">${esc(r.status||'pending')}</span></td>
-    </tr>`).join('')}</tbody>
-  </table>`;
-}
-
-
-// ══════════════════════════════════════════════
-// FLOOR MAP — BRONI MODULE
-// ══════════════════════════════════════════════
-
-const FM_FLOORS = {
-  malygin: {
-    name: 'Малыгина',
-    tables: [
-      {id:'M11',num:'11',x:14.5,y:4,  w:9.5, h:21, port:true },
-      {id:'M1', num:'1', x:37,  y:2,  w:9,   h:24, port:true },
-      {id:'M2', num:'2', x:58,  y:9,  w:13,  h:12, port:false},
-      {id:'M3', num:'3', x:73,  y:9,  w:13,  h:12, port:false},
-      {id:'M10',num:'10',x:0,   y:54, w:11.5,h:14, port:false},
-      {id:'M9', num:'9', x:13,  y:55, w:9.5, h:12, port:false},
-      {id:'M8', num:'8', x:24,  y:55, w:9.5, h:12, port:false},
-      {id:'M7', num:'7', x:35,  y:55, w:9.5, h:12, port:false},
-      {id:'M6', num:'6', x:46,  y:55, w:9.5, h:12, port:false},
-      {id:'M5', num:'5', x:61,  y:55, w:9.5, h:12, port:false},
-      {id:'M14',num:'14',x:72,  y:55, w:9.5, h:12, port:false},
-      {id:'M4', num:'4', x:83,  y:55, w:9.5, h:12, port:false},
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// FLOOR MAP
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+const FLOORS = {
+  malygin:{
+    name:'Малыгина',
+    tables:[
+      {id:'M11',num:'11',x:14.5,y:4,  w:9.5,h:21,port:true},
+      {id:'M1', num:'1', x:37,  y:2,  w:9,  h:24,port:true},
+      {id:'M2', num:'2', x:58,  y:9,  w:13, h:12,port:false},
+      {id:'M3', num:'3', x:73,  y:9,  w:13, h:12,port:false},
+      {id:'M10',num:'10',x:0,   y:54, w:11.5,h:14,port:false},
+      {id:'M9', num:'9', x:13,  y:55, w:9.5,h:12,port:false},
+      {id:'M8', num:'8', x:24,  y:55, w:9.5,h:12,port:false},
+      {id:'M7', num:'7', x:35,  y:55, w:9.5,h:12,port:false},
+      {id:'M6', num:'6', x:46,  y:55, w:9.5,h:12,port:false},
+      {id:'M5', num:'5', x:61,  y:55, w:9.5,h:12,port:false},
+      {id:'M14',num:'14',x:72,  y:55, w:9.5,h:12,port:false},
+      {id:'M4', num:'4', x:83,  y:55, w:9.5,h:12,port:false},
     ],
-    marks: [
-      {l:'Кухня',x:0,  y:4,  w:13.5,h:33, v:false},
-      {l:'Вход', x:94.5,y:3.5,w:5,  h:20, v:true },
+    marks:[
+      {l:'Кухня',x:0,y:4,w:13.5,h:33,vert:false},
+      {l:'Вход', x:94.5,y:3.5,w:5,h:20,vert:true},
     ]
   },
-  let50: {
-    name: '50 лет',
-    tables: [
+  let50:{
+    name:'50 лет',
+    tables:[
       {id:'L12',num:'12',x:2, y:2, w:12,h:13,port:false},
       {id:'L11',num:'11',x:16,y:2, w:12,h:13,port:false},
       {id:'L10',num:'10',x:30,y:2, w:12,h:13,port:false},
@@ -850,234 +720,296 @@ const FM_FLOORS = {
       {id:'L04',num:'04',x:16,y:21,w:12,h:13,port:false},
       {id:'L05',num:'05',x:30,y:21,w:12,h:13,port:false},
       {id:'L06',num:'06',x:44,y:21,w:12,h:13,port:false},
-      {id:'L07',num:'07',x:65,y:18,w:12,h:23,port:true },
-      {id:'L03',num:'03',x:2, y:38,w:12,h:20,port:true },
+      {id:'L07',num:'07',x:65,y:18,w:12,h:23,port:true},
+      {id:'L03',num:'03',x:2, y:38,w:12,h:20,port:true},
       {id:'L02',num:'02',x:16,y:58,w:12,h:13,port:false},
       {id:'L01',num:'01',x:65,y:79,w:12,h:13,port:false},
     ],
-    marks: [
-      {l:'Бар',  x:63, y:40,w:9,  h:38,v:false},
-      {l:'Окно', x:-0.5,y:35,w:5.5,h:20,v:true },
-      {l:'Вход', x:-0.5,y:73,w:5.5,h:12,v:true },
+    marks:[
+      {l:'Бар',  x:63, y:40,w:9,  h:38,vert:false},
+      {l:'Окно', x:-0.5,y:35,w:5.5,h:20,vert:true},
+      {l:'Вход', x:-0.5,y:73,w:5.5,h:12,vert:true},
     ]
   }
 };
 
-const fmSt = { branch:'malygin', subview:'map', tableId:null, editId:null };
+const fmSt={branch:'malygin',sub:'map',tid:null,editId:null,editMode:false};
 
-function fmKey(branch, date){ return 'dg_b2_'+branch+'_'+(date||fmDate()); }
-function fmDate(){ return $('bDate') ? ($('bDate').value || today()) : today(); }
-function fmLoad(branch, date){ try{ return JSON.parse(localStorage.getItem(fmKey(branch,date))||'[]'); }catch(e){ return []; } }
-function fmSave(branch, date, rows){ try{ localStorage.setItem(fmKey(branch,date), JSON.stringify(rows)); }catch(e){} }
+function fmKey(br,dt){ return 'dg_b3_'+br+'_'+(dt||fDate()); }
+function fmLoad(br,dt){ try{ return JSON.parse(localStorage.getItem(fmKey(br,dt))||'[]'); }catch(e){ return []; } }
+function fmSaveB(br,dt,rows){ try{ localStorage.setItem(fmKey(br,dt),JSON.stringify(rows)); }catch(e){} }
 function fmGenId(){ return 'b'+Math.random().toString(36).slice(2,9); }
 
-function fmStatus(tableId, branch, date){
-  const rows = fmLoad(branch, date);
-  const bks = rows.filter(r=>r.tableId===tableId);
-  if(!bks.length) return 'free';
-  const ds = date || fmDate(), td = today();
-  if(ds !== td) return 'partial';
-  const now = new Date(), mins = now.getHours()*60+now.getMinutes();
-  const active = bks.some(b=>{ const [fh,fm]=b.from.split(':').map(Number),[th,tm]=b.to.split(':').map(Number); return mins>=fh*60+fm && mins<th*60+tm; });
-  if(active) return 'booked';
-  const soon = bks.some(b=>{ const [fh,fm]=b.from.split(':').map(Number),fr=fh*60+fm; return fr>mins && fr-mins<=90; });
-  return soon ? 'soon' : 'partial';
+// Layout positions per branch
+function fmLayoutKey(br){ return 'dg_layout_'+br; }
+function fmGetLayout(br){
+  try{ const s=localStorage.getItem(fmLayoutKey(br)); if(s) return JSON.parse(s); }catch(e){}
+  return null;
+}
+function fmApplyLayout(br){
+  const saved=fmGetLayout(br);
+  if(!saved) return;
+  const fl=FLOORS[br];
+  fl.tables.forEach(t=>{ if(saved[t.id]) Object.assign(t,saved[t.id]); });
 }
 
-function fmLabel(tableId, branch, date){
-  const rows = fmLoad(branch, date);
-  const bks = rows.filter(r=>r.tableId===tableId);
+function fmStatus(tid,br,dt){
+  const rows=fmLoad(br,dt);
+  const bks=rows.filter(r=>r.tableId===tid);
+  if(!bks.length) return 'free';
+  const ds=dt||fDate(), td2=today();
+  if(ds!==td2) return 'partial';
+  const now=new Date(), mins=now.getHours()*60+now.getMinutes();
+  const active=bks.some(b=>{ const [fh,fm]=b.from.split(':').map(Number),[th,tm]=b.to.split(':').map(Number); return mins>=fh*60+fm&&mins<th*60+tm; });
+  if(active) return 'booked';
+  const soon=bks.some(b=>{ const [fh,fm]=b.from.split(':').map(Number),fr=fh*60+fm; return fr>mins&&fr-mins<=90; });
+  return soon?'soon':'partial';
+}
+
+function fmLabel(tid,br,dt){
+  const rows=fmLoad(br,dt), bks=rows.filter(r=>r.tableId===tid);
   if(!bks.length) return null;
-  const ds = date || fmDate(), td = today();
-  if(ds !== td) return bks.length+'бр';
-  const now = new Date(), mins = now.getHours()*60+now.getMinutes();
+  const ds=dt||fDate(), td2=today();
+  if(ds!==td2) return bks.length+'бр';
+  const now=new Date(), mins=now.getHours()*60+now.getMinutes();
   for(const b of bks){
     const [fh,fm]=b.from.split(':').map(Number),[th,tm]=b.to.split(':').map(Number);
     const fr=fh*60+fm, to=th*60+tm;
-    if(mins>=fr && mins<to){ const el=mins-fr; return el<60 ? el+'м' : Math.floor(el/60)+'ч'+(el%60?''+el%60+'м':''); }
+    if(mins>=fr&&mins<to){ const el=mins-fr; return el<60?el+'м':Math.floor(el/60)+'ч'+(el%60?el%60+'м':''); }
   }
-  const up = bks.filter(b=>{ const [fh,fm]=b.from.split(':').map(Number); return fh*60+fm>mins; }).sort((a,b)=>a.from.localeCompare(b.from));
-  return up.length ? up[0].from : bks.length+'бр';
+  const up=bks.filter(b=>{const [fh,fm]=b.from.split(':').map(Number);return fh*60+fm>mins;}).sort((a,b)=>a.from.localeCompare(b.from));
+  return up.length?up[0].from:bks.length+'бр';
 }
 
-function fmRender(){
-  if(fmSt.subview==='map') fmDrawMap();
-  else fmRenderList();
-  if(fmSt.tableId) fmOpenPanel(fmSt.tableId);
-}
+function fmRender(){ if(fmSt.sub==='map') fmDraw(); else fmRenderList(); if(fmSt.tid) fmOpenPan(fmSt.tid); }
 
-function fmDrawMap(){
-  const fl = FM_FLOORS[fmSt.branch];
-  const c = $('fmContainer');
-  c.innerHTML = '';
-  const map = document.createElement('div');
-  map.className = 'fm-wrap '+fmSt.branch;
+function fmDraw(){
+  fmApplyLayout(fmSt.branch);
+  const fl=FLOORS[fmSt.branch];
+  const c=$('fmContainer'); c.innerHTML='';
+  const canvas=document.createElement('div');
+  canvas.className='fm-canvas '+fmSt.branch+(fmSt.editMode?' edit-mode':'');
+  canvas.id='fmCanvas';
 
   fl.marks.forEach(m=>{
     const el=document.createElement('div');
-    el.className='fm-landmark'+(m.v?' v':'');
+    el.className='fm-lm'+(m.vert?' vert':'');
     el.textContent=m.l;
     el.style.cssText=`left:${m.x}%;top:${m.y}%;width:${m.w}%;height:${m.h}%`;
-    map.appendChild(el);
+    canvas.appendChild(el);
   });
 
   fl.tables.forEach(t=>{
-    const st = fmStatus(t.id, fmSt.branch, fmDate());
-    const lbl = fmLabel(t.id, fmSt.branch, fmDate());
-    const cnt = fmLoad(fmSt.branch, fmDate()).filter(r=>r.tableId===t.id).length;
-    const topCh = t.port ? 2 : 3;
-    const sideCh = t.port ? 2 : 1;
+    const st=fmStatus(t.id,fmSt.branch,fDate());
+    const lbl=fmLabel(t.id,fmSt.branch,fDate());
+    const cnt=fmLoad(fmSt.branch,fDate()).filter(r=>r.tableId===t.id).length;
+    const topCh=t.port?2:3, sideCh=t.port?2:1;
 
-    const slot = document.createElement('div');
-    slot.className='fm-slot';
+    const slot=document.createElement('div');
+    slot.className='fm-tslot'+(fmSt.editMode?' editing':'');
     slot.style.cssText=`left:${t.x}%;top:${t.y}%;width:${t.w}%;height:${t.h}%`;
+    slot.dataset.tid=t.id;
 
-    const topRow=document.createElement('div'); topRow.className='ch-row';
-    for(let i=0;i<topCh;i++){const c=document.createElement('div');c.className='ch h';topRow.appendChild(c);}
+    // Top chairs
+    const tr=document.createElement('div'); tr.className='ch-row';
+    for(let i=0;i<topCh;i++){const ch=document.createElement('div');ch.className='ch h';tr.appendChild(ch);}
 
+    // Middle
     const mid=document.createElement('div'); mid.className='ch-mid';
-    const lc=document.createElement('div'); lc.className='ch-mid'; lc.style.flexDirection='column'; lc.style.gap='3px';
-    for(let i=0;i<sideCh;i++){const c=document.createElement('div');c.className='ch v';lc.appendChild(c);}
-    const rc=document.createElement('div'); rc.className='ch-mid'; rc.style.flexDirection='column'; rc.style.gap='3px';
-    for(let i=0;i<sideCh;i++){const c=document.createElement('div');c.className='ch v';rc.appendChild(c);}
+    const lc=document.createElement('div'); lc.className='ch-col';
+    for(let i=0;i<sideCh;i++){const ch=document.createElement('div');ch.className='ch v';lc.appendChild(ch);}
+    const rc=document.createElement('div'); rc.className='ch-col';
+    for(let i=0;i<sideCh;i++){const ch=document.createElement('div');ch.className='ch v';rc.appendChild(ch);}
 
-    const card=document.createElement('div'); card.className='fm-card s-'+st;
-    const strip=document.createElement('div'); strip.className='strip'; card.appendChild(strip);
-    const num=document.createElement('span'); num.className='fm-num'; num.textContent=t.num; card.appendChild(num);
-    if(cnt>0){const b=document.createElement('span');b.className='fm-cnt';b.textContent=cnt;card.appendChild(b);}
-    if(lbl && st!=='free'){const tl=document.createElement('div');tl.className='fm-tl';const dot=document.createElement('div');dot.className='fm-dot';tl.appendChild(dot);tl.appendChild(document.createTextNode(lbl));card.appendChild(tl);}
+    // Table card
+    const tc=document.createElement('div');
+    tc.className='fm-tc s-'+st+(fmSt.editMode?' editing':'');
+    tc.style.cssText='flex:1;min-height:42px;';
 
-    mid.appendChild(lc); mid.appendChild(card); mid.appendChild(rc);
+    const strip=document.createElement('div'); strip.className='st-strip'; tc.appendChild(strip);
+    const num=document.createElement('span'); num.className='fm-tn'; num.textContent=t.num; tc.appendChild(num);
+    if(cnt>0){const b=document.createElement('span');b.className='fm-tcnt';b.textContent=cnt;tc.appendChild(b);}
+    if(lbl&&st!=='free'){const tl=document.createElement('div');tl.className='fm-ttl';const dot=document.createElement('div');dot.className='fm-tdot';tl.appendChild(dot);tl.appendChild(document.createTextNode(lbl));tc.appendChild(tl);}
 
-    const botRow=document.createElement('div'); botRow.className='ch-row';
-    for(let i=0;i<topCh;i++){const c=document.createElement('div');c.className='ch h';botRow.appendChild(c);}
+    mid.appendChild(lc); mid.appendChild(tc); mid.appendChild(rc);
 
-    slot.appendChild(topRow); slot.appendChild(mid); slot.appendChild(botRow);
-    slot.addEventListener('click',()=>fmOpenPanel(t.id));
-    map.appendChild(slot);
+    // Bottom chairs
+    const br2=document.createElement('div'); br2.className='ch-row';
+    for(let i=0;i<topCh;i++){const ch=document.createElement('div');ch.className='ch h';br2.appendChild(ch);}
+
+    slot.appendChild(tr); slot.appendChild(mid); slot.appendChild(br2);
+
+    if(fmSt.editMode){
+      fmMakeDraggable(slot, t, canvas);
+    } else {
+      slot.addEventListener('click',()=>fmOpenPan(t.id));
+    }
+
+    canvas.appendChild(slot);
   });
-
-  c.appendChild(map);
+  c.appendChild(canvas);
 }
 
-function fmOpenPanel(tableId){
-  fmSt.tableId=tableId;
-  const fl=FM_FLOORS[fmSt.branch];
-  const td=fl.tables.find(t=>t.id===tableId);
-  const bks=fmLoad(fmSt.branch,fmDate()).filter(r=>r.tableId===tableId).sort((a,b)=>a.from.localeCompare(b.from));
-  $('fmPTitle').textContent='Стол '+td.num+' — '+fl.name;
-  $('fmPSub').textContent=bks.length+' брон'+(bks.length===1?'ь':bks.length<5?'и':'ей')+' на '+$('bDate').value;
-  const body=$('fmPBody');
-  if(!bks.length){ body.innerHTML='<div class="broni-empty">Броней нет. Нажмите кнопку ниже чтобы добавить.</div>'; }
+// ── DRAG AND DROP ─────────────────────────────────────────────────────────────
+function fmMakeDraggable(slot, tableData, canvas){
+  let dragging=false, startX=0, startY=0, startLeft=0, startTop=0;
+
+  slot.addEventListener('mousedown',(e)=>{
+    e.preventDefault();
+    dragging=true;
+    slot.classList.add('dragging');
+    const rect=canvas.getBoundingClientRect();
+    startX=e.clientX; startY=e.clientY;
+    startLeft=tableData.x; startTop=tableData.y;
+    const onMove=(e2)=>{
+      if(!dragging) return;
+      const dx=((e2.clientX-startX)/rect.width)*100;
+      const dy=((e2.clientY-startY)/rect.height)*100;
+      const nx=Math.max(0,Math.min(95-tableData.w, startLeft+dx));
+      const ny=Math.max(0,Math.min(95-tableData.h, startTop+dy));
+      slot.style.left=nx+'%'; slot.style.top=ny+'%';
+      tableData.x=nx; tableData.y=ny;
+    };
+    const onUp=()=>{
+      dragging=false; slot.classList.remove('dragging');
+      document.removeEventListener('mousemove',onMove);
+      document.removeEventListener('mouseup',onUp);
+    };
+    document.addEventListener('mousemove',onMove);
+    document.addEventListener('mouseup',onUp);
+  });
+
+  // Touch support
+  slot.addEventListener('touchstart',(e)=>{
+    const t2=e.touches[0];
+    dragging=true; slot.classList.add('dragging');
+    const rect=canvas.getBoundingClientRect();
+    startX=t2.clientX; startY=t2.clientY;
+    startLeft=tableData.x; startTop=tableData.y;
+    const onMove=(e2)=>{
+      e2.preventDefault();
+      if(!dragging) return;
+      const touch=e2.touches[0];
+      const dx=((touch.clientX-startX)/rect.width)*100;
+      const dy=((touch.clientY-startY)/rect.height)*100;
+      const nx=Math.max(0,Math.min(95-tableData.w,startLeft+dx));
+      const ny=Math.max(0,Math.min(95-tableData.h,startTop+dy));
+      slot.style.left=nx+'%'; slot.style.top=ny+'%';
+      tableData.x=nx; tableData.y=ny;
+    };
+    const onUp=()=>{ dragging=false; slot.classList.remove('dragging'); slot.removeEventListener('touchmove',onMove); slot.removeEventListener('touchend',onUp); };
+    slot.addEventListener('touchmove',onMove,{passive:false});
+    slot.addEventListener('touchend',onUp);
+  });
+}
+
+function fmToggleEdit(){
+  fmSt.editMode=!fmSt.editMode;
+  $('btnEditLayout').textContent=fmSt.editMode?'✓ Готово':'✎ Схема';
+  $('btnEditLayout').classList.toggle('btn-primary',fmSt.editMode);
+  $('editBanner').classList.toggle('hidden',!fmSt.editMode);
+  fmDraw();
+}
+
+function fmSaveLayout(){
+  const fl=FLOORS[fmSt.branch];
+  const layout={};
+  fl.tables.forEach(t=>{ layout[t.id]={x:t.x,y:t.y}; });
+  localStorage.setItem(fmLayoutKey(fmSt.branch),JSON.stringify(layout));
+  toast('Схема сохранена ✓');
+}
+
+function fmResetLayout(){
+  localStorage.removeItem(fmLayoutKey(fmSt.branch));
+  // Reset to defaults
+  const defaults={
+    malygin:{M11:{x:14.5,y:4},M1:{x:37,y:2},M2:{x:58,y:9},M3:{x:73,y:9},M10:{x:0,y:54},M9:{x:13,y:55},M8:{x:24,y:55},M7:{x:35,y:55},M6:{x:46,y:55},M5:{x:61,y:55},M14:{x:72,y:55},M4:{x:83,y:55}},
+    let50:{L12:{x:2,y:2},L11:{x:16,y:2},L10:{x:30,y:2},L09:{x:44,y:2},L08:{x:65,y:2},L04:{x:16,y:21},L05:{x:30,y:21},L06:{x:44,y:21},L07:{x:65,y:18},L03:{x:2,y:38},L02:{x:16,y:58},L01:{x:65,y:79}}
+  };
+  FLOORS[fmSt.branch].tables.forEach(t=>{ if(defaults[fmSt.branch][t.id]) Object.assign(t,defaults[fmSt.branch][t.id]); });
+  fmDraw(); toast('Схема сброшена');
+}
+
+function fmOpenPan(tid){
+  fmSt.tid=tid;
+  const fl=FLOORS[fmSt.branch];
+  const td=fl.tables.find(t=>t.id===tid);
+  const bks=fmLoad(fmSt.branch,fDate()).filter(r=>r.tableId===tid).sort((a,b)=>a.from.localeCompare(b.from));
+  $('fmPT').textContent='Стол '+td.num+' — '+fl.name;
+  $('fmPS').textContent=bks.length+' брон'+(bks.length===1?'ь':bks.length<5?'и':'ей')+' · '+fDate();
+  const body=$('fmPB'); body.innerHTML='';
+  if(!bks.length){ body.innerHTML='<div style="color:var(--muted);padding:24px;text-align:center;font-size:13px">Броней нет</div>'; }
   else{
-    body.innerHTML='';
-    const now=new Date(),mins=now.getHours()*60+now.getMinutes(),td2=today();
+    const now=new Date(), mins=now.getHours()*60+now.getMinutes(), td2=today();
     bks.forEach(b=>{
       const card=document.createElement('div'); card.className='bkc';
       const [fh,fm]=b.from.split(':').map(Number),[th,tm]=b.to.split(':').map(Number);
-      const fr=fh*60+fm,to=th*60+tm;
-      let cls='bk-upcoming',lbl=b.from+'–'+b.to;
-      if(fmDate()===td2){
-        if(mins>=fr&&mins<to){cls='bk-active';lbl='● Сейчас';}
-        else if(to<=mins){cls='bk-done';}
-      }
-      const stLbl={confirmed:'Подтверждена',vip:'VIP',waiting:'Ожидание'}[b.status]||'';
-      card.innerHTML=`<div class="bkc-hdr"><span class="bkc-name">${esc(b.name)}</span><span class="bk-badge ${cls}">${lbl}</span></div>
-      <div class="bkc-meta"><span>👥 ${b.guests||1}</span><span>📞 ${esc(b.phone||'—')}</span>${stLbl?`<span style="color:var(--teal)">${stLbl}</span>`:''}</div>
-      ${b.hookah||b.dishes?`<div class="bkc-tags">${b.hookah?`<span class="bkc-tag">🌿 ${esc(b.hookah)}</span>`:''}${b.dishes?`<span class="bkc-tag" style="background:rgba(79,152,163,.12);color:var(--teal)">${esc(b.dishes)}</span>`:''}</div>`:''}
+      const fr=fh*60+fm, to=th*60+tm;
+      let cls='bb-up', lbl=b.from+'–'+b.to;
+      if(fDate()===td2){ if(mins>=fr&&mins<to){cls='bb-active';lbl='● Сейчас';} else if(to<=mins){cls='bb-done';} }
+      const stLbl={confirmed:'',vip:'⭐ VIP',waiting:'⏳ Ожидание'}[b.status]||'';
+      card.innerHTML=`<div class="bkc-top"><span class="bkc-name">${esc(b.name)}</span><span class="bkc-badge ${cls}">${lbl}</span></div>
+      <div class="bkc-meta"><span>👥 ${b.guests||1}</span><span>${esc(b.phone||'—')}</span>${stLbl?`<span>${stLbl}</span>`:''}</div>
+      ${b.hookah||b.dishes?`<div class="bkc-tags">${b.hookah?`<span class="bktag bktag-h">🌿 ${esc(b.hookah)}</span>`:''}${b.dishes?`<span class="bktag bktag-d">🍽 ${esc(b.dishes)}</span>`:''}</div>`:''}
       ${b.notes?`<div style="margin-top:4px;font-size:11px;color:var(--muted);font-style:italic">"${esc(b.notes)}"</div>`:''}`;
-      card.addEventListener('click',()=>openBm(b.id,tableId));
+      card.addEventListener('click',()=>openBm(b.id,tid));
       body.appendChild(card);
     });
   }
   $('fmPanel').style.display='';
 }
 
-function fmClosePanel(){ $('fmPanel').style.display='none'; fmSt.tableId=null; }
-
-function fmBranch(branch){
-  fmSt.branch=branch; fmSt.tableId=null;
-  $('fmTabMalygin').classList.toggle('active',branch==='malygin');
-  $('fmTabLet50').classList.toggle('active',branch==='let50');
-  fmClosePanel(); fmRender();
-}
-
-function fmSubview(v){
-  fmSt.subview=v;
-  $('fmMapView').style.display=v==='map'?'':'none';
-  $('fmListView').style.display=v==='list'?'':'none';
-  $('vtMap').classList.toggle('active',v==='map');
-  $('vtList').classList.toggle('active',v==='list');
-  fmRender();
-}
+function fmClosePan(){ $('fmPanel').style.display='none'; fmSt.tid=null; }
+function fmBranch(br){ fmSt.branch=br; fmSt.tid=null; $('fmTM').classList.toggle('active',br==='malygin'); $('fmT5').classList.toggle('active',br==='let50'); fmClosePan(); fmRender(); }
+function fmSub(v){ fmSt.sub=v; $('fmMapView').style.display=v==='map'?'':'none'; $('fmListView').style.display=v==='list'?'':'none'; $('vtMap').classList.toggle('active',v==='map'); $('vtList').classList.toggle('active',v==='list'); fmRender(); }
 
 function fmRenderList(){
-  const q=($('fmSearch')?$('fmSearch').value:'').toLowerCase();
-  const date=fmDate();
-  const all=['malygin','let50'].flatMap(br=>fmLoad(br,date).map(b=>({...b,branch:br})));
-  const filtered=q?all.filter(b=>b.name.toLowerCase().includes(q)||b.phone.includes(q)||b.tableId.toLowerCase().includes(q)):all;
+  const q=($('fmSrch')?$('fmSrch').value.trim():''), dt=fDate();
+  const all=['malygin','let50'].flatMap(br=>fmLoad(br,dt).map(b=>({...b,br})));
+  const filtered=q?all.filter(b=>b.name.toLowerCase().includes(q.toLowerCase())||b.phone.includes(q)||b.tableId.toLowerCase().includes(q)):all;
   filtered.sort((a,b)=>a.from.localeCompare(b.from));
   const body=$('fmListBody');
-  if(!filtered.length){body.innerHTML='<div style="color:var(--muted);padding:24px;font-size:14px">Броней нет на этот день.</div>';return;}
-  const now=new Date(),mins=now.getHours()*60+now.getMinutes(),td2=today();
+  if(!filtered.length){ body.innerHTML='<div style="color:var(--muted);padding:24px;font-size:14px">Броней нет на этот день.</div>'; return; }
+  const now=new Date(), mins=now.getHours()*60+now.getMinutes(), td2=today();
   body.innerHTML=`<table class="table-list"><thead><tr><th>Стол</th><th>Гость</th><th>Телефон</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>
   ${filtered.map(b=>{
-    const fl=FM_FLOORS[b.branch],tbl=fl.tables.find(t=>t.id===b.tableId);
-    const tname=tbl?fl.name+' · '+tbl.num:b.tableId;
-    const [fh,fm]=b.from.split(':').map(Number),[th,tm]=b.to.split(':').map(Number);
-    const fr=fh*60+fm,to2=th*60+tm;
-    let chip='<span style="color:var(--teal)">▲ '+b.from+'</span>';
-    if(date===td2){if(mins>=fr&&mins<to2)chip='<span style="color:var(--green)">● Сейчас</span>';else if(to2<=mins)chip='<span style="color:var(--faint)">Завершена</span>';}
-    const stCl={confirmed:'badge-teal',vip:'',waiting:''}[b.status]||'';
-    return `<tr>
-      <td style="font-weight:700;color:var(--teal)">${esc(tname)}</td>
-      <td style="font-weight:600">${esc(b.name)}</td>
-      <td style="color:var(--muted)">${esc(b.phone||'—')}</td>
-      <td>${esc(b.from)}–${esc(b.to)}</td>
-      <td style="color:var(--muted)">${b.guests||1}</td>
-      <td style="font-size:12px">${esc(b.hookah||'—')}</td>
-      <td>${chip}</td>
-      <td><button class="btn btn-sm" onclick="openBm('${b.id}','${b.tableId}')" style="padding:3px 9px;font-size:12px">✎</button></td>
-    </tr>`;
-  }).join('')}
-  </tbody></table>`;
+    const fl=FLOORS[b.br], tbl=fl.tables.find(t=>t.id===b.tableId);
+    const tn=tbl?fl.name+' · '+tbl.num:b.tableId;
+    const [fh,fm2]=b.from.split(':').map(Number),[th,tm2]=b.to.split(':').map(Number);
+    const fr=fh*60+fm2, to2=th*60+tm2;
+    let chip=`<span style="color:var(--teal)">▲ ${b.from}</span>`;
+    if(dt===td2){ if(mins>=fr&&mins<to2)chip=`<span style="color:var(--green)">● Сейчас</span>`; else if(to2<=mins)chip=`<span style="color:var(--faint)">✓ Завершена</span>`; }
+    return `<tr><td style="font-weight:700;color:var(--teal)">${esc(tn)}</td><td style="font-weight:600">${esc(b.name)}</td><td style="color:var(--muted)">${esc(b.phone||'—')}</td><td>${esc(b.from)}–${esc(b.to)}</td><td style="color:var(--muted)">${b.guests||1}</td><td style="font-size:12px">${esc(b.hookah||'—')}</td><td>${chip}</td><td><button class="btn btn-sm" onclick="openBm('${b.id}','${b.tableId}')" style="padding:3px 9px;font-size:12px">✎</button></td></tr>`;
+  }).join('')}</tbody></table>`;
 }
 
-// ─── BOOKING MODAL ────────────────────────────────────────────────────────────
-function openBm(bookingId, tableId){
+// ── BOOKING MODAL ──────────────────────────────────────────────────────────────
+function openBm(bookingId,tableId){
   fmSt.editId=bookingId;
-  // Build table select
   const sel=$('bmTbl'); sel.innerHTML='';
   ['malygin','let50'].forEach(br=>{
-    const fl=FM_FLOORS[br],g=document.createElement('optgroup');
-    g.label=fl.name;
-    fl.tables.forEach(t=>{
-      const o=document.createElement('option'); o.value=t.id; o.textContent='Стол '+t.num;
-      if(t.id===(tableId||fmSt.tableId)) o.selected=true;
-      g.appendChild(o);
-    });
+    const fl=FLOORS[br], g=document.createElement('optgroup'); g.label=fl.name;
+    fl.tables.forEach(t=>{ const o=document.createElement('option'); o.value=t.id; o.textContent='Стол '+t.num; if(t.id===(tableId||fmSt.tid)) o.selected=true; g.appendChild(o); });
     sel.appendChild(g);
   });
-  $('bmDt').value=fmDate();
+  $('bmDt').value=fDate();
   if(bookingId){
-    const branch=['malygin','let50'].find(br=>fmLoad(br,fmDate()).find(b=>b.id===bookingId))||fmSt.branch;
-    const b=fmLoad(branch,fmDate()).find(b=>b.id===bookingId);
+    const br2=['malygin','let50'].find(br=>fmLoad(br,fDate()).find(b=>b.id===bookingId))||fmSt.branch;
+    const b=fmLoad(br2,fDate()).find(b=>b.id===bookingId);
     if(b){
-      $('bmTtl').textContent='Редактировать бронь';
-      $('bmDelBtn').style.display='';
-      $('bmNm').value=b.name||'';$('bmPh').value=b.phone||'';$('bmDt').value=b.date||fmDate();
+      $('bmTtl').textContent='Бронь — '+b.name; $('bmDelBtn').style.display='';
+      $('bmNm').value=b.name||''; $('bmPh').value=b.phone||''; $('bmDt').value=b.date||fDate();
       const o2=$('bmTbl').querySelector(`option[value="${b.tableId}"]`); if(o2) o2.selected=true;
-      $('bmFr').value=b.from||'19:00';$('bmTo').value=b.to||'22:00';
-      $('bmGst').value=b.guests||2;$('bmSt').value=b.status||'confirmed';
-      $('bmHk').value=b.hookah||'';$('bmDs').value=b.dishes||'';$('bmNo').value=b.notes||'';
-      const g2=guestCache.find(x=>x.phone&&x.phone.replace(/\D/g,'').includes((b.phone||'').replace(/\D/g,'').slice(-7)));
-      if(g2) bmShowGuest(g2); else bmHideGuest();
+      $('bmFr').value=b.from||'19:00'; $('bmTo').value=b.to||'22:00';
+      $('bmGst').value=b.guests||2; $('bmSt').value=b.status||'confirmed';
+      $('bmHk').value=b.hookah||''; $('bmDs').value=b.dishes||''; $('bmNo').value=b.notes||'';
+      const gb2=gbLoad().find(g=>g.phone&&g.phone===b.phone);
+      if(gb2) bmShowGuest(gb2); else bmHideGuest();
     }
   } else {
-    $('bmTtl').textContent='Новая бронь';
-    $('bmDelBtn').style.display='none';
-    $('bmNm').value='';$('bmPh').value='';$('bmFr').value='19:00';$('bmTo').value='22:00';
-    $('bmGst').value=2;$('bmSt').value='confirmed';$('bmHk').value='';$('bmDs').value='';$('bmNo').value='';
+    $('bmTtl').textContent='Новая бронь'; $('bmDelBtn').style.display='none';
+    $('bmNm').value=''; $('bmPh').value=''; $('bmFr').value='19:00'; $('bmTo').value='22:00';
+    $('bmGst').value=2; $('bmSt').value='confirmed'; $('bmHk').value=''; $('bmDs').value=''; $('bmNo').value='';
     bmHideGuest();
   }
   $('bmOvl').classList.remove('hidden');
@@ -1087,70 +1019,160 @@ function closeBm(){ $('bmOvl').classList.add('hidden'); }
 
 function bmFill(){
   const q=$('bmNm').value.trim();
-  if(q.length<2){bmHideGuest();return;}
-  const g=guestCache.find(x=>x.full_name&&x.full_name.toLowerCase().includes(q.toLowerCase()));
-  if(g) bmShowGuest(g); else bmHideGuest();
+  if(q.length<2){ bmHideGuest(); return; }
+  const g=gbLoad().find(x=>x.name.toLowerCase().includes(q.toLowerCase()));
+  if(g) bmShowGuest(g);
+  else { const gc=guestCache.find(x=>x.full_name&&x.full_name.toLowerCase().includes(q.toLowerCase())); if(gc) bmShowGuestCRM(gc); else bmHideGuest(); }
 }
 
 function bmShowGuest(g){
-  const card=$('bmGPC'); card.classList.add('visible');
-  const ini=(g.full_name||'?').split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase();
-  $('bmAv').textContent=ini;
-  $('bmGN').textContent=g.full_name||'';
-  $('bmGS').textContent=(g.hookah_brand||'')+(g.notes?' · '+g.notes:'');
-  const rows=$('bmGRows'); rows.innerHTML='';
-  if(g.hookah_brand){rows.innerHTML+=`<div class="gpc-row"><span class="gpc-lbl">Любимый кальян</span><span class="gpc-val">${esc(g.hookah_brand)}</span></div>`;}
-  if(g.notes){rows.innerHTML+=`<div class="gpc-row"><span class="gpc-lbl">Заметки</span><span class="gpc-val" style="color:#f5a623">${esc(g.notes)}</span></div>`;}
-  if(g.hookah_brand && !$('bmHk').value) $('bmHk').value=g.hookah_brand;
-  if(g.phone && !$('bmPh').value) $('bmPh').value=g.phone;
+  $('bmGPA').classList.add('on');
+  $('bmAv').textContent=gbInitials(g.name); $('bmGN').textContent=g.name; $('bmGS').textContent=g.phone||'';
+  $('bmGRows').innerHTML=`${g.hookah?`<div class="gpa-row"><span class="gpa-lbl">🌿 Кальян</span><span class="gpa-val">${esc(g.hookah)}</span></div>`:''}${g.dishes?`<div class="gpa-row"><span class="gpa-lbl">🍽 Блюда</span><span class="gpa-val">${esc(g.dishes)}</span></div>`:''}${g.notes?`<div class="gpa-row"><span class="gpa-lbl">📝 Заметки</span><span class="gpa-val" style="color:var(--orange)">${esc(g.notes)}</span></div>`:''}`;
+  if(g.hookah&&!$('bmHk').value) $('bmHk').value=g.hookah;
+  if(g.phone&&!$('bmPh').value) $('bmPh').value=g.phone;
 }
 
-function bmHideGuest(){ $('bmGPC').classList.remove('visible'); }
+function bmShowGuestCRM(g){
+  $('bmGPA').classList.add('on');
+  const nm=g.full_name||''; $('bmAv').textContent=gbInitials(nm); $('bmGN').textContent=nm; $('bmGS').textContent=g.phone||'';
+  $('bmGRows').innerHTML=`${g.notes?`<div class="gpa-row"><span class="gpa-lbl">📝 Заметки CRM</span><span class="gpa-val">${esc(g.notes)}</span></div>`:''}`;
+  if(g.phone&&!$('bmPh').value) $('bmPh').value=g.phone;
+}
+
+function bmHideGuest(){ $('bmGPA').classList.remove('on'); }
 
 function bmSave(){
-  const name=$('bmNm').value.trim();
-  if(!name){toast('Введите имя гостя',false);return;}
-  const tableId=$('bmTbl').value;
-  const date=$('bmDt').value||fmDate();
-  const branch=['M11','M1','M2','M3','M10','M9','M8','M7','M6','M5','M14','M4'].includes(tableId)?'malygin':'let50';
-  const bk={
-    id:fmSt.editId||fmGenId(), tableId, branch, date,
-    name, phone:$('bmPh').value.trim(),
-    from:$('bmFr').value, to:$('bmTo').value,
-    guests:parseInt($('bmGst').value)||2, status:$('bmSt').value,
-    hookah:$('bmHk').value.trim(), dishes:$('bmDs').value.trim(), notes:$('bmNo').value.trim()
-  };
-  let rows=fmLoad(branch,date);
-  if(fmSt.editId){ rows=rows.filter(r=>r.id!==fmSt.editId); }
-  rows.push(bk);
-  fmSave(branch,date,rows);
-  toast('Бронь сохранена ✓');
-  closeBm(); fmRender();
-  if(fmSt.tableId) fmOpenPanel(fmSt.tableId);
+  const name=$('bmNm').value.trim(); if(!name){ toast('Введите имя',false); return; }
+  const tableId=$('bmTbl').value, date=$('bmDt').value||fDate();
+  const br=['M11','M1','M2','M3','M10','M9','M8','M7','M6','M5','M14','M4'].includes(tableId)?'malygin':'let50';
+  const bk={id:fmSt.editId||fmGenId(),tableId,branch:br,date,name,phone:$('bmPh').value.trim(),from:$('bmFr').value,to:$('bmTo').value,guests:parseInt($('bmGst').value)||2,status:$('bmSt').value,hookah:$('bmHk').value.trim(),dishes:$('bmDs').value.trim(),notes:$('bmNo').value.trim()};
+  let rows=fmLoad(br,date);
+  if(fmSt.editId) rows=rows.filter(r=>r.id!==fmSt.editId);
+  rows.push(bk); fmSaveB(br,date,rows);
+  toast('Бронь сохранена ✓'); closeBm(); fmRender();
+  if(fmSt.tid) fmOpenPan(fmSt.tid);
 }
 
 function bmDel(){
   if(!fmSt.editId) return;
-  ['malygin','let50'].forEach(br=>{
-    const date=$('bmDt').value||fmDate();
-    fmSave(br,date,fmLoad(br,date).filter(r=>r.id!==fmSt.editId));
-  });
-  toast('Бронь удалена');
-  closeBm(); fmRender();
-  if(fmSt.tableId) fmOpenPanel(fmSt.tableId);
+  const dt=$('bmDt').value||fDate();
+  ['malygin','let50'].forEach(br=>fmSaveB(br,dt,fmLoad(br,dt).filter(r=>r.id!==fmSt.editId)));
+  toast('Бронь удалена'); closeBm(); fmRender();
+  if(fmSt.tid) fmOpenPan(fmSt.tid);
 }
 
-// Backward-compat stubs for old bookings functions
-function renderBookings(){}
-function saveBooking(){}
-function deleteBooking(){}
-function findGuestForBooking(){}
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CRM (Supabase guests)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function loadGuests(){
+  if(!sb){ $('guestListBody').innerHTML='<div style="color:var(--muted)">Нет подключения к CRM</div>'; return; }
+  const {data,error}=await sb.from('guests').select('*').order('full_name');
+  if(error){ $('guestListBody').innerHTML=`<div style="color:var(--red)">${esc(error.message)}</div>`; return; }
+  guestCache=data||[];
+  renderGuestList(guestCache);
+}
 
+function renderGuestList(list){
+  if(!list.length){ $('guestListBody').innerHTML='<div style="color:var(--muted);font-size:14px">Гостей нет</div>'; return; }
+  $('guestListBody').innerHTML=`<table class="table-list"><thead><tr><th>Имя</th><th>Телефон</th><th>Любимый стол</th><th>Заметки</th><th></th></tr></thead><tbody>
+  ${list.map(g=>`<tr><td style="font-weight:600">${esc(g.full_name||'—')}</td><td style="color:var(--muted)">${esc(g.phone||'—')}</td><td style="color:var(--muted)">${esc(g.favorite_table||'—')}</td><td style="color:var(--muted);font-size:12px">${esc((g.notes||'').slice(0,60))}</td><td><button class="btn btn-sm" onclick="openGuestCard('${g.id}')" style="padding:4px 10px;font-size:12px">Открыть</button></td></tr>`).join('')}
+  </tbody></table>`;
+}
 
-// ── Init ──────────────────────────────────────────────────────────────────────
-const savedKey = localStorage.getItem('dg_key')||'';
-if($('cfgKey')) $('cfgKey').value = savedKey;
-if($('staffPass')) $('staffPass').value = localStorage.getItem('dg_pass')||'';
+function searchGuests(){ const q=($('gSrch')?$('gSrch').value:'').toLowerCase(); renderGuestList(q?guestCache.filter(g=>(g.full_name||'').toLowerCase().includes(q)||(g.phone||'').includes(q)):guestCache); }
+
+async function openGuestCard(id){
+  currentGuest=guestCache.find(g=>g.id===id)||null;
+  if(!currentGuest){ toast('Гость не найден',false); return; }
+  renderGuestCard(); showView('guest-card');
+}
+
+function renderGuestCard(){
+  if(!currentGuest){ $('guestCardContent').innerHTML='<div style="color:var(--muted)">Выберите гостя</div>'; return; }
+  const g=currentGuest;
+  $('guestCardContent').innerHTML=`<div class="grid-2" style="gap:16px">
+    <div class="card">
+      <div class="section-title">${esc(g.full_name||'Гость')}</div>
+      <div style="font-size:14px;color:var(--muted);margin-bottom:12px">${esc(g.phone||'')}</div>
+      <div class="grid" style="gap:10px">
+        <div><div class="label">Заметки</div><div style="font-size:14px;white-space:pre-wrap">${esc(g.notes||'—')}</div></div>
+        <div><div class="label">Любимый стол</div><div style="font-size:14px">${esc(g.favorite_table||'—')}</div></div>
+        <div><div class="label">Пиковые часы</div><div style="font-size:14px">${esc(g.peak_hours||'—')}</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-title">Редактировать в CRM</div>
+      <div class="grid" style="gap:10px">
+        <div class="field"><div class="label">Заметки сотрудника</div><textarea class="textarea" id="tNotes">${esc(g.notes||'')}</textarea></div>
+        <div class="field"><div class="label">Любимый стол</div><input class="input" id="tTable" value="${esc(g.favorite_table||'')}"></div>
+        <div class="field"><div class="label">Пиковые часы</div><input class="input" id="tHours" value="${esc(g.peak_hours||'')}"></div>
+      </div>
+      <div style="margin-top:12px;padding:10px;background:rgba(212,133,58,.08);border:1px solid rgba(212,133,58,.2);border-radius:10px;font-size:12px;color:var(--orange)">
+        💡 Кальян гостя — в <button onclick="showView('guestbank')" style="color:var(--teal);text-decoration:underline;background:none;border:none;cursor:pointer;font-size:12px">Банке гостей</button>
+      </div>
+      <button class="btn btn-primary" style="margin-top:12px" onclick="saveGuestCard()">Сохранить</button>
+    </div>
+  </div>`;
+}
+
+async function saveGuestCard(){
+  if(!sb||!currentGuest) return;
+  const {error}=await sb.from('guests').update({notes:$('tNotes')?.value,favorite_table:$('tTable')?.value,peak_hours:$('tHours')?.value}).eq('id',currentGuest.id);
+  if(error){ toast(error.message,false); return; }
+  toast('Сохранено ✓'); await loadGuests(); currentGuest=guestCache.find(g=>g.id===currentGuest.id)||currentGuest;
+}
+
+async function createGuest(){
+  if(!sb){ toast('Нет подключения',false); return; }
+  const name=$('newName').value.trim(); if(!name){ toast('Укажите имя',false); return; }
+  const {error}=await sb.from('guests').insert({full_name:name,phone:$('newPhone').value.trim(),nickname:$('newNick').value.trim(),favorite_table:$('newTable').value.trim(),peak_hours:$('newHours').value.trim()});
+  if(error){ toast(error.message,false); return; }
+  toast('Гость создан'); ['newName','newPhone','newNick','newTable','newHours'].forEach(id=>$(id).value='');
+  await loadGuests(); showView('guests');
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// PREORDERS (no API key required)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+async function loadPreorders(){
+  const box=$('preorderListBody');
+  // First show local orders
+  const local=JSON.parse(localStorage.getItem('dg_po')||'[]');
+  // Try to also load from Supabase (anon or with key)
+  let dbOrders=[];
+  try{
+    const key=getKey()||'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2bXRncGV1ZG1jc2RkanBrdG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU3NTQwMjEsImV4cCI6MjA2MTMzMDAyMX0.oO4RUPUi2BYJjqSMKtNRCzaToaFv-O5MxjvKqIjQq1M';
+    const cli=window.supabase.createClient(SUPABASE_URL,key);
+    const {data}=await cli.from('hookah_preorders').select('*, guests(full_name,phone)').order('created_at',{ascending:false}).limit(50);
+    dbOrders=data||[];
+  }catch(e){}
+
+  if(!dbOrders.length&&!local.length){ box.innerHTML='<div style="color:var(--muted);font-size:14px">Заявок пока нет.</div>'; return; }
+
+  let html='';
+  if(dbOrders.length){
+    html+=dbOrders.map(r=>`<div class="po-row">
+      <div class="po-time">${esc(r.time_slot||'—')}</div>
+      <div><div class="po-name">${esc(r.guests?.full_name||'Гость')}</div>
+      <div class="po-detail">${esc(r.guests?.phone||'')} · ${esc(r.address||'')} · ${esc(r.visit_date||'')}</div>
+      ${r.tobacco_brand?`<span class="po-tag">🌿 ${esc(r.tobacco_brand)}${r.strength?' · '+esc(r.strength):''}</span>`:''}
+      </div></div>`).join('');
+  } else {
+    html+=local.map(r=>`<div class="po-row">
+      <div class="po-time">${esc(r.time||'—')}</div>
+      <div><div class="po-name">${esc(r.name)}</div>
+      <div class="po-detail">${esc(r.phone||'')} · ${esc(r.addr||'')}</div>
+      ${r.brand&&r.brand!=='Как всегда'?`<span class="po-tag">🌿 ${esc(r.brand)}${r.strength?' · '+esc(r.strength):''}</span>`:''}
+      ${r.usual?`<span class="po-tag" style="background:rgba(109,170,69,.15);color:var(--green)">✓ Как всегда</span>`:''}
+      </div></div>`).join('');
+  }
+  box.innerHTML=html;
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+const _savedKey=localStorage.getItem('dg_key')||'';
+if($('staffPass')) $('staffPass').value=_savedKey;
 restoreSession();
 </script>
 </body>
