@@ -280,10 +280,8 @@ button{cursor:pointer;user-select:none}
 
       <!-- Floor toolbar -->
       <div class="fm-bar">
-        <div class="fm-tabs">
-          <button class="fm-tab on" id="ft5" onclick="fmBr('5')">50 лет</button>
-          <button class="fm-tab" id="ftM" onclick="fmBr('m')">Малыгина</button>
-        </div>
+        <div class="fm-tabs" id="brTabs"></div>
+        <button class="btn btn-sm" onclick="openAddBr()" style="font-size:18px;padding:3px 10px;line-height:1" title="Добавить зал">+</button>
         <div class="row" style="gap:5px">
           <button class="btn btn-sm" id="vtMap" onclick="fmSV('map')" style="padding:5px 10px;font-size:11px" disabled>Карта</button>
           <button class="btn btn-sm" id="vtList" onclick="fmSV('list')" style="padding:5px 10px;font-size:11px">Список</button>
@@ -422,6 +420,30 @@ button{cursor:pointer;user-select:none}
       </div>
     </div>
 
+
+    <!-- ADD BRANCH MODAL -->
+    <div class="mo h" id="brOvl">
+      <div class="mo-box" style="max-width:380px">
+        <div class="mo-hdr"><span class="mo-ttl" id="brMoTtl">Новый зал</span><button class="btn btn-xs" onclick="closeAddBr()">✕</button></div>
+        <div class="mo-body">
+          <div class="mo-sec">
+            <div class="g" style="gap:10px">
+              <div class="fld"><div class="lbl">Название зала</div><input id="brName" class="inp" placeholder="Например: Банкетный зал"></div>
+              <div class="g2" style="gap:8px">
+                <div class="fld"><div class="lbl">Ширина (px)</div><input id="brW" class="inp" type="number" value="1200" min="400" max="3000"></div>
+                <div class="fld"><div class="lbl">Высота (px)</div><input id="brH" class="inp" type="number" value="700" min="300" max="2000"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mo-foot">
+          <button class="btn btn-xs btn-d" id="brDel" style="margin-right:auto;display:none" onclick="deleteBr()">🗑 Удалить зал</button>
+          <button class="btn btn-xs" onclick="closeAddBr()">Отмена</button>
+          <button class="btn btn-xs btn-p" onclick="saveBr()">Создать зал</button>
+        </div>
+      </div>
+    </div>
+
     <!-- GUEST BANK -->
     <div id="v-gb" class="h">
       <div class="rowb" style="margin-bottom:11px">
@@ -494,7 +516,7 @@ button{cursor:pointer;user-select:none}
 // ──────────────────────────────────────────────────────────────────────────────
 const SB_URL='https://vvmtgpeudmcsddjpktme.supabase.co';
 const ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2bXRncGV1ZG1jc2RkanBrdG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU3NTQwMjEsImV4cCI6MjA2MTMzMDAyMX0.oO4RUPUi2BYJjqSMKtNRCzaToaFv-O5MxjvKqIjQq1M';
-const CANVAS={m:{w:1540,h:720},5:{w:1020,h:900}};
+// CANVAS and LMS are now part of BRANCHES registry (see below)
 const ZOOM_S=[0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.25,1.5,1.75,2.0];
 
 const DEF_TABLES={
@@ -527,11 +549,12 @@ const DEF_TABLES={
     {id:'L01',n:'01',x:790,y:730,w:130,h:80,c:{t:3,b:3,l:1,r:1}},
   ]
 };
-const LMS={
+// Landmark data per branch (built-in)
+const BUILTIN_LMS={
   m:[{l:'Кухня',x:20,y:20,w:130,h:300,v:false},{l:'Вход',x:1450,y:20,w:55,h:200,v:true}],
-  5:[{l:'Бар',x:756,y:440,w:95,h:380,v:false},{l:'Окно',x:8,y:350,w:48,h:200,v:true},{l:'Вход',x:8,y:700,w:48,h:90,v:true}]
+  '5':[{l:'Бар',x:756,y:440,w:95,h:380,v:false},{l:'Окно',x:8,y:350,w:48,h:200,v:true},{l:'Вход',x:8,y:700,w:48,h:90,v:true}]
 };
-const BRNAMES={m:'Малыгина','5':'50 лет'};
+// BRNAMES replaced by getBrName() using BRANCHES registry
 
 // ──────────────────────────────────────────────────────────────────────────────
 // IN-MEMORY CACHE (eliminates repeated localStorage reads)
@@ -545,12 +568,12 @@ const MEM={
 
 function getTables(br){
   if(!MEM.tables[br]){
-    const s=localStorage.getItem('dg_tbl_'+br);
+    const s=localStorage.getItem('dg_lay6_'+br);
     MEM.tables[br]=s?JSON.parse(s):DEF_TABLES[br].map(t=>({...t,c:{...t.c}}));
   }
   return MEM.tables[br];
 }
-function saveTables(br){localStorage.setItem('dg_tbl_'+br,JSON.stringify(MEM.tables[br]))}
+function saveTables(br){localStorage.setItem('dg_lay6_'+br,JSON.stringify(MEM.tables[br]))}
 function getBK(br,dt){
   const k=br+'_'+dt;
   if(!MEM.bk[k]){const s=localStorage.getItem('dg_bk4_'+k);MEM.bk[k]=s?JSON.parse(s):[];}
@@ -594,11 +617,89 @@ function sv(v){
 // ──────────────────────────────────────────────────────────────────────────────
 // FLOOR MAP STATE
 // ──────────────────────────────────────────────────────────────────────────────
+// ── BRANCH REGISTRY ─────────────────────────────────────────────────────────
+const BUILTIN_BRANCHES={
+  '5':{name:'50 лет',w:1020,h:900},
+  m:{name:'Малыгина',w:1540,h:720}
+};
+let BRANCHES={}; // loaded from localStorage + builtins
+
+function loadBranches(){
+  const saved=localStorage.getItem('dg_branches');
+  const custom=saved?JSON.parse(saved):{};
+  BRANCHES=Object.assign({},BUILTIN_BRANCHES,custom);
+}
+function saveBranchRegistry(){
+  // Only save custom (non-builtin) branches
+  const custom={};
+  Object.keys(BRANCHES).forEach(k=>{if(!BUILTIN_BRANCHES[k])custom[k]=BRANCHES[k];});
+  localStorage.setItem('dg_branches',JSON.stringify(custom));
+}
+function getBrName(br){return BRANCHES[br]?BRANCHES[br].name:br}
+function getBrCanvas(br){return BRANCHES[br]?{w:BRANCHES[br].w,h:BRANCHES[br].h}:{w:1200,h:700}}
+function getLMS(br){return BUILTIN_LMS[br]||[]}
+
+function renderBrTabs(){
+  const wrap=document.getElementById('brTabs');if(!wrap)return;
+  wrap.innerHTML='';
+  Object.keys(BRANCHES).forEach(k=>{
+    const btn=document.createElement('button');
+    btn.className='fm-tab'+(fmSt.br===k?' on':'');
+    btn.textContent=BRANCHES[k].name;
+    btn.onclick=()=>fmBr(k);
+    wrap.appendChild(btn);
+  });
+}
+
+// Add/Edit branch modal
+let brEditKey=null;
+function openAddBr(editKey){
+  brEditKey=editKey||null;
+  const isEdit=!!editKey;
+  document.getElementById('brMoTtl').textContent=isEdit?'Редактировать зал':'Новый зал';
+  document.getElementById('brDel').style.display=isEdit&&!BUILTIN_BRANCHES[editKey]?'':'none';
+  if(isEdit&&BRANCHES[editKey]){
+    document.getElementById('brName').value=BRANCHES[editKey].name;
+    document.getElementById('brW').value=BRANCHES[editKey].w;
+    document.getElementById('brH').value=BRANCHES[editKey].h;
+  } else {
+    document.getElementById('brName').value='';
+    document.getElementById('brW').value=1200;
+    document.getElementById('brH').value=700;
+  }
+  document.getElementById('brOvl').classList.remove('h');
+}
+function closeAddBr(){document.getElementById('brOvl').classList.add('h')}
+function saveBr(){
+  const name=document.getElementById('brName').value.trim();
+  if(!name){toast('Введите название',false);return}
+  const w=parseInt(document.getElementById('brW').value)||1200;
+  const h=parseInt(document.getElementById('brH').value)||700;
+  const key=brEditKey||(name.toLowerCase().replace(/[^a-zа-яё0-9]/gi,'').slice(0,8)+'_'+Date.now().toString(36).slice(-4));
+  BRANCHES[key]={name,w,h};
+  saveBranchRegistry();
+  closeAddBr();
+  fmBr(key);
+  renderBrTabs();
+  toast('Зал «'+name+'» создан ✓');
+}
+function deleteBr(){
+  if(!brEditKey||BUILTIN_BRANCHES[brEditKey])return;
+  delete BRANCHES[brEditKey];
+  delete MEM.tables[brEditKey];
+  localStorage.removeItem('dg_lay6_'+brEditKey);
+  saveBranchRegistry();
+  closeAddBr();
+  fmBr('5');
+  renderBrTabs();
+  toast('Зал удалён');
+}
+
 const fmSt={br:'5',sub:'map',sel:null,edit:false,zi:6};
 
 function applyZoom(){
   const z=ZOOM_S[fmSt.zi],br=fmSt.br;
-  const cw=CANVAS[br].w,ch=CANVAS[br].h;
+  const {w:cw,h:ch}=getBrCanvas(br);
   const inner=$('fmInner');
   if(!inner)return;
   inner.style.width=cw+'px';
@@ -613,7 +714,7 @@ function applyZoom(){
 function fmFit(){
   const outer=$('fmOuter');if(!outer)return;
   const ow=outer.clientWidth,oh=outer.clientHeight;
-  const cw=CANVAS[fmSt.br].w,ch=CANVAS[fmSt.br].h;
+  const {w:cw,h:ch}=getBrCanvas(fmSt.br);
   const zw=ow/cw,zh=oh/ch,zf=Math.min(zw,zh,1.0);
   const closest=ZOOM_S.reduce((a,b)=>Math.abs(b-zf)<Math.abs(a-zf)?b:a);
   fmSt.zi=ZOOM_S.indexOf(closest);applyZoom();
@@ -649,11 +750,13 @@ function fmRedraw(){if(fmSt.sub==='map')fmDraw();else fmRenderList()}
 function fmDraw(){
   const br=fmSt.br,dt=fd(),z=ZOOM_S[fmSt.zi];
   const tables=getTables(br);
+  const {w:CW,h:CH}=getBrCanvas(br);
+  inner.style.width=CW+'px';inner.style.height=CH+'px';
   const inner=$('fmInner');
   // Remove only table slots and landmarks (keep grid bg)
   inner.querySelectorAll('.fm-slot,.lm').forEach(e=>e.remove());
   // Landmarks
-  LMS[br].forEach(m=>{const el=document.createElement('div');el.className='lm'+(m.v?' v':'');el.textContent=m.l;el.style.cssText=`left:${m.x}px;top:${m.y}px;width:${m.w}px;height:${m.h}px`;inner.appendChild(el)});
+  getLMS(br).forEach(m=>{const el=document.createElement('div');el.className='lm'+(m.v?' v':'');el.textContent=m.l;el.style.cssText=`left:${m.x}px;top:${m.y}px;width:${m.w}px;height:${m.h}px`;inner.appendChild(el)});
   // Tables
   tables.forEach(t=>{
     const st=stOf(t.id,br,dt),cnt=getBK(br,dt).filter(r=>r.tid===t.id).length,lbl=lblOf(t.id,br,dt);
@@ -762,7 +865,7 @@ function fmToggleEd(){
   fmSt.sel=null;fmDraw();
 }
 function fmSaveLay(){saveTables(fmSt.br);toast('Схема сохранена ✓')}
-function fmReset(){MEM.tables[fmSt.br]=DEF_TABLES[fmSt.br].map(t=>({...t,c:{...t.c}}));saveTables(fmSt.br);fmSt.sel=null;edClear();fmDraw();toast('Схема сброшена')}
+function fmReset(){MEM.tables[fmSt.br]=DEF_TABLES[fmSt.br].map(t=>({...t,c:{...t.c}}));['dg_lay6_m','dg_lay6_5','dg_tbl_m','dg_tbl_5','dg_tbl5_m','dg_tbl5_5'].forEach(k=>localStorage.removeItem(k));saveTables(fmSt.br);fmSt.sel=null;edClear();fmDraw();toast('Схема сброшена')}
 
 function addTableAt(x,y){
   const tables=getTables(fmSt.br);
@@ -793,7 +896,7 @@ function openBP(tid){
   const br=fmSt.br,dt=fd();
   const t=getTables(br).find(x=>x.id===tid);
   const bks=getBK(br,dt).filter(r=>r.tid===tid).sort((a,b)=>a.fr.localeCompare(b.fr));
-  $('bpTtl').textContent='Стол '+(t?t.n:'?')+' — '+BRNAMES[br];
+  $('bpTtl').textContent='Стол '+(t?t.n:'?')+' — '+getBrName(br);
   $('bpSub').textContent=bks.length+' брон'+(bks.length===1?'ь':bks.length<5?'и':'ей')+' · '+dt;
   const body=$('bpBody');body.innerHTML='';
   if(!bks.length){body.innerHTML='<div style="color:var(--muted);padding:18px;text-align:center;font-size:12px">Броней нет</div>'}
@@ -818,7 +921,7 @@ function closeBP(){$('bpanel').classList.add('h');$('rpWrap').style.display='non
 // ──────────────────────────────────────────────────────────────────────────────
 // BRANCH / SUB VIEW SWITCH
 // ──────────────────────────────────────────────────────────────────────────────
-function fmBr(br){fmSt.br=br;fmSt.sel=null;closeBP();edClear();$('ft5').classList.toggle('on',br==='5');$('ftM').classList.toggle('on',br==='m');applyZoom();fmRedraw()}
+function fmBr(br){fmSt.br=br;fmSt.sel=null;closeBP();edClear();renderBrTabs();applyZoom();fmRedraw()}
 function fmSV(v){fmSt.sub=v;$('fmMapView').classList.toggle('h',v!=='map');$('fmListView').classList.toggle('h',v!=='list');$('vtMap').disabled=v==='map';$('vtList').disabled=v==='list';fmRedraw()}
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -826,14 +929,14 @@ function fmSV(v){fmSt.sub=v;$('fmMapView').classList.toggle('h',v!=='map');$('fm
 // ──────────────────────────────────────────────────────────────────────────────
 function fmRenderList(){
   const q=($('lSrch')?$('lSrch').value:'').toLowerCase(),dt=fd();
-  const all=['m','5'].flatMap(br=>getBK(br,dt).map(b=>({...b,br})));
+  const all=Object.keys(BRANCHES).flatMap(br=>getBK(br,dt).map(b=>({...b,br})));
   const filt=q?all.filter(b=>b.nm.toLowerCase().includes(q)||b.ph.includes(q)):all;
   filt.sort((a,b)=>a.fr.localeCompare(b.fr));
   const body=$('lBody');
   if(!filt.length){body.innerHTML='<div style="color:var(--muted);padding:18px;font-size:12px">Броней нет.</div>';return}
   const now=new Date(),mins=now.getHours()*60+now.getMinutes(),today2=td();
   body.innerHTML=`<table class="tbl-list"><thead><tr><th>Стол</th><th>Гость</th><th>Тел.</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>${filt.map(b=>{
-    const t=getTables(b.br).find(x=>x.id===b.tid);const tn=t?(BRNAMES[b.br]+' · '+t.n):b.tid;
+    const t=getTables(b.br).find(x=>x.id===b.tid);const tn=t?(getBrName(b.br)+' · '+t.n):b.tid;
     const[fh,fm2]=b.fr.split(':').map(Number),[th,tm2]=b.to.split(':').map(Number),fr2=fh*60+fm2,to2=th*60+tm2;
     let chip=`<span style="color:var(--teal)">▲${b.fr}</span>`;
     if(dt===today2){if(mins>=fr2&&mins<to2)chip=`<span style="color:var(--grn)">●</span>`;else if(to2<=mins)chip=`<span style="color:var(--faint)">✓</span>`;}
@@ -848,7 +951,7 @@ let bmEid=null;
 function openBm(bid,tid){
   bmEid=bid;
   const sel=$('bmTbl');sel.innerHTML='';
-  ['m','5'].forEach(br=>{const g=document.createElement('optgroup');g.label=BRNAMES[br];getTables(br).forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent='Стол '+t.n;if(t.id===(tid||fmSt.sel))o.selected=true;g.appendChild(o)});sel.appendChild(g)});
+  ['m','5'].forEach(br=>{const g=document.createElement('optgroup');g.label=getBrName(br);getTables(br).forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent='Стол '+t.n;if(t.id===(tid||fmSt.sel))o.selected=true;g.appendChild(o)});sel.appendChild(g)});
   $('bmDt').value=fd();hideDrop();
   if(bid){
     const br2=findBrByBid(bid,fd());const b=br2?getBK(br2,fd()).find(x=>x.id===bid):null;
@@ -867,7 +970,7 @@ function openBm(bid,tid){
   $('bmOvl').classList.remove('h');
 }
 function closeBm(){$('bmOvl').classList.add('h');hideDrop()}
-function findBrByBid(bid,dt){return['m','5'].find(br=>getBK(br,dt).some(b=>b.id===bid))||null}
+function findBrByBid(bid,dt){return Object.keys(BRANCHES).find(br=>getBK(br,dt).some(b=>b.id===bid))||null}
 
 // Phone autofill
 function bmByPh(){
@@ -900,7 +1003,7 @@ function hideGPA(){$('bmGPA').classList.add('h')}
 function bmSave(){
   const nm=$('bmNm').value.trim();if(!nm){toast('Введите имя',false);return}
   const tid=$('bmTbl').value,dt=$('bmDt').value||fd();
-  const br2=getTables('m').find(t=>t.id===tid)?'m':'5';
+  const br2=Object.keys(BRANCHES).find(k=>getTables(k).some(t=>t.id===tid))||fmSt.br;
   const bk={id:bmEid||('b'+Date.now()+Math.random().toString(36).slice(2,6)),tid,br:br2,dt,nm,ph:$('bmPh').value.trim(),fr:$('bmFr').value,to:$('bmTo').value,gs:parseInt($('bmGs').value)||2,st:$('bmSt').value,hk:$('bmHk').value.trim(),ds:$('bmDs').value.trim(),no:$('bmNo').value.trim()};
   const k=br2+'_'+dt;if(!MEM.bk[k])MEM.bk[k]=[];
   if(bmEid)MEM.bk[k]=MEM.bk[k].filter(r=>r.id!==bmEid);
@@ -1014,12 +1117,15 @@ async function subG(){
 // LOGIN / SESSION
 // ──────────────────────────────────────────────────────────────────────────────
 async function doLogin(){const k=($('stKy').value||'').trim();if(k)localStorage.setItem('dg_key',k);initSB();openApp()}
-function openApp(){$('loginView').classList.add('h');$('appView').classList.remove('h');if(!$('bDate').value)$('bDate').value=td();sv('bk')}
+function openApp(){$('loginView').classList.add('h');$('appView').classList.remove('h');if(!$('bDate').value)$('bDate').value=td();renderBrTabs();sv('bk')}
 async function doOut(){if(sb)try{await sb.auth.signOut()}catch(e){}localStorage.removeItem('dg_key');sb=null;MEM.crm=[];$('appView').classList.add('h');$('loginView').classList.remove('h')}
 async function restoreSession(){const k=getKey();if(k&&window.supabase)try{sb=window.supabase.createClient(SB_URL,k,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}})}catch(e){}openApp()}
 
 // ── BOOT ─────────────────────────────────────────────
+loadBranches();
 const _k=getKey();if($('stKy'))$('stKy').value=_k;
+// Clean up old layout keys from previous versions
+['dg_tbl_m','dg_tbl_5','dg_tbl5_m','dg_tbl5_5'].forEach(k=>localStorage.removeItem(k));
 restoreSession();
 // Mouse wheel zoom on floor map
 document.addEventListener('wheel',function(e){
