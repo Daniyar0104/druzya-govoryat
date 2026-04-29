@@ -101,18 +101,13 @@ button{cursor:pointer;user-select:none}
 .lm.v{writing-mode:vertical-rl}
 
 /* Table slot */
-.fm-slot{position:absolute;display:flex;flex-direction:column;align-items:center;user-select:none;z-index:4}
+.fm-slot{position:absolute;user-select:none;z-index:4}
 .fm-slot:not(.em) .fm-tc{transition:filter .1s}
 .fm-slot:not(.em):hover .fm-tc{filter:brightness(1.3)}
 .fm-slot.sel .fm-tc{box-shadow:0 0 0 2.5px #fff,0 4px 16px rgba(0,0,0,.5)!important}
 
-/* Chairs */
-.ch-row{display:flex;gap:3px;justify-content:center;padding:2px 0}
-.ch-col{display:flex;flex-direction:column;gap:3px;padding:0 2px;justify-content:center;align-self:stretch}
-.ch-mid{display:flex;align-items:stretch;flex:1}
-.ch{background:rgba(255,255,255,.22);border-radius:50%;flex-shrink:0}
-.ch.h{width:16px;height:9px}
-.ch.v{width:9px;height:16px}
+/* Chairs – absolute positioned */
+.ch-a{position:absolute;background:rgba(255,255,255,.22)}
 
 /* Table card */
 .fm-tc{flex:1;border-radius:9px;position:relative;overflow:hidden;border:2px solid rgba(255,255,255,.1)}
@@ -286,8 +281,8 @@ button{cursor:pointer;user-select:none}
       <!-- Floor toolbar -->
       <div class="fm-bar">
         <div class="fm-tabs">
-          <button class="fm-tab on" id="ftM" onclick="fmBr('m')">Малыгина</button>
-          <button class="fm-tab" id="ft5" onclick="fmBr('5')">50 лет</button>
+          <button class="fm-tab on" id="ft5" onclick="fmBr('5')">50 лет</button>
+          <button class="fm-tab" id="ftM" onclick="fmBr('m')">Малыгина</button>
         </div>
         <div class="row" style="gap:5px">
           <button class="btn btn-sm" id="vtMap" onclick="fmSV('map')" style="padding:5px 10px;font-size:11px" disabled>Карта</button>
@@ -599,7 +594,7 @@ function sv(v){
 // ──────────────────────────────────────────────────────────────────────────────
 // FLOOR MAP STATE
 // ──────────────────────────────────────────────────────────────────────────────
-const fmSt={br:'m',sub:'map',sel:null,edit:false,zi:6};
+const fmSt={br:'5',sub:'map',sel:null,edit:false,zi:6};
 
 function applyZoom(){
   const z=ZOOM_S[fmSt.zi],br=fmSt.br;
@@ -662,11 +657,10 @@ function fmDraw(){
   // Tables
   tables.forEach(t=>{
     const st=stOf(t.id,br,dt),cnt=getBK(br,dt).filter(r=>r.tid===t.id).length,lbl=lblOf(t.id,br,dt);
-    const ch=t.c,cSz=9,cGap=3,rowH=cSz+cGap+4,colW=cSz+cGap+2;
-    const offL=ch.l?colW:0,offT=ch.t?rowH:0;
-    const slotX=t.x-offL,slotY=t.y-offT;
-    const slotW=t.w+(ch.l?colW:0)+(ch.r?colW:0);
-    const slotH=t.h+(ch.t?rowH:0)+(ch.b?rowH:0);
+    const c=t.c,CZ=10,GAP=4; // CZ=chair thickness, GAP=space between chair and card
+    const oT=c.t>0?CZ+GAP:0,oB=c.b>0?CZ+GAP:0,oL=c.l>0?CZ+GAP:0,oR=c.r>0?CZ+GAP:0;
+    const slotX=t.x-oL,slotY=t.y-oT;
+    const slotW=t.w+oL+oR,slotH=t.h+oT+oB;
 
     const slot=document.createElement('div');
     slot.className='fm-slot'+(fmSt.edit?' em':'')+(fmSt.sel===t.id?' sel':'');
@@ -677,22 +671,20 @@ function fmDraw(){
     const db=document.createElement('div');db.className='fm-del';db.textContent='×';
     db.addEventListener('click',e=>{e.stopPropagation();edDel()});slot.appendChild(db);
 
-    // Top chairs
-    if(ch.t){const row=buildChRow(ch.t,cSz,cGap,'h',offL,ch.r?colW:0);slot.appendChild(row)}
-    // Middle
-    const mid=document.createElement('div');mid.className='ch-mid';
-    if(ch.l){mid.appendChild(buildChCol(ch.l,cSz,cGap,'v'))}
-    // Card
-    const tc=document.createElement('div');tc.className='fm-tc '+st;tc.style.cssText=`width:${t.w}px;height:${t.h}px;flex:none`;
+    // Card (absolutely positioned within slot)
+    const tc=document.createElement('div');tc.className='fm-tc '+st;
+    tc.style.cssText=`position:absolute;left:${oL}px;top:${oT}px;width:${t.w}px;height:${t.h}px`;
     const strip=document.createElement('div');strip.className='strip';tc.appendChild(strip);
     const num=document.createElement('span');num.className='fm-num';num.textContent=t.n;tc.appendChild(num);
     if(cnt>0){const b=document.createElement('span');b.className='fm-cnt';b.textContent=cnt;tc.appendChild(b)}
     if(lbl&&st!=='fr'){const tl=document.createElement('div');tl.className='fm-lbl';const d=document.createElement('div');d.className='fm-dot';tl.appendChild(d);tl.appendChild(document.createTextNode(lbl));tc.appendChild(tl)}
-    mid.appendChild(tc);
-    if(ch.r){mid.appendChild(buildChCol(ch.r,cSz,cGap,'v'))}
-    slot.appendChild(mid);
-    // Bottom chairs
-    if(ch.b){const row=buildChRow(ch.b,cSz,cGap,'h',offL,ch.r?colW:0);slot.appendChild(row)}
+    slot.appendChild(tc);
+
+    // Chairs (absolute, evenly distributed)
+    if(c.t>0)addChRow(slot,c.t,oL,0,t.w,CZ,'top');
+    if(c.b>0)addChRow(slot,c.b,oL,slotH-CZ,t.w,CZ,'bot');
+    if(c.l>0)addChCol(slot,c.l,0,oT,CZ,t.h,'lft');
+    if(c.r>0)addChCol(slot,c.r,slotW-CZ,oT,CZ,t.h,'rgt');
 
     // Events
     if(fmSt.edit){
@@ -715,16 +707,21 @@ function fmDraw(){
   }
 }
 
-function buildChRow(n,sz,gap,cls,padL,padR){
-  const row=document.createElement('div');row.className='ch-row';
-  row.style.paddingLeft=padL+'px';row.style.paddingRight=padR+'px';
-  for(let i=0;i<n;i++){const c=document.createElement('div');c.className='ch '+cls;c.style.width=sz*(cls==='h'?2:1)+'px';c.style.height=sz*(cls==='v'?2:1)+'px';row.appendChild(c)}
-  return row;
+function addChRow(parent,n,startX,y,cardW,h,side){
+  if(n<=0)return;
+  const cw=Math.max(10,Math.min(24,Math.floor((cardW-8)/n)-4));
+  const total=n*cw+(n-1)*3;
+  let x=startX+Math.round((cardW-total)/2);
+  const r=side==='top'?'4px 4px 2px 2px':'2px 2px 4px 4px';
+  for(let i=0;i<n;i++){const c=document.createElement('div');c.className='ch-a';c.style.cssText=`left:${x}px;top:${y}px;width:${cw}px;height:${h}px;border-radius:${r}`;parent.appendChild(c);x+=cw+3;}
 }
-function buildChCol(n,sz,gap,cls){
-  const col=document.createElement('div');col.className='ch-col';
-  for(let i=0;i<n;i++){const c=document.createElement('div');c.className='ch '+cls;c.style.width=sz+'px';c.style.height=sz*2+'px';col.appendChild(c)}
-  return col;
+function addChCol(parent,n,x,startY,w,cardH,side){
+  if(n<=0)return;
+  const ch=Math.max(10,Math.min(22,Math.floor((cardH-8)/n)-4));
+  const total=n*ch+(n-1)*3;
+  let y=startY+Math.round((cardH-total)/2);
+  const r=side==='lft'?'4px 2px 2px 4px':'2px 4px 4px 2px';
+  for(let i=0;i<n;i++){const c=document.createElement('div');c.className='ch-a';c.style.cssText=`left:${x}px;top:${y}px;width:${w}px;height:${ch}px;border-radius:${r}`;parent.appendChild(c);y+=ch+3;}
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -821,7 +818,7 @@ function closeBP(){$('bpanel').classList.add('h');$('rpWrap').style.display='non
 // ──────────────────────────────────────────────────────────────────────────────
 // BRANCH / SUB VIEW SWITCH
 // ──────────────────────────────────────────────────────────────────────────────
-function fmBr(br){fmSt.br=br;fmSt.sel=null;closeBP();edClear();$('ftM').classList.toggle('on',br==='m');$('ft5').classList.toggle('on',br==='5');applyZoom();fmRedraw()}
+function fmBr(br){fmSt.br=br;fmSt.sel=null;closeBP();edClear();$('ft5').classList.toggle('on',br==='5');$('ftM').classList.toggle('on',br==='m');applyZoom();fmRedraw()}
 function fmSV(v){fmSt.sub=v;$('fmMapView').classList.toggle('h',v!=='map');$('fmListView').classList.toggle('h',v!=='list');$('vtMap').disabled=v==='map';$('vtList').disabled=v==='list';fmRedraw()}
 
 // ──────────────────────────────────────────────────────────────────────────────
