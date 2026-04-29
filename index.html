@@ -14,202 +14,202 @@
   --font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   --r:14px;--r-sm:8px;
 }
-[data-theme="light"]{
-  --bg:#f0efec;--panel:#fbfaf8;--card:#fff;--border:#ddd;--line:#e8e6e2;
-  --text:#1e1d1a;--muted:#666;--faint:#bbb;
-}
+[data-theme="light"]{--bg:#f0efec;--panel:#fbfaf8;--card:#fff;--border:#ddd;--line:#e8e6e2;--text:#1e1d1a;--muted:#666;--faint:#bbb;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:16px;line-height:1.5;min-height:100dvh}
 button,input,select,textarea{font:inherit;color:inherit;background:none;border:none;outline:none}
 button{cursor:pointer;user-select:none}
 .hidden{display:none!important}
-/* Layout */
 .login-outer{display:flex;align-items:center;justify-content:center;min-height:100dvh;padding:16px}
 .login-box{width:100%;max-width:480px;background:var(--panel);border:1px solid var(--border);border-radius:24px;padding:28px 24px}
-.shell{display:grid;grid-template-columns:220px 1fr;min-height:100dvh}
-.sidebar{background:var(--panel);border-right:1px solid var(--line);padding:20px 16px;display:flex;flex-direction:column;gap:6px}
-.main{padding:24px;overflow-y:auto;height:100vh}
-.brand{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-.brand-mark{font-size:28px;line-height:1}
-.brand-title{font-size:16px;font-weight:700}
-.brand-sub{font-size:12px;color:var(--muted)}
-.nav-item{display:block;width:100%;text-align:left;padding:10px 12px;border-radius:var(--r-sm);color:var(--text);font-size:14px;font-weight:500;background:none;border:none;cursor:pointer;transition:background .15s}
+.shell{display:grid;grid-template-columns:200px 1fr;min-height:100dvh}
+.sidebar{background:var(--panel);border-right:1px solid var(--line);padding:16px 12px;display:flex;flex-direction:column;gap:4px}
+.main{overflow-y:auto;height:100vh;padding:20px}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.brand-mark{font-size:24px}
+.brand-title{font-size:15px;font-weight:700}
+.brand-sub{font-size:11px;color:var(--muted)}
+.nav-item{display:block;width:100%;text-align:left;padding:9px 11px;border-radius:var(--r-sm);color:var(--text);font-size:13px;font-weight:500;background:none;border:none;cursor:pointer;transition:background .15s}
 .nav-item:hover{background:var(--card)}
 .nav-item.active{background:var(--teal-dark);color:#fff}
-.nav-sep{height:1px;background:var(--line);margin:6px 0}
-.tab-row{display:flex;gap:8px;margin-bottom:20px}
-.tab{padding:9px 20px;border-radius:999px;font-size:15px;font-weight:600;border:1.5px solid var(--border);color:var(--muted);background:none;cursor:pointer;transition:all .15s}
+.nav-sep{height:1px;background:var(--line);margin:4px 0}
+.tab{padding:8px 18px;border-radius:999px;font-size:14px;font-weight:600;border:1.5px solid var(--border);color:var(--muted);background:none;cursor:pointer;transition:all .15s}
 .tab.active{background:var(--teal);color:#fff;border-color:var(--teal)}
 .field{display:flex;flex-direction:column;gap:5px}
 .label{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600}
-.input,.select,.textarea{width:100%;padding:11px 14px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);font-size:15px;transition:border-color .15s}
+.input,.select,.textarea{width:100%;padding:10px 13px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-sm);color:var(--text);font-size:14px;transition:border-color .15s}
 .input:focus,.select:focus,.textarea:focus{border-color:var(--teal)}
-.textarea{resize:vertical;min-height:80px}
-.select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:var(--r-sm);font-size:15px;font-weight:600;border:1.5px solid var(--border);color:var(--text);background:var(--card);cursor:pointer;transition:all .15s;white-space:nowrap}
+.textarea{resize:vertical;min-height:70px}
+.select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:32px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 18px;border-radius:var(--r-sm);font-size:14px;font-weight:600;border:1.5px solid var(--border);color:var(--text);background:var(--card);cursor:pointer;transition:all .15s;white-space:nowrap}
 .btn:hover{border-color:var(--teal);color:var(--teal)}
 .btn-primary{background:var(--teal);color:#fff;border-color:var(--teal)}
 .btn-primary:hover{background:var(--teal-dark);border-color:var(--teal-dark);color:#fff}
 .btn-danger{border-color:var(--red);color:var(--red)}
-.btn-sm{padding:7px 14px;font-size:13px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px}
-.section-title{font-size:17px;font-weight:700;margin-bottom:12px}
-.page-title{font-size:26px;font-weight:800;margin-bottom:6px}
-.page-sub{font-size:14px;color:var(--muted);margin-bottom:18px}
-.grid{display:grid;gap:12px}
-.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.row-between{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.btn-sm{padding:5px 12px;font-size:12px}
+.btn-xs{padding:3px 8px;font-size:11px}
+.btn-icon{padding:5px 8px;font-size:16px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+.section-title{font-size:16px;font-weight:700;margin-bottom:10px}
+.page-title{font-size:24px;font-weight:800;margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--muted);margin-bottom:16px}
+.grid{display:grid;gap:10px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.row-between{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:600}
 .badge-teal{background:rgba(79,152,163,.18);color:var(--teal)}
 .badge-green{background:rgba(109,170,69,.18);color:var(--green)}
-.toast-box{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
-.toast{padding:10px 20px;border-radius:999px;font-size:14px;font-weight:600;background:#222;color:#fff;border:1px solid #444;animation:fadeup .25s ease;max-width:90vw;text-align:center}
-.toast.bad{background:#4a1e24;border-color:#c94a59;color:#f88}
-@keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.badge-orange{background:rgba(212,133,58,.18);color:var(--orange)}
+.toast-box{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none}
+.toast{padding:9px 18px;border-radius:999px;font-size:13px;font-weight:600;background:#1e1d1b;color:#fff;border:1px solid #444;animation:fadeup .2s ease;max-width:90vw;text-align:center}
+.toast.bad{background:#3d1820;border-color:var(--red);color:#f88}
+@keyframes fadeup{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 .table-list{width:100%;border-collapse:collapse}
-.table-list th{text-align:left;font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;padding:8px 10px;border-bottom:1.5px solid var(--line)}
-.table-list td{padding:10px 10px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top}
+.table-list th{text-align:left;font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.06em;padding:7px 9px;border-bottom:1.5px solid var(--line)}
+.table-list td{padding:9px 9px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top}
 .table-list tr:last-child td{border-bottom:none}
-.toggle-row{display:flex;gap:0;border-radius:var(--r-sm);overflow:hidden;border:1.5px solid var(--border);width:fit-content}
-.toggle-btn{padding:9px 22px;font-size:15px;font-weight:600;border:none;background:none;cursor:pointer;color:var(--muted);transition:all .15s}
+.toggle-row{display:flex;border-radius:var(--r-sm);overflow:hidden;border:1.5px solid var(--border);width:fit-content}
+.toggle-btn{padding:8px 20px;font-size:14px;font-weight:600;border:none;background:none;cursor:pointer;color:var(--muted);transition:all .15s}
 .toggle-btn.active{background:var(--teal);color:#fff}
-/* ━━━━━ FLOOR MAP ━━━━━ */
-.fm-outer{position:relative}
-.fm-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.sidebar-bottom{margin-top:auto;padding-top:10px;border-top:1px solid var(--line)}
+
+/* ════════════════════════════════════════════
+   FLOOR MAP EDITOR
+   ════════════════════════════════════════════ */
+.fm-page{display:grid;grid-template-columns:1fr 280px;gap:12px;align-items:start}
+@media(max-width:900px){.fm-page{grid-template-columns:1fr}}
+
+/* Toolbar */
+.fm-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .fm-btabs{display:flex;background:var(--card);border-radius:999px;padding:3px;gap:2px}
-.fm-btab{padding:6px 16px;border-radius:999px;border:none;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:all 150ms;font-family:inherit}
+.fm-btab{padding:5px 14px;border-radius:999px;border:none;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:all 140ms;font-family:inherit}
 .fm-btab.active{background:var(--teal);color:#fff}
-.fm-vtabs{display:flex;gap:6px}
-.fm-vtab{padding:6px 14px;border-radius:999px;font-size:13px;font-weight:600;background:var(--card);border:1.5px solid var(--border);color:var(--muted);cursor:pointer;transition:all 140ms;font-family:inherit}
+.fm-vtabs{display:flex;gap:5px}
+.fm-vtab{padding:5px 12px;border-radius:999px;font-size:12px;font-weight:600;background:var(--card);border:1.5px solid var(--border);color:var(--muted);cursor:pointer;transition:all 130ms;font-family:inherit}
 .fm-vtab.active{background:var(--teal);border-color:var(--teal);color:#fff}
-.fm-legend{display:flex;gap:14px;align-items:center;margin-left:auto;flex-wrap:wrap}
-.fm-li{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
-.fm-ld{width:8px;height:8px;border-radius:50%}
+.zoom-row{display:flex;align-items:center;gap:4px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-sm);padding:2px 6px}
+.zoom-btn{padding:3px 8px;font-size:16px;font-weight:700;border:none;background:none;cursor:pointer;color:var(--text);line-height:1;border-radius:4px}
+.zoom-btn:hover{background:rgba(255,255,255,.08)}
+.zoom-val{font-size:12px;font-weight:700;color:var(--muted);min-width:36px;text-align:center}
+.edit-mode-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(212,133,58,.12);border:1.5px solid var(--orange);color:var(--orange);border-radius:8px;font-size:11px;font-weight:700}
+.fm-legend{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.fm-li{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
+.fm-ld{width:7px;height:7px;border-radius:50%}
+
 /* Floor canvas */
-.fm-canvas{position:relative;border-radius:16px;overflow:hidden;user-select:none;background:#111218;border:2px solid rgba(255,255,255,0.08)}
-.fm-canvas.malygin{width:100%;aspect-ratio:2.6/1}
-.fm-canvas.let50{width:100%;aspect-ratio:2.3/1}
-.fm-canvas.edit-mode{cursor:crosshair}
-/* Grid lines on floor */
-.fm-canvas::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:5% 5%;pointer-events:none}
-/* Landmark labels */
-.fm-lm{position:absolute;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;letter-spacing:.5px;color:rgba(255,255,255,0.35);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:10px;pointer-events:none;z-index:1}
+.fm-outer{position:relative;overflow:auto;background:#0d0d14;border-radius:14px;border:2px solid rgba(255,255,255,.07)}
+.fm-inner{position:relative;transform-origin:0 0}
+.fm-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+/* Landmarks */
+.fm-lm{position:absolute;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;letter-spacing:.5px;color:rgba(255,255,255,.3);background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:8px;pointer-events:none;z-index:1;padding:2px 4px}
 .fm-lm.vert{writing-mode:vertical-rl}
-/* TABLE SLOT */
-.fm-tslot{position:absolute;z-index:5;display:flex;flex-direction:column;align-items:center;transition:filter 150ms}
-.fm-tslot:not(.editing):hover{filter:brightness(1.3)}
-.fm-tslot.dragging{z-index:20;opacity:.85;pointer-events:none}
-.fm-tslot.editing{cursor:grab}
-.fm-tslot.editing:active{cursor:grabbing}
-/* Chair rows/cols */
-.ch-row{display:flex;gap:4px;justify-content:center;padding:3px 0}
-.ch-col{display:flex;flex-direction:column;gap:4px;padding:0 3px;align-self:center}
-.ch-mid{display:flex;align-items:center}
-.ch{background:rgba(255,255,255,0.18);border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,0.08)}
-.ch.h{width:20px;height:11px}
-.ch.v{width:11px;height:20px}
-/* Table CARD */
-.fm-tc{flex:1;border-radius:12px;position:relative;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.5);transition:transform 120ms;border:2px solid rgba(255,255,255,0.12)}
-.fm-tc:not(.editing):hover{transform:scale(1.05)}
-.fm-tc.editing{transform:none !important}
-/* Status variants */
-.fm-tc.s-free{background:#1e2a1a;border-color:rgba(109,170,69,0.5)}
-.fm-tc.s-partial{background:#1a2228;border-color:rgba(79,152,163,0.5)}
-.fm-tc.s-soon{background:#2a2110;border-color:rgba(212,133,58,0.5)}
-.fm-tc.s-booked{background:#2a1518;border-color:rgba(201,74,89,0.5)}
-.fm-tc .st-strip{position:absolute;top:0;left:0;right:0;height:6px}
-.fm-tc.s-free .st-strip{background:var(--green)}
-.fm-tc.s-partial .st-strip{background:var(--teal)}
-.fm-tc.s-soon .st-strip{background:var(--orange)}
-.fm-tc.s-booked .st-strip{background:var(--red)}
-.fm-tn{position:absolute;top:11px;left:9px;font-size:16px;font-weight:900;line-height:1;color:rgba(255,255,255,0.9)}
-.fm-tcnt{position:absolute;top:8px;right:7px;background:rgba(255,255,255,0.15);border-radius:8px;padding:2px 6px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.7)}
-.fm-ttl{position:absolute;bottom:6px;left:8px;display:flex;align-items:center;gap:3px;font-size:10px;color:rgba(255,255,255,0.5)}
-.fm-tdot{width:5px;height:5px;border-radius:50%}
-.fm-tc.s-free .fm-tdot{background:var(--green)}
-.fm-tc.s-partial .fm-tdot{background:var(--teal)}
-.fm-tc.s-soon .fm-tdot{background:var(--orange)}
-.fm-tc.s-booked .fm-tdot{background:var(--red)}
-/* Edit mode badge */
-.edit-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:8px;background:rgba(212,133,58,0.15);border:1.5px solid var(--orange);color:var(--orange);font-size:12px;font-weight:700}
-/* Right panel */
-.broni-layout{display:grid;grid-template-columns:1fr 300px;gap:14px;align-items:start}
-@media(max-width:900px){.broni-layout{grid-template-columns:1fr}}
-.bp{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;position:sticky;top:0}
-.bp-hdr{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
-.bp-title{font-size:14px;font-weight:700}
-.bp-sub{font-size:11px;color:var(--muted);margin-top:2px}
-.bp-body{padding:12px 16px;max-height:50vh;overflow-y:auto}
-.bp-foot{padding:10px 16px;border-top:1px solid var(--line)}
-/* Booking card in panel */
-.bkc{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;transition:background 120ms}
-.bkc:hover{background:rgba(255,255,255,0.04)}
-.bkc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
-.bkc-name{font-size:13px;font-weight:700}
-.bkc-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px}
-.bb-active{background:rgba(109,170,69,.22);color:var(--green)}
-.bb-up{background:rgba(79,152,163,.22);color:var(--teal)}
-.bb-done{background:rgba(255,255,255,.07);color:var(--muted)}
-.bkc-meta{font-size:11px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
-.bkc-tags{margin-top:5px;display:flex;gap:4px;flex-wrap:wrap}
-.bktag{padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600}
+/* Table slot */
+.fm-slot{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:pointer;user-select:none;z-index:5}
+.fm-slot.selected{z-index:10}
+/* Chairs */
+.ch-row{display:flex;gap:3px;justify-content:center;padding:3px 0}
+.ch-col{display:flex;flex-direction:column;gap:3px;padding:0 3px;justify-content:center;align-self:stretch;min-width:14px}
+.ch-mid{display:flex;align-items:stretch;flex:1}
+.ch{background:rgba(255,255,255,.2);border-radius:50%;flex-shrink:0;border:1px solid rgba(255,255,255,.07)}
+.ch.h{width:18px;height:10px}
+.ch.v{width:10px;height:18px}
+/* Table card */
+.fm-tc{flex:1;border-radius:10px;position:relative;overflow:hidden;box-shadow:0 3px 14px rgba(0,0,0,.5);border:2px solid rgba(255,255,255,.1);transition:border-color 120ms}
+.fm-tc.s-free{background:#1d2b18;border-color:rgba(109,170,69,.45)}
+.fm-tc.s-partial{background:#192028;border-color:rgba(79,152,163,.45)}
+.fm-tc.s-soon{background:#282010;border-color:rgba(212,133,58,.45)}
+.fm-tc.s-booked{background:#281418;border-color:rgba(201,74,89,.45)}
+.fm-slot.selected .fm-tc{border-color:#fff !important;box-shadow:0 0 0 2px rgba(255,255,255,.3)}
+.fm-tc .st{position:absolute;top:0;left:0;right:0;height:5px;border-radius:8px 8px 0 0}
+.fm-tc.s-free .st{background:var(--green)}.fm-tc.s-partial .st{background:var(--teal)}.fm-tc.s-soon .st{background:var(--orange)}.fm-tc.s-booked .st{background:var(--red)}
+.fm-num{position:absolute;top:8px;left:8px;font-size:15px;font-weight:900;color:rgba(255,255,255,.9);line-height:1}
+.fm-cnt{position:absolute;top:6px;right:6px;background:rgba(255,255,255,.14);border-radius:6px;padding:1px 5px;font-size:9px;font-weight:700;color:rgba(255,255,255,.7)}
+.fm-tl{position:absolute;bottom:5px;left:7px;display:flex;align-items:center;gap:3px;font-size:9px;color:rgba(255,255,255,.45)}
+.fm-dot{width:5px;height:5px;border-radius:50%}
+.fm-tc.s-free .fm-dot{background:var(--green)}.fm-tc.s-partial .fm-dot{background:var(--teal)}.fm-tc.s-soon .fm-dot{background:var(--orange)}.fm-tc.s-booked .fm-dot{background:var(--red)}
+/* Edit: drag cursor on table card */
+.fm-slot.editing .fm-tc{cursor:grab}
+.fm-slot.editing .fm-tc:active{cursor:grabbing}
+/* Delete overlay on slot when editing+selected */
+.fm-del-btn{position:absolute;top:-8px;right:-8px;width:22px;height:22px;border-radius:50%;background:var(--red);color:#fff;font-size:13px;display:none;align-items:center;justify-content:center;border:2px solid var(--bg);z-index:20;cursor:pointer}
+.fm-slot.editing.selected .fm-del-btn{display:flex}
+
+/* Editor right panel */
+.ed-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.ed-ph{padding:12px 14px;border-bottom:1px solid var(--line);font-size:13px;font-weight:700}
+.ed-body{padding:12px 14px}
+.ed-sec{margin-bottom:14px}
+.ed-label{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700;margin-bottom:7px}
+.counter-row{display:flex;align-items:center;gap:6px}
+.counter-side{font-size:12px;color:var(--muted);min-width:48px}
+.counter-btns{display:flex;gap:3px}
+.ctr-btn{width:26px;height:26px;border-radius:6px;border:1.5px solid var(--border);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .12s;font-family:inherit;color:var(--text);background:var(--panel)}
+.ctr-btn:hover{border-color:var(--teal);color:var(--teal)}
+.ctr-val{font-size:14px;font-weight:700;min-width:22px;text-align:center}
+.size-row{display:flex;gap:8px}
+
+/* Right bookings panel */
+.bp{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.bp-hdr{padding:11px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.bp-title{font-size:13px;font-weight:700}
+.bp-sub{font-size:10px;color:var(--muted);margin-top:2px}
+.bp-body{padding:10px 14px;max-height:45vh;overflow-y:auto}
+.bp-foot{padding:9px 14px;border-top:1px solid var(--line)}
+.bkc{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:10px 11px;margin-bottom:7px;cursor:pointer;transition:background 120ms}
+.bkc:hover{background:rgba(255,255,255,.04)}
+.bkc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px}
+.bkc-name{font-size:12px;font-weight:700}
+.bk-badge{font-size:9px;font-weight:700;padding:2px 7px;border-radius:7px}
+.bb-a{background:rgba(109,170,69,.2);color:var(--green)}
+.bb-u{background:rgba(79,152,163,.2);color:var(--teal)}
+.bb-d{background:rgba(255,255,255,.07);color:var(--muted)}
+.bkc-meta{font-size:10px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap}
+.bkc-tags{margin-top:4px;display:flex;gap:3px;flex-wrap:wrap}
+.bktag{padding:2px 7px;border-radius:7px;font-size:9px;font-weight:600}
 .bktag-h{background:rgba(212,133,58,.15);color:var(--orange)}
 .bktag-d{background:rgba(79,152,163,.12);color:var(--teal)}
+
 /* Booking modal */
-.mo{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9990;display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:9990;display:flex;align-items:center;justify-content:center;padding:14px;backdrop-filter:blur(5px)}
 .mo.hidden{display:none!important}
-.mo-box{background:var(--panel);border:1px solid var(--border);border-radius:20px;width:100%;max-width:500px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.65)}
-.mo-hdr{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.mo-ttl{font-size:16px;font-weight:800}
-.mo-body{overflow-y:auto;padding:16px 20px;flex:1}
-.mo-foot{padding:12px 20px;border-top:1px solid var(--line);display:flex;gap:10px;align-items:center;flex-shrink:0}
-.mo-sec{margin-bottom:16px}
-.mo-stitle{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700;margin-bottom:10px}
-/* Guest profile autofill */
-.gpa{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-top:8px;display:none}
-.gpa.on{display:block}
-.gpa-hdr{display:flex;align-items:center;gap:9px;margin-bottom:8px}
-.gpa-av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#7c4dff);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
-.gpa-nm{font-size:13px;font-weight:700}
-.gpa-sub{font-size:11px;color:var(--muted)}
-.gpa-row{display:flex;gap:8px;font-size:12px;margin-bottom:3px}
-.gpa-lbl{color:var(--faint);min-width:96px;flex-shrink:0}
+.mo-box{background:var(--panel);border:1px solid var(--border);border-radius:18px;width:100%;max-width:490px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.7)}
+.mo-hdr{padding:14px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.mo-ttl{font-size:15px;font-weight:800}
+.mo-body{overflow-y:auto;padding:14px 18px;flex:1}
+.mo-foot{padding:10px 18px;border-top:1px solid var(--line);display:flex;gap:9px;align-items:center;flex-shrink:0}
+.mo-sec{margin-bottom:14px}
+.mo-stitle{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700;margin-bottom:9px;display:flex;align-items:center;gap:6px}
+/* Guest autofill card */
+.gpa{background:rgba(79,152,163,.07);border:1.5px solid rgba(79,152,163,.25);border-radius:10px;padding:11px 12px;margin-top:8px}
+.gpa-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.gpa-av{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#7c4dff);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0}
+.gpa-nm{font-size:12px;font-weight:700}
+.gpa-sub{font-size:10px;color:var(--muted)}
+.gpa-rows{display:flex;flex-direction:column;gap:3px}
+.gpa-row{display:flex;gap:7px;font-size:11px}
+.gpa-lbl{color:var(--muted);min-width:88px;flex-shrink:0}
 .gpa-val{color:var(--text)}
-/* ━━━━━ LOCAL GUEST BANK ━━━━━ */
-.gb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:10px;cursor:pointer;transition:border-color 150ms}
+.gpa-pill{font-size:9px;font-weight:700;padding:2px 7px;border-radius:999px;background:rgba(212,133,58,.15);color:var(--orange);margin-left:auto;flex-shrink:0}
+/* Phone suggestions dropdown */
+.ph-sugg{position:absolute;background:var(--panel);border:1.5px solid var(--border);border-radius:var(--r-sm);z-index:100;width:100%;top:calc(100% + 4px);box-shadow:0 8px 24px rgba(0,0,0,.5);overflow:hidden}
+.ph-sugg-item{padding:9px 13px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--line)}
+.ph-sugg-item:last-child{border-bottom:none}
+.ph-sugg-item:hover{background:rgba(79,152,163,.1)}
+.ph-sugg-nm{font-weight:600}
+.ph-sugg-ph{font-size:11px;color:var(--muted)}
+.input-wrap{position:relative}
+
+/* Guest Bank */
+.gb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:10px}
+.gb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;cursor:pointer;transition:border-color 150ms}
 .gb-card:hover{border-color:var(--teal)}
-.gb-card-hdr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.gb-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#7c4dff);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0}
-.gb-name{font-size:14px;font-weight:700}
-.gb-phone{font-size:12px;color:var(--muted)}
-.gb-prefs{display:flex;flex-direction:column;gap:4px}
-.gb-prow{display:flex;gap:8px;font-size:12px}
-.gb-pl{color:var(--muted);min-width:90px;flex-shrink:0}
-.gb-pv{color:var(--text)}
-.gb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
-/* Preorders */
-.po-row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}
-.po-row:last-child{border-bottom:none}
-.po-time{font-size:13px;font-weight:700;color:var(--teal);min-width:60px;flex-shrink:0}
-.po-name{font-size:14px;font-weight:600}
-.po-detail{font-size:12px;color:var(--muted);margin-top:2px}
-.po-tag{display:inline-block;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:600;background:rgba(79,152,163,.15);color:var(--teal);margin-top:4px}
-/* Sidebar bottom */
-.sidebar-bottom{margin-top:auto;padding-top:12px;border-top:1px solid var(--line)}
-/* Responsive */
-@media(max-width:800px){
-  .shell{grid-template-columns:1fr}
-  .sidebar{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;padding:10px;border-right:none;border-bottom:1px solid var(--line);gap:4px;scrollbar-width:none}
-  .sidebar::-webkit-scrollbar{display:none}
-  .sidebar .nav-item{white-space:nowrap;flex-shrink:0;padding:7px 10px}
-  .sidebar .brand,.sidebar .sidebar-bottom,.sidebar .nav-sep{display:none}
-  .main{padding:16px}
-  .grid-2{grid-template-columns:1fr}
-  .fm-canvas.malygin{aspect-ratio:1.6/1}
-  .fm-canvas.let50{aspect-ratio:1.4/1}
-}
+.gb-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#7c4dff);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0}
+.gb-prow{display:flex;gap:7px;font-size:11px;margin-bottom:3px}
+.gb-pl{color:var(--muted);min-width:80px;flex-shrink:0}
+
+@media(max-width:760px){.shell{grid-template-columns:1fr}.sidebar{flex-direction:row;overflow-x:auto;padding:8px;border-right:none;border-bottom:1px solid var(--line)}.sidebar .brand,.sidebar .sidebar-bottom,.sidebar .nav-sep{display:none}.sidebar .nav-item{white-space:nowrap;flex-shrink:0;padding:6px 10px;font-size:12px}.main{padding:12px}.grid-2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -218,55 +218,40 @@ button{cursor:pointer;user-select:none}
 <!-- LOGIN -->
 <div id="loginView" class="login-outer">
   <div class="login-box">
-    <div class="brand" style="margin-bottom:20px">
-      <div class="brand-mark">🔥</div>
-      <div><div class="brand-title">Друзья Говорят</div><div class="brand-sub">CRM · Брони · Кальян</div></div>
-    </div>
-    <div class="row-between" style="margin-bottom:20px">
-      <div style="font-size:26px;font-weight:800">Вход</div>
-      <div class="tab-row" style="margin-bottom:0">
+    <div class="brand" style="margin-bottom:18px"><div class="brand-mark">🔥</div><div><div class="brand-title">Друзья Говорят</div><div class="brand-sub">CRM · Брони · Кальян</div></div></div>
+    <div class="row-between" style="margin-bottom:18px">
+      <div style="font-size:24px;font-weight:800">Вход</div>
+      <div class="row" style="gap:6px">
         <button class="tab active" id="tabGuest" onclick="switchMode('guest')">Гость</button>
         <button class="tab" id="tabStaff" onclick="switchMode('staff')">Сотрудник</button>
       </div>
     </div>
-    <!-- GUEST -->
     <div id="modeGuest">
-      <div class="grid" style="gap:14px">
+      <div class="grid" style="gap:12px">
         <div class="field"><div class="label">Имя</div><input id="grName" class="input" placeholder="Ваше имя"></div>
         <div class="field"><div class="label">Телефон</div><input id="grPhone" class="input" type="tel" placeholder="+7 000 000 0000"></div>
       </div>
-      <div style="margin-top:20px">
-        <div style="font-size:16px;font-weight:700;margin-bottom:4px">Предзаказ кальяна</div>
-        <div style="font-size:13px;color:var(--muted);margin-bottom:14px">Необязательно</div>
-        <div class="field" style="margin-bottom:12px">
+      <div style="margin-top:18px">
+        <div style="font-size:15px;font-weight:700;margin-bottom:3px">Предзаказ кальяна</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px">Необязательно</div>
+        <div class="field" style="margin-bottom:11px">
           <div class="label">Как всегда?</div>
-          <div class="toggle-row">
-            <button class="toggle-btn active" id="btnUsualYes" onclick="setUsual('yes')">Да</button>
-            <button class="toggle-btn" id="btnUsualNo" onclick="setUsual('no')">Нет</button>
-          </div>
+          <div class="toggle-row"><button class="toggle-btn active" id="btnUsualYes" onclick="setUsual('yes')">Да</button><button class="toggle-btn" id="btnUsualNo" onclick="setUsual('no')">Нет, хочу другой</button></div>
         </div>
-        <div class="grid" style="gap:12px">
-          <div class="field"><div class="label">Во сколько нужен кальян</div><input id="grTime" class="input" placeholder="19:30"></div>
-          <div class="field"><div class="label">Адрес</div>
-            <select id="grAddress" class="select">
-              <option value="Малыгина 90">Малыгина 90</option>
-              <option value="50 лет Октября">50 лет Октября</option>
-            </select>
-          </div>
+        <div class="grid-2" style="gap:10px">
+          <div class="field"><div class="label">Время</div><input id="grTime" class="input" placeholder="19:30"></div>
+          <div class="field"><div class="label">Филиал</div><select id="grAddress" class="select"><option>Малыгина 90</option><option>50 лет Октября</option></select></div>
         </div>
-        <div id="customHookah" class="grid hidden" style="gap:12px;margin-top:12px">
-          <div class="field"><div class="label">Марка / вкус кальяна</div><input id="grBrand" class="input" placeholder="Что хотите?"></div>
+        <div id="customHookah" class="grid hidden" style="gap:10px;margin-top:10px">
+          <div class="field"><div class="label">Кальян / вкус</div><input id="grBrand" class="input" placeholder="Что хотите?"></div>
           <div class="field"><div class="label">Крепость</div><input id="grStrength" class="input" placeholder="Лёгкий / Средний / Сильный"></div>
         </div>
       </div>
-      <button class="btn btn-primary" style="width:100%;margin-top:20px" onclick="submitGuest()">Войти / Отправить заявку</button>
+      <button class="btn btn-primary" style="width:100%;margin-top:18px" onclick="submitGuest()">Войти / Отправить заявку</button>
     </div>
-    <!-- STAFF -->
     <div id="modeStaff" class="hidden">
-      <div class="grid" style="gap:14px">
-        <div class="field"><div class="label">API-ключ Supabase (необязательно)</div><input id="staffPass" class="input" type="password" placeholder="eyJ..."></div>
-      </div>
-      <button class="btn btn-primary" style="width:100%;margin-top:20px" onclick="doLogin()">Войти как сотрудник</button>
+      <div class="field"><div class="label">API-ключ Supabase (необязательно)</div><input id="staffPass" class="input" type="password" placeholder="eyJ..."></div>
+      <button class="btn btn-primary" style="width:100%;margin-top:18px" onclick="doLogin()">Войти как сотрудник</button>
     </div>
   </div>
 </div>
@@ -274,35 +259,33 @@ button{cursor:pointer;user-select:none}
 <!-- APP -->
 <div id="appView" class="shell hidden">
   <nav class="sidebar">
-    <div class="brand">
-      <div class="brand-mark">🔥</div>
-      <div><div class="brand-title">Друзья говорят</div><div class="brand-sub" id="sbRole">Сотрудник</div></div>
-    </div>
+    <div class="brand"><div class="brand-mark">🔥</div><div><div class="brand-title">Друзья говорят</div><div class="brand-sub" id="sbRole">Сотрудник</div></div></div>
     <button class="nav-item active" onclick="showView('bookings')">Брони</button>
     <button class="nav-item" onclick="showView('guestbank')">Банк гостей</button>
     <div class="nav-sep"></div>
     <button class="nav-item" onclick="showView('guests')">Гости (CRM)</button>
-    <button class="nav-item" onclick="showView('guest-card')">Карточка гостя</button>
     <button class="nav-item" onclick="showView('new-guest')">Новый гость</button>
     <div class="nav-sep"></div>
     <button class="nav-item" onclick="showView('preorders')">Заявки на кальян</button>
     <div class="sidebar-bottom">
-      <button class="nav-item" onclick="toggleTheme()" style="font-size:13px;color:var(--muted)">🌙 Тема</button>
-      <button class="nav-item" onclick="doLogout()" style="font-size:13px;color:var(--muted)">← Выйти</button>
+      <button class="nav-item" onclick="toggleTheme()" style="font-size:12px;color:var(--muted)">🌙 Тема</button>
+      <button class="nav-item" onclick="doLogout()" style="font-size:12px;color:var(--muted)">← Выйти</button>
     </div>
   </nav>
 
   <main class="main">
 
-    <!-- BOOKINGS -->
+    <!-- BOOKINGS VIEW -->
     <div id="view-bookings">
-      <div class="row-between" style="margin-bottom:14px">
+      <div class="row-between" style="margin-bottom:12px">
         <div class="page-title">Брони</div>
-        <div class="row" style="gap:8px">
-          <input id="bDate" type="date" class="input" style="width:155px" onchange="fmRender()">
+        <div class="row" style="gap:7px">
+          <input id="bDate" type="date" class="input" style="width:150px" onchange="fmRefresh()">
           <button class="btn btn-primary btn-sm" onclick="openBm(null,null)">+ Бронь</button>
         </div>
       </div>
+
+      <!-- Toolbar -->
       <div class="fm-toolbar">
         <div class="fm-btabs">
           <button class="fm-btab active" id="fmTM" onclick="fmBranch('malygin')">Малыгина</button>
@@ -312,7 +295,12 @@ button{cursor:pointer;user-select:none}
           <button class="fm-vtab active" id="vtMap" onclick="fmSub('map')">Карта</button>
           <button class="fm-vtab" id="vtList" onclick="fmSub('list')">Список</button>
         </div>
-        <button class="btn btn-sm" id="btnEditLayout" onclick="fmToggleEdit()" style="padding:6px 12px;font-size:12px">✎ Схема</button>
+        <div class="zoom-row">
+          <button class="zoom-btn" onclick="fmZoom(-1)" title="Уменьшить">−</button>
+          <span class="zoom-val" id="zoomVal">100%</span>
+          <button class="zoom-btn" onclick="fmZoom(1)" title="Увеличить">+</button>
+        </div>
+        <button class="btn btn-sm" id="btnEdit" onclick="fmToggleEdit()" style="font-size:12px">✎ Редактор</button>
         <div class="fm-legend">
           <div class="fm-li"><div class="fm-ld" style="background:var(--green)"></div>Свободен</div>
           <div class="fm-li"><div class="fm-ld" style="background:var(--teal)"></div>Брони</div>
@@ -320,27 +308,87 @@ button{cursor:pointer;user-select:none}
           <div class="fm-li"><div class="fm-ld" style="background:var(--red)"></div>Занят</div>
         </div>
       </div>
-      <div id="editBanner" class="hidden" style="margin-bottom:10px">
-        <div class="edit-badge">✎ Режим редактирования — перетащите столы чтобы изменить схему
-          <button class="btn btn-sm" onclick="fmResetLayout()" style="padding:4px 10px;font-size:11px;margin-left:8px">Сброс</button>
-          <button class="btn btn-sm btn-primary" onclick="fmSaveLayout()" style="padding:4px 10px;font-size:11px;margin-left:4px">Сохранить</button>
-        </div>
+
+      <div id="editBar" class="hidden" style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <div class="edit-mode-badge">✎ Режим редактирования</div>
+        <button class="btn btn-sm btn-primary" onclick="addTable()">+ Стол</button>
+        <button class="btn btn-sm" onclick="fmResetLayout()" style="color:var(--muted)">Сброс схемы</button>
+        <button class="btn btn-sm" onclick="fmSaveLayout()">💾 Сохранить схему</button>
       </div>
+
+      <!-- Map + right panels -->
       <div id="fmMapView">
-        <div class="broni-layout">
-          <div id="fmContainer"></div>
-          <div class="bp" id="fmPanel" style="display:none">
-            <div class="bp-hdr">
-              <div><div class="bp-title" id="fmPT">Стол</div><div class="bp-sub" id="fmPS"></div></div>
-              <button class="btn btn-sm" onclick="fmClosePan()" style="padding:4px 10px">✕</button>
+        <div class="fm-page">
+          <div>
+            <div class="fm-outer" id="fmOuter" style="max-height:560px">
+              <div class="fm-inner" id="fmInner">
+                <div class="fm-grid"></div>
+              </div>
             </div>
-            <div class="bp-body" id="fmPB"></div>
-            <div class="bp-foot"><button class="btn btn-primary" style="width:100%" onclick="openBm(null,fmSt.tid)">+ Добавить бронь</button></div>
+          </div>
+
+          <!-- Right panel: editor OR bookings -->
+          <div>
+            <!-- Editor panel (visible in edit mode & table selected) -->
+            <div id="edPanelWrap" style="display:none">
+              <div class="ed-panel">
+                <div class="ed-ph" id="edPH">Стол</div>
+                <div class="ed-body">
+                  <div class="ed-sec">
+                    <div class="ed-label">Номер стола</div>
+                    <input class="input" id="edNum" style="max-width:100px" oninput="edUpdate('num',this.value)">
+                  </div>
+                  <div class="ed-sec">
+                    <div class="ed-label">Размер стола</div>
+                    <div class="size-row">
+                      <div>
+                        <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Ширина</div>
+                        <div class="counter-btns">
+                          <button class="ctr-btn" onclick="edSize('w',-10)">−</button>
+                          <span class="ctr-val" id="edW">80</span>
+                          <button class="ctr-btn" onclick="edSize('w',10)">+</button>
+                        </div>
+                      </div>
+                      <div>
+                        <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Высота</div>
+                        <div class="counter-btns">
+                          <button class="ctr-btn" onclick="edSize('h',-10)">−</button>
+                          <span class="ctr-val" id="edH">60</span>
+                          <button class="ctr-btn" onclick="edSize('h',10)">+</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ed-sec">
+                    <div class="ed-label">Стулья</div>
+                    <div class="grid" style="gap:7px">
+                      <div class="counter-row"><span class="counter-side">Сверху</span><div class="counter-btns"><button class="ctr-btn" onclick="edChair('top',-1)">−</button><span class="ctr-val" id="chTop">3</span><button class="ctr-btn" onclick="edChair('top',1)">+</button></div></div>
+                      <div class="counter-row"><span class="counter-side">Снизу</span><div class="counter-btns"><button class="ctr-btn" onclick="edChair('bot',-1)">−</button><span class="ctr-val" id="chBot">3</span><button class="ctr-btn" onclick="edChair('bot',1)">+</button></div></div>
+                      <div class="counter-row"><span class="counter-side">Слева</span><div class="counter-btns"><button class="ctr-btn" onclick="edChair('left',-1)">−</button><span class="ctr-val" id="chLeft">1</span><button class="ctr-btn" onclick="edChair('left',1)">+</button></div></div>
+                      <div class="counter-row"><span class="counter-side">Справа</span><div class="counter-btns"><button class="ctr-btn" onclick="edChair('right',-1)">−</button><span class="ctr-val" id="chRight">1</span><button class="ctr-btn" onclick="edChair('right',1)">+</button></div></div>
+                    </div>
+                  </div>
+                  <button class="btn btn-danger btn-sm" onclick="edDeleteSel()" style="width:100%;margin-top:4px">🗑 Удалить стол</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bookings panel (visible when table clicked in view mode) -->
+            <div class="bp" id="bpWrap" style="display:none">
+              <div class="bp-hdr">
+                <div><div class="bp-title" id="bpTitle">Стол</div><div class="bp-sub" id="bpSub"></div></div>
+                <button class="btn btn-xs" onclick="closeBP()">✕</button>
+              </div>
+              <div class="bp-body" id="bpBody"></div>
+              <div class="bp-foot"><button class="btn btn-primary" style="width:100%;font-size:13px" onclick="openBm(null,fmSel)">+ Добавить бронь</button></div>
+            </div>
           </div>
         </div>
       </div>
+
+      <!-- List view -->
       <div id="fmListView" style="display:none">
-        <div style="margin-bottom:10px"><input class="input" id="fmSrch" placeholder="Поиск по имени, телефону..." oninput="fmRenderList()" style="max-width:360px"></div>
+        <div style="margin-bottom:9px"><input class="input" id="fmSrch" placeholder="Поиск по имени, телефону..." oninput="fmRenderList()" style="max-width:340px"></div>
         <div id="fmListBody"></div>
       </div>
     </div>
@@ -352,45 +400,53 @@ button{cursor:pointer;user-select:none}
         <div class="mo-body">
           <div class="mo-sec">
             <div class="mo-stitle">Гость</div>
-            <div class="grid-2" style="gap:10px;margin-bottom:8px">
-              <div class="field"><div class="label">Имя</div><input id="bmNm" class="input" placeholder="Начните вводить..." oninput="bmFill()"></div>
-              <div class="field"><div class="label">Телефон</div><input id="bmPh" class="input" type="tel" placeholder="+7"></div>
-            </div>
-            <div class="gpa" id="bmGPA">
-              <div class="gpa-hdr">
-                <div class="gpa-av" id="bmAv">А</div>
-                <div><div class="gpa-nm" id="bmGN"></div><div class="gpa-sub" id="bmGS"></div></div>
-                <span style="margin-left:auto;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;background:rgba(212,133,58,.15);color:var(--orange)">Банк гостей</span>
+            <div class="grid-2" style="gap:9px;margin-bottom:8px">
+              <div class="field">
+                <div class="label">Телефон</div>
+                <div class="input-wrap">
+                  <input id="bmPh" class="input" type="tel" placeholder="+7..." oninput="bmFillByPhone()" autocomplete="off">
+                  <div id="phSugg" class="ph-sugg hidden"></div>
+                </div>
               </div>
-              <div id="bmGRows"></div>
+              <div class="field"><div class="label">Имя</div><input id="bmNm" class="input" placeholder="Начните вводить..." oninput="bmFillByName()"></div>
+            </div>
+            <div id="bmGPA" style="display:none">
+              <div class="gpa">
+                <div class="gpa-hdr">
+                  <div class="gpa-av" id="bmAv">А</div>
+                  <div><div class="gpa-nm" id="bmGN"></div><div class="gpa-sub" id="bmGS"></div></div>
+                  <span class="gpa-pill">Банк гостей</span>
+                </div>
+                <div class="gpa-rows" id="bmGRows"></div>
+              </div>
             </div>
           </div>
           <div class="mo-sec">
             <div class="mo-stitle">Бронирование</div>
-            <div class="grid-2" style="gap:10px;margin-bottom:10px">
+            <div class="grid-2" style="gap:9px;margin-bottom:9px">
               <div class="field"><div class="label">Стол</div><select id="bmTbl" class="select"></select></div>
               <div class="field"><div class="label">Дата</div><input id="bmDt" class="input" type="date"></div>
             </div>
-            <div class="grid-2" style="gap:10px;margin-bottom:10px">
+            <div class="grid-2" style="gap:9px;margin-bottom:9px">
               <div class="field"><div class="label">Начало</div><input id="bmFr" class="input" type="time" value="19:00"></div>
               <div class="field"><div class="label">Конец</div><input id="bmTo" class="input" type="time" value="22:00"></div>
             </div>
-            <div class="grid-2" style="gap:10px">
+            <div class="grid-2" style="gap:9px">
               <div class="field"><div class="label">Гостей</div><input id="bmGst" class="input" type="number" min="1" max="30" value="2"></div>
-              <div class="field"><div class="label">Статус</div><select id="bmSt" class="select"><option value="confirmed">Подтверждена</option><option value="vip">VIP</option><option value="waiting">Ожидание</option></select></div>
+              <div class="field"><div class="label">Статус</div><select id="bmStt" class="select"><option value="confirmed">Подтверждена</option><option value="vip">⭐ VIP</option><option value="waiting">Ожидание</option></select></div>
             </div>
           </div>
           <div class="mo-sec">
-            <div class="mo-stitle">Кальян и предпочтения <span style="font-weight:400;color:var(--muted)">(заполняет сотрудник или гость)</span></div>
-            <div class="grid-2" style="gap:10px;margin-bottom:10px">
+            <div class="mo-stitle">Кальян и предпочтения <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">(сотрудник или гость)</span></div>
+            <div class="grid-2" style="gap:9px;margin-bottom:9px">
               <div class="field"><div class="label">Кальян (описание)</div><input id="bmHk" class="input" placeholder="Марка, вкус, крепость..."></div>
               <div class="field"><div class="label">Блюда</div><input id="bmDs" class="input" placeholder="Топ блюда..."></div>
             </div>
-            <div class="field"><div class="label">Заметки</div><textarea id="bmNo" class="textarea" placeholder="Пожелания, повод..."></textarea></div>
+            <div class="field"><div class="label">Заметки</div><textarea id="bmNo" class="textarea" style="min-height:60px" placeholder="Пожелания, повод..."></textarea></div>
           </div>
         </div>
         <div class="mo-foot">
-          <button class="btn btn-sm btn-danger" id="bmDelBtn" style="margin-right:auto;display:none" onclick="bmDel()">Удалить</button>
+          <button class="btn btn-sm btn-danger" id="bmDel" style="margin-right:auto;display:none" onclick="bmDelete()">Удалить</button>
           <button class="btn btn-sm" onclick="closeBm()">Отмена</button>
           <button class="btn btn-sm btn-primary" onclick="bmSave()">Сохранить</button>
         </div>
@@ -399,99 +455,85 @@ button{cursor:pointer;user-select:none}
 
     <!-- GUEST BANK -->
     <div id="view-guestbank" class="hidden">
-      <div class="row-between" style="margin-bottom:14px">
-        <div><div class="page-title">Банк гостей</div><div class="page-sub">Местная база — кальян, предпочтения. Не из Prime Hill.</div></div>
-        <div class="row" style="gap:8px">
-          <button class="btn btn-sm" onclick="gbImportFromCRM()" style="font-size:12px">⬇ Из CRM</button>
-          <button class="btn btn-sm btn-primary" onclick="openGbModal(null)">+ Гость</button>
+      <div class="row-between" style="margin-bottom:12px">
+        <div><div class="page-title">Банк гостей</div><div class="page-sub">Кальян и предпочтения. Только вручную — не из Prime Hill.</div></div>
+        <div class="row" style="gap:7px">
+          <button class="btn btn-sm" onclick="gbImportCRM()" style="font-size:12px">⬇ Из CRM</button>
+          <button class="btn btn-sm btn-primary" onclick="openGbMo(null)">+ Гость</button>
         </div>
       </div>
-      <div style="margin-bottom:14px"><input class="input" id="gbSrch" placeholder="Поиск гостя..." oninput="renderGB()" style="max-width:340px"></div>
+      <div style="margin-bottom:12px"><input class="input" id="gbSrch" placeholder="Поиск..." oninput="renderGB()" style="max-width:320px"></div>
       <div class="gb-grid" id="gbGrid"></div>
     </div>
 
     <!-- GUEST BANK MODAL -->
     <div class="mo hidden" id="gbOvl">
       <div class="mo-box">
-        <div class="mo-hdr"><span class="mo-ttl" id="gbTtl">Гость</span><button class="btn btn-sm" onclick="closeGbModal()">✕</button></div>
+        <div class="mo-hdr"><span class="mo-ttl" id="gbTtl">Гость</span><button class="btn btn-sm" onclick="closeGbMo()">✕</button></div>
         <div class="mo-body">
           <div class="mo-sec">
             <div class="mo-stitle">Основное</div>
-            <div class="grid-2" style="gap:10px;margin-bottom:10px">
-              <div class="field"><div class="label">Имя</div><input id="gbNm" class="input" placeholder="Полное имя"></div>
-              <div class="field"><div class="label">Телефон</div><input id="gbPh" class="input" type="tel" placeholder="+7"></div>
+            <div class="grid-2" style="gap:9px;margin-bottom:9px">
+              <div class="field"><div class="label">Имя</div><input id="gbNm" class="input"></div>
+              <div class="field"><div class="label">Телефон</div><input id="gbPh" class="input" type="tel"></div>
             </div>
-            <div class="grid-2" style="gap:10px">
-              <div class="field"><div class="label">Карта (Prime Hill)</div><input id="gbCard" class="input" placeholder="#00000"></div>
-              <div class="field"><div class="label">Любимый филиал</div>
-                <select id="gbBranch" class="select"><option value="">—</option><option>Малыгина</option><option>50 лет</option></select>
-              </div>
+            <div class="grid-2" style="gap:9px">
+              <div class="field"><div class="label">Карта</div><input id="gbCard" class="input" placeholder="#00000"></div>
+              <div class="field"><div class="label">Любимый филиал</div><select id="gbBranch" class="select"><option value="">—</option><option>Малыгина</option><option>50 лет</option></select></div>
             </div>
           </div>
           <div class="mo-sec">
-            <div class="mo-stitle">Кальян <span style="font-weight:400;color:var(--muted)">(заполняет гость или сотрудник вручную)</span></div>
-            <div class="field" style="margin-bottom:10px"><div class="label">Что курит (полное описание)</div><textarea id="gbHk" class="textarea" style="min-height:64px" placeholder="Марка, вкус, крепость, чашка, способ забивки..."></textarea></div>
+            <div class="mo-stitle">Кальян <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">(только вручную)</span></div>
+            <div class="field" style="margin-bottom:9px"><div class="label">Что курит (полное описание)</div><textarea id="gbHk" class="textarea" style="min-height:60px" placeholder="Марка, вкус, крепость, чашка, способ забивки..."></textarea></div>
           </div>
           <div class="mo-sec">
-            <div class="mo-stitle">Предпочтения и заметки</div>
-            <div class="grid-2" style="gap:10px;margin-bottom:10px">
+            <div class="mo-stitle">Предпочтения</div>
+            <div class="grid-2" style="gap:9px;margin-bottom:9px">
               <div class="field"><div class="label">Любимые блюда</div><input id="gbDs" class="input" placeholder="Через запятую"></div>
-              <div class="field"><div class="label">Любимый стол</div><input id="gbTbl" class="input" placeholder="Стол 7..."></div>
+              <div class="field"><div class="label">Любимый стол</div><input id="gbTbl" class="input"></div>
             </div>
-            <div class="field"><div class="label">Заметки сотрудника</div><textarea id="gbNotes" class="textarea" style="min-height:64px" placeholder="Важная информация, аллергии, особые пожелания..."></textarea></div>
+            <div class="field"><div class="label">Заметки сотрудника</div><textarea id="gbNotes" class="textarea" style="min-height:60px"></textarea></div>
           </div>
         </div>
         <div class="mo-foot">
-          <button class="btn btn-sm btn-danger" id="gbDelBtn" style="margin-right:auto;display:none" onclick="gbDel()">Удалить</button>
-          <button class="btn btn-sm" onclick="closeGbModal()">Отмена</button>
+          <button class="btn btn-sm btn-danger" id="gbDel" style="margin-right:auto;display:none" onclick="gbDelete()">Удалить</button>
+          <button class="btn btn-sm" onclick="closeGbMo()">Отмена</button>
           <button class="btn btn-sm btn-primary" onclick="gbSave()">Сохранить</button>
         </div>
       </div>
     </div>
 
-    <!-- CRM GUESTS LIST -->
+    <!-- CRM GUESTS -->
     <div id="view-guests" class="hidden">
-      <div class="row-between" style="margin-bottom:14px">
-        <div class="page-title">Гости (CRM)</div>
-        <button class="btn btn-sm" onclick="loadGuests()">↻ Обновить</button>
-      </div>
-      <div style="margin-bottom:12px"><input class="input" id="gSrch" placeholder="Поиск по имени, телефону..." oninput="searchGuests()" style="max-width:340px"></div>
-      <div class="card"><div id="guestListBody"><div style="color:var(--muted);font-size:14px">Загрузка...</div></div></div>
+      <div class="row-between" style="margin-bottom:12px"><div class="page-title">Гости (CRM)</div><button class="btn btn-sm" onclick="loadGuests()">↻</button></div>
+      <div style="margin-bottom:10px"><input class="input" id="gSrch" placeholder="Поиск..." oninput="searchGuests()" style="max-width:320px"></div>
+      <div class="card"><div id="guestListBody"><div style="color:var(--muted);font-size:13px">Загрузка...</div></div></div>
     </div>
 
-    <!-- GUEST CARD -->
-    <div id="view-guest-card" class="hidden">
-      <div style="margin-bottom:14px"><button class="btn btn-sm" onclick="showView('guests')">← Назад</button></div>
-      <div id="guestCardContent"></div>
-    </div>
-
-    <!-- NEW GUEST (CRM) -->
+    <!-- NEW GUEST -->
     <div id="view-new-guest" class="hidden">
-      <div class="page-title" style="margin-bottom:6px">Новый гость в CRM</div>
-      <div class="page-sub">Основные данные. Кальян — добавьте через Банк гостей.</div>
+      <div class="page-title" style="margin-bottom:4px">Новый гость в CRM</div>
+      <div class="page-sub">Кальян — добавьте в Банке гостей.</div>
       <div class="card">
-        <div class="grid" style="gap:14px">
-          <div class="grid-2" style="gap:12px">
+        <div class="grid" style="gap:12px">
+          <div class="grid-2" style="gap:10px">
             <div class="field"><div class="label">Имя</div><input id="newName" class="input"></div>
             <div class="field"><div class="label">Телефон</div><input id="newPhone" class="input" type="tel"></div>
           </div>
-          <div class="grid-2" style="gap:12px">
+          <div class="grid-2" style="gap:10px">
             <div class="field"><div class="label">Никнейм</div><input id="newNick" class="input"></div>
             <div class="field"><div class="label">Любимый стол</div><input id="newTable" class="input"></div>
           </div>
-          <div class="field"><div class="label">Пиковые часы</div><input id="newHours" class="input" placeholder="Вечер, по пятницам..."></div>
+          <div class="field"><div class="label">Пиковые часы</div><input id="newHours" class="input"></div>
         </div>
-        <button class="btn btn-primary" style="margin-top:16px" onclick="createGuest()">Создать гостя</button>
+        <button class="btn btn-primary" style="margin-top:14px" onclick="createGuest()">Создать</button>
       </div>
     </div>
 
     <!-- PREORDERS -->
     <div id="view-preorders" class="hidden">
-      <div class="row-between" style="margin-bottom:14px">
-        <div><div class="page-title">Заявки на кальян</div><div class="page-sub">Заявки от гостей через форму входа</div></div>
-        <button class="btn btn-sm" onclick="loadPreorders()">↻ Обновить</button>
-      </div>
-      <div class="card"><div id="preorderListBody"><div style="color:var(--muted);font-size:14px">Загрузка...</div></div></div>
+      <div class="row-between" style="margin-bottom:12px"><div><div class="page-title">Заявки на кальян</div><div class="page-sub">От гостей при входе</div></div><button class="btn btn-sm" onclick="loadPreorders()">↻</button></div>
+      <div class="card"><div id="preorderListBody"><div style="color:var(--muted);font-size:13px">Загрузка...</div></div></div>
     </div>
 
   </main>
@@ -499,680 +541,517 @@ button{cursor:pointer;user-select:none}
 
 <script>
 'use strict';
-const SUPABASE_URL = 'https://vvmtgpeudmcsddjpktme.supabase.co';
-const TG = {
-  'Малыгина 90':    { link:'https://t.me/friendstalk4',     phone:'+79129926869' },
-  '50 лет Октября': { link:'https://t.me/friends_talk_tmn', phone:'+79829888998' }
-};
+const SB_URL='https://vvmtgpeudmcsddjpktme.supabase.co';
+const ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2bXRncGV1ZG1jc2RkanBrdG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU3NTQwMjEsImV4cCI6MjA2MTMzMDAyMX0.oO4RUPUi2BYJjqSMKtNRCzaToaFv-O5MxjvKqIjQq1M';
+let sb=null, guestCache=[], hookahUsual='yes', theme='dark';
 
-let sb = null;
-let guestCache = [];
-let currentGuest = null;
-let hookahUsual = 'yes';
+// ══ HELPERS ══════════════════════════════════════════
+function $(id){return document.getElementById(id)}
+function toast(m,ok=true){const b=$('toastBox'),e=document.createElement('div');e.className='toast'+(ok?'':' bad');e.textContent=m;b.appendChild(e);setTimeout(()=>e.remove(),3000)}
+function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+function today(){return new Date().toISOString().slice(0,10)}
+function fDate(){return $('bDate')?($('bDate').value||today()):today()}
+function getKey(){return(localStorage.getItem('dg_key')||'').trim()}
+function initSB(){if(sb)return;const k=getKey();if(!k||!window.supabase)return;sb=window.supabase.createClient(SB_URL,k,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}})}
+function normPhone(p){return(p||'').replace(/\D/g,'')}
+function gbInitials(n){return(n||'?').split(' ').slice(0,2).map(x=>x[0]).join('').toUpperCase()}
+function toggleTheme(){theme=theme==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',theme)}
+function switchMode(m){$('modeGuest').classList.toggle('hidden',m!=='guest');$('modeStaff').classList.toggle('hidden',m!=='staff');$('tabGuest').classList.toggle('active',m==='guest');$('tabStaff').classList.toggle('active',m==='staff')}
+function setUsual(v){hookahUsual=v;$('btnUsualYes').classList.toggle('active',v==='yes');$('btnUsualNo').classList.toggle('active',v==='no');$('customHookah').classList.toggle('hidden',v==='yes')}
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
-function $(id){ return document.getElementById(id); }
-function toast(msg,ok=true){ const b=$('toastBox'),e=document.createElement('div'); e.className='toast'+(ok?'':' bad'); e.textContent=msg; b.appendChild(e); setTimeout(()=>e.remove(),3000); }
-function esc(s){ const d=document.createElement('div'); d.textContent=s||''; return d.innerHTML; }
-function today(){ return new Date().toISOString().slice(0,10); }
-function getKey(){ return (localStorage.getItem('dg_key')||'').trim(); }
-function fDate(){ return $('bDate')?($('bDate').value||today()):today(); }
-
-function initSB(){
-  if(sb) return;
-  const key=getKey();
-  if(!key||!window.supabase) return;
-  sb=window.supabase.createClient(SUPABASE_URL,key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}});
-}
-
-let theme='dark';
-function toggleTheme(){ theme=theme==='dark'?'light':'dark'; document.documentElement.setAttribute('data-theme',theme); }
-
-function switchMode(m){
-  $('modeGuest').classList.toggle('hidden',m!=='guest');
-  $('modeStaff').classList.toggle('hidden',m!=='staff');
-  $('tabGuest').classList.toggle('active',m==='guest');
-  $('tabStaff').classList.toggle('active',m==='staff');
-}
-
-function setUsual(v){ hookahUsual=v; $('btnUsualYes').classList.toggle('active',v==='yes'); $('btnUsualNo').classList.toggle('active',v==='no'); $('customHookah').classList.toggle('hidden',v==='yes'); }
-
-async function submitGuest(){
-  const name=$('grName').value.trim(), phone=$('grPhone').value.trim();
-  if(!name){ toast('Введите имя',false); return; }
-  const time=$('grTime').value.trim(), addr=$('grAddress').value;
-  const brand=hookahUsual==='yes'?'Как всегда':($('grBrand').value.trim()||'');
-  const strength=$('grStrength')?.value.trim()||'';
-  // Try to save to Supabase if available, otherwise just log to localStorage
-  let saved=false;
-  try{
-    const anonKey='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2bXRncGV1ZG1jc2RkanBrdG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU3NTQwMjEsImV4cCI6MjA2MTMzMDAyMX0.oO4RUPUi2BYJjqSMKtNRCzaToaFv-O5MxjvKqIjQq1M';
-    const cli=window.supabase.createClient(SUPABASE_URL,anonKey);
-    // Find or create guest
-    let gid=null;
-    const {data:found}=await cli.from('guests').select('id').eq('phone',phone.replace(/\D/g,'')).limit(1);
-    if(found?.length){ gid=found[0].id; }
-    else{
-      const {data:ng}=await cli.from('guests').insert({full_name:name,phone}).select('id').single();
-      gid=ng?.id||null;
-    }
-    if(gid&&time){
-      await cli.from('hookah_preorders').insert({guest_id:gid,time_slot:time,address:addr,tobacco_brand:brand,strength,usual_order:hookahUsual==='yes'});
-    }
-    saved=true;
-  }catch(e){}
-  // Save to localStorage for offline
-  const orders=JSON.parse(localStorage.getItem('dg_po')||'[]');
-  orders.unshift({name,phone,time,addr,brand,strength,usual:hookahUsual==='yes',ts:Date.now()});
-  localStorage.setItem('dg_po',JSON.stringify(orders.slice(0,100)));
-  toast(saved?'Заявка принята ✓':'Заявка сохранена локально');
-  openApp();
-}
-
-async function doLogin(){
-  const key=($('staffPass').value||'').trim();
-  if(key) localStorage.setItem('dg_key',key);
-  initSB();
-  openApp();
-}
-
-async function restoreSession(){
-  const key=getKey();
-  if(key&&window.supabase){
-    try{ sb=window.supabase.createClient(SUPABASE_URL,key,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}}); } catch(e){}
-  }
-  openApp();
-}
-
-function openApp(){
-  $('loginView').classList.add('hidden');
-  $('appView').classList.remove('hidden');
-  if(!$('bDate').value) $('bDate').value=today();
-  showView('bookings');
-  loadGuests();
-}
-
-async function doLogout(){
-  if(sb) try{ await sb.auth.signOut(); }catch(e){}
-  localStorage.removeItem('dg_key');
-  sb=null; guestCache=[]; currentGuest=null;
-  $('appView').classList.add('hidden');
-  $('loginView').classList.remove('hidden');
-}
-
-function showView(v){
-  ['bookings','guestbank','guests','guest-card','new-guest','preorders'].forEach(id=>{
-    $('view-'+id).classList.toggle('hidden',id!==v);
-  });
-  document.querySelectorAll('.nav-item').forEach(el=>{
-    const map={'bookings':'Брони','guestbank':'Банк гостей','guests':'Гости (CRM)','guest-card':'Карточка гостя','new-guest':'Новый гость','preorders':'Заявки на кальян'};
-    const txt=el.textContent.trim();
-    el.classList.toggle('active', Object.entries(map).some(([k,t])=>k===v&&txt===t));
-  });
-  if(v==='bookings'){ if(!$('bDate').value) $('bDate').value=today(); fmRender(); }
-  if(v==='guests') loadGuests();
-  if(v==='guestbank') renderGB();
-  if(v==='preorders') loadPreorders();
-}
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// LOCAL GUEST BANK
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-function gbLoad(){ try{ return JSON.parse(localStorage.getItem('dg_bank')||'[]'); }catch(e){ return []; } }
-function gbSaveAll(arr){ localStorage.setItem('dg_bank',JSON.stringify(arr)); }
-function gbFind(q){ const lq=(q||'').toLowerCase(); return gbLoad().filter(g=>g.name.toLowerCase().includes(lq)||g.phone.includes(q||'')); }
-function gbInitials(name){ return (name||'?').split(' ').slice(0,2).map(n=>n[0]).join('').toUpperCase(); }
+// ══ GUEST BANK ══════════════════════════════════════
+function gbLoad(){try{return JSON.parse(localStorage.getItem('dg_bank')||'[]')}catch(e){return[]}}
+function gbSaveAll(a){localStorage.setItem('dg_bank',JSON.stringify(a))}
+function gbFindByPhone(ph){const n=normPhone(ph);if(!n)return null;return gbLoad().find(g=>normPhone(g.phone)===n)||null}
+function gbFindByName(nm){const q=(nm||'').toLowerCase();if(!q)return null;return gbLoad().find(g=>g.name&&g.name.toLowerCase().includes(q))||null}
 
 let gbEditId=null;
-function openGbModal(id){
-  gbEditId=id;
-  const arr=gbLoad();
-  const g=id?arr.find(x=>x.id===id):null;
+function openGbMo(id){
+  gbEditId=id;const arr=gbLoad();const g=id?arr.find(x=>x.id===id):null;
   $('gbTtl').textContent=g?'Гость: '+g.name:'Новый гость';
-  $('gbNm').value=g?.name||''; $('gbPh').value=g?.phone||''; $('gbCard').value=g?.card||'';
-  $('gbBranch').value=g?.branch||''; $('gbHk').value=g?.hookah||''; $('gbDs').value=g?.dishes||'';
-  $('gbTbl').value=g?.favTable||''; $('gbNotes').value=g?.notes||'';
-  $('gbDelBtn').style.display=id?'':'none';
-  $('gbOvl').classList.remove('hidden');
+  ['gbNm','gbPh','gbCard','gbHk','gbDs','gbTbl','gbNotes'].forEach(k=>{const map={gbNm:'name',gbPh:'phone',gbCard:'card',gbHk:'hookah',gbDs:'dishes',gbTbl:'favTable',gbNotes:'notes'};$(k).value=g?g[map[k]]||'':''});
+  $('gbBranch').value=g?.branch||'';$('gbDel').style.display=id?'':'none';$('gbOvl').classList.remove('hidden');
 }
-function closeGbModal(){ $('gbOvl').classList.add('hidden'); }
+function closeGbMo(){$('gbOvl').classList.add('hidden')}
 function gbSave(){
-  const name=$('gbNm').value.trim();
-  if(!name){ toast('Введите имя',false); return; }
+  const name=$('gbNm').value.trim();if(!name){toast('Введите имя',false);return}
   const arr=gbLoad();
   const data={name,phone:$('gbPh').value.trim(),card:$('gbCard').value.trim(),branch:$('gbBranch').value,hookah:$('gbHk').value.trim(),dishes:$('gbDs').value.trim(),favTable:$('gbTbl').value.trim(),notes:$('gbNotes').value.trim()};
-  if(gbEditId){ const i=arr.findIndex(x=>x.id===gbEditId); if(i>=0) Object.assign(arr[i],data); }
-  else{ arr.push({id:'g'+Date.now(),createdAt:today(),...data}); }
-  gbSaveAll(arr); closeGbModal(); renderGB(); toast('Сохранено ✓');
+  if(gbEditId){const i=arr.findIndex(x=>x.id===gbEditId);if(i>=0)Object.assign(arr[i],data);}
+  else arr.push({id:'g'+Date.now(),...data});
+  gbSaveAll(arr);closeGbMo();renderGB();toast('Сохранено ✓');
 }
-function gbDel(){
-  if(!gbEditId) return;
-  gbSaveAll(gbLoad().filter(x=>x.id!==gbEditId));
-  closeGbModal(); renderGB(); toast('Удалено');
-}
+function gbDelete(){if(!gbEditId)return;gbSaveAll(gbLoad().filter(x=>x.id!==gbEditId));closeGbMo();renderGB();toast('Удалено')}
 function renderGB(){
-  const q=($('gbSrch')?$('gbSrch').value.trim():'');
-  const list=q?gbFind(q):gbLoad();
-  const grid=$('gbGrid'); grid.innerHTML='';
-  if(!list.length){ grid.innerHTML='<div style="color:var(--muted);padding:32px;font-size:14px">Банк пуст. Нажмите "+ Гость" чтобы добавить.</div>'; return; }
+  const q=($('gbSrch')?$('gbSrch').value:'').toLowerCase();
+  const list=gbLoad().filter(g=>!q||g.name.toLowerCase().includes(q)||g.phone.includes(q));
+  const grid=$('gbGrid');grid.innerHTML='';
+  if(!list.length){grid.innerHTML='<div style="color:var(--muted);padding:28px;font-size:13px">Банк пуст. Нажмите &quot;+ Гость&quot;.</div>';return}
   list.forEach(g=>{
-    const card=document.createElement('div'); card.className='gb-card';
-    card.innerHTML=`<div class="gb-card-hdr"><div class="gb-av">${gbInitials(g.name)}</div><div><div class="gb-name">${esc(g.name)}</div><div class="gb-phone">${esc(g.phone||'—')} ${g.card?'· '+esc(g.card):''}</div></div></div>
-    <div class="gb-prefs">
-      ${g.hookah?`<div class="gb-prow"><span class="gb-pl">🌿 Кальян:</span><span class="gb-pv">${esc(g.hookah)}</span></div>`:''}
-      ${g.dishes?`<div class="gb-prow"><span class="gb-pl">🍽 Блюда:</span><span class="gb-pv">${esc(g.dishes)}</span></div>`:''}
-      ${g.branch?`<div class="gb-prow"><span class="gb-pl">📍 Филиал:</span><span class="gb-pv">${esc(g.branch)}</span></div>`:''}
-      ${g.notes?`<div class="gb-prow" style="margin-top:4px"><span style="font-size:11px;color:var(--orange);font-style:italic">"${esc(g.notes)}"</span></div>`:''}
-    </div>`;
-    card.addEventListener('click',()=>openGbModal(g.id));
-    grid.appendChild(card);
+    const c=document.createElement('div');c.className='gb-card';
+    c.innerHTML=`<div class="row" style="gap:9px;margin-bottom:8px"><div class="gb-av">${gbInitials(g.name)}</div><div><div style="font-size:13px;font-weight:700">${esc(g.name)}</div><div style="font-size:11px;color:var(--muted)">${esc(g.phone||'—')}${g.card?' · '+esc(g.card):''}</div></div></div>
+    ${g.hookah?`<div class="gb-prow"><span class="gb-pl">🌿 Кальян</span><span>${esc(g.hookah)}</span></div>`:''}
+    ${g.dishes?`<div class="gb-prow"><span class="gb-pl">🍽 Блюда</span><span>${esc(g.dishes)}</span></div>`:''}
+    ${g.branch?`<div class="gb-prow"><span class="gb-pl">📍 Филиал</span><span>${esc(g.branch)}</span></div>`:''}
+    ${g.notes?`<div style="margin-top:5px;font-size:10px;color:var(--orange);font-style:italic">"${esc(g.notes)}"</div>`:''}`;
+    c.addEventListener('click',()=>openGbMo(g.id));grid.appendChild(c);
   });
 }
-
-async function gbImportFromCRM(){
-  if(!guestCache.length){ toast('Сначала загрузите CRM гостей',false); return; }
-  const bank=gbLoad();
-  let added=0;
+async function gbImportCRM(){
+  if(!guestCache.length){toast('Сначала загрузите CRM',false);return}
+  const bank=gbLoad();let added=0;
   guestCache.forEach(g=>{
-    if(!g.phone) return;
-    const exists=bank.find(b=>b.phone===g.phone);
-    if(!exists){
-      bank.push({id:'gc'+g.id, createdAt:today(), name:g.full_name||'', phone:g.phone||'', card:'', branch:'', hookah:'', dishes:'', favTable:g.favorite_table||'', notes:g.notes||''});
-      added++;
-    }
+    if(!g.phone)return;
+    const exists=bank.find(b=>normPhone(b.phone)===normPhone(g.phone));
+    if(!exists){bank.push({id:'gc'+g.id,name:g.full_name||'',phone:g.phone||'',card:'',branch:'',hookah:'',dishes:'',favTable:g.favorite_table||'',notes:g.notes||''});added++;}
   });
-  gbSaveAll(bank); renderGB(); toast(`Импортировано: ${added} гостей`);
+  gbSaveAll(bank);renderGB();toast('Импортировано: '+added);
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// FLOOR MAP
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const FLOORS = {
-  malygin:{
-    name:'Малыгина',
-    tables:[
-      {id:'M11',num:'11',x:14.5,y:4,  w:9.5,h:21,port:true},
-      {id:'M1', num:'1', x:37,  y:2,  w:9,  h:24,port:true},
-      {id:'M2', num:'2', x:58,  y:9,  w:13, h:12,port:false},
-      {id:'M3', num:'3', x:73,  y:9,  w:13, h:12,port:false},
-      {id:'M10',num:'10',x:0,   y:54, w:11.5,h:14,port:false},
-      {id:'M9', num:'9', x:13,  y:55, w:9.5,h:12,port:false},
-      {id:'M8', num:'8', x:24,  y:55, w:9.5,h:12,port:false},
-      {id:'M7', num:'7', x:35,  y:55, w:9.5,h:12,port:false},
-      {id:'M6', num:'6', x:46,  y:55, w:9.5,h:12,port:false},
-      {id:'M5', num:'5', x:61,  y:55, w:9.5,h:12,port:false},
-      {id:'M14',num:'14',x:72,  y:55, w:9.5,h:12,port:false},
-      {id:'M4', num:'4', x:83,  y:55, w:9.5,h:12,port:false},
-    ],
-    marks:[
-      {l:'Кухня',x:0,y:4,w:13.5,h:33,vert:false},
-      {l:'Вход', x:94.5,y:3.5,w:5,h:20,vert:true},
-    ]
-  },
-  let50:{
-    name:'50 лет',
-    tables:[
-      {id:'L12',num:'12',x:2, y:2, w:12,h:13,port:false},
-      {id:'L11',num:'11',x:16,y:2, w:12,h:13,port:false},
-      {id:'L10',num:'10',x:30,y:2, w:12,h:13,port:false},
-      {id:'L09',num:'09',x:44,y:2, w:12,h:13,port:false},
-      {id:'L08',num:'08',x:65,y:2, w:12,h:13,port:false},
-      {id:'L04',num:'04',x:16,y:21,w:12,h:13,port:false},
-      {id:'L05',num:'05',x:30,y:21,w:12,h:13,port:false},
-      {id:'L06',num:'06',x:44,y:21,w:12,h:13,port:false},
-      {id:'L07',num:'07',x:65,y:18,w:12,h:23,port:true},
-      {id:'L03',num:'03',x:2, y:38,w:12,h:20,port:true},
-      {id:'L02',num:'02',x:16,y:58,w:12,h:13,port:false},
-      {id:'L01',num:'01',x:65,y:79,w:12,h:13,port:false},
-    ],
-    marks:[
-      {l:'Бар',  x:63, y:40,w:9,  h:38,vert:false},
-      {l:'Окно', x:-0.5,y:35,w:5.5,h:20,vert:true},
-      {l:'Вход', x:-0.5,y:73,w:5.5,h:12,vert:true},
-    ]
-  }
-};
-
-const fmSt={branch:'malygin',sub:'map',tid:null,editId:null,editMode:false};
-
-function fmKey(br,dt){ return 'dg_b3_'+br+'_'+(dt||fDate()); }
-function fmLoad(br,dt){ try{ return JSON.parse(localStorage.getItem(fmKey(br,dt))||'[]'); }catch(e){ return []; } }
-function fmSaveB(br,dt,rows){ try{ localStorage.setItem(fmKey(br,dt),JSON.stringify(rows)); }catch(e){} }
-function fmGenId(){ return 'b'+Math.random().toString(36).slice(2,9); }
-
-// Layout positions per branch
-function fmLayoutKey(br){ return 'dg_layout_'+br; }
-function fmGetLayout(br){
-  try{ const s=localStorage.getItem(fmLayoutKey(br)); if(s) return JSON.parse(s); }catch(e){}
-  return null;
-}
-function fmApplyLayout(br){
-  const saved=fmGetLayout(br);
-  if(!saved) return;
-  const fl=FLOORS[br];
-  fl.tables.forEach(t=>{ if(saved[t.id]) Object.assign(t,saved[t.id]); });
-}
-
-function fmStatus(tid,br,dt){
-  const rows=fmLoad(br,dt);
-  const bks=rows.filter(r=>r.tableId===tid);
-  if(!bks.length) return 'free';
-  const ds=dt||fDate(), td2=today();
-  if(ds!==td2) return 'partial';
-  const now=new Date(), mins=now.getHours()*60+now.getMinutes();
-  const active=bks.some(b=>{ const [fh,fm]=b.from.split(':').map(Number),[th,tm]=b.to.split(':').map(Number); return mins>=fh*60+fm&&mins<th*60+tm; });
-  if(active) return 'booked';
-  const soon=bks.some(b=>{ const [fh,fm]=b.from.split(':').map(Number),fr=fh*60+fm; return fr>mins&&fr-mins<=90; });
-  return soon?'soon':'partial';
-}
-
-function fmLabel(tid,br,dt){
-  const rows=fmLoad(br,dt), bks=rows.filter(r=>r.tableId===tid);
-  if(!bks.length) return null;
-  const ds=dt||fDate(), td2=today();
-  if(ds!==td2) return bks.length+'бр';
-  const now=new Date(), mins=now.getHours()*60+now.getMinutes();
-  for(const b of bks){
-    const [fh,fm]=b.from.split(':').map(Number),[th,tm]=b.to.split(':').map(Number);
-    const fr=fh*60+fm, to=th*60+tm;
-    if(mins>=fr&&mins<to){ const el=mins-fr; return el<60?el+'м':Math.floor(el/60)+'ч'+(el%60?el%60+'м':''); }
-  }
-  const up=bks.filter(b=>{const [fh,fm]=b.from.split(':').map(Number);return fh*60+fm>mins;}).sort((a,b)=>a.from.localeCompare(b.from));
-  return up.length?up[0].from:bks.length+'бр';
-}
-
-function fmRender(){ if(fmSt.sub==='map') fmDraw(); else fmRenderList(); if(fmSt.tid) fmOpenPan(fmSt.tid); }
-
-function fmDraw(){
-  fmApplyLayout(fmSt.branch);
-  const fl=FLOORS[fmSt.branch];
-  const c=$('fmContainer'); c.innerHTML='';
-  const canvas=document.createElement('div');
-  canvas.className='fm-canvas '+fmSt.branch+(fmSt.editMode?' edit-mode':'');
-  canvas.id='fmCanvas';
-
-  fl.marks.forEach(m=>{
-    const el=document.createElement('div');
-    el.className='fm-lm'+(m.vert?' vert':'');
-    el.textContent=m.l;
-    el.style.cssText=`left:${m.x}%;top:${m.y}%;width:${m.w}%;height:${m.h}%`;
-    canvas.appendChild(el);
-  });
-
-  fl.tables.forEach(t=>{
-    const st=fmStatus(t.id,fmSt.branch,fDate());
-    const lbl=fmLabel(t.id,fmSt.branch,fDate());
-    const cnt=fmLoad(fmSt.branch,fDate()).filter(r=>r.tableId===t.id).length;
-    const topCh=t.port?2:3, sideCh=t.port?2:1;
-
-    const slot=document.createElement('div');
-    slot.className='fm-tslot'+(fmSt.editMode?' editing':'');
-    slot.style.cssText=`left:${t.x}%;top:${t.y}%;width:${t.w}%;height:${t.h}%`;
-    slot.dataset.tid=t.id;
-
-    // Top chairs
-    const tr=document.createElement('div'); tr.className='ch-row';
-    for(let i=0;i<topCh;i++){const ch=document.createElement('div');ch.className='ch h';tr.appendChild(ch);}
-
-    // Middle
-    const mid=document.createElement('div'); mid.className='ch-mid';
-    const lc=document.createElement('div'); lc.className='ch-col';
-    for(let i=0;i<sideCh;i++){const ch=document.createElement('div');ch.className='ch v';lc.appendChild(ch);}
-    const rc=document.createElement('div'); rc.className='ch-col';
-    for(let i=0;i<sideCh;i++){const ch=document.createElement('div');ch.className='ch v';rc.appendChild(ch);}
-
-    // Table card
-    const tc=document.createElement('div');
-    tc.className='fm-tc s-'+st+(fmSt.editMode?' editing':'');
-    tc.style.cssText='flex:1;min-height:42px;';
-
-    const strip=document.createElement('div'); strip.className='st-strip'; tc.appendChild(strip);
-    const num=document.createElement('span'); num.className='fm-tn'; num.textContent=t.num; tc.appendChild(num);
-    if(cnt>0){const b=document.createElement('span');b.className='fm-tcnt';b.textContent=cnt;tc.appendChild(b);}
-    if(lbl&&st!=='free'){const tl=document.createElement('div');tl.className='fm-ttl';const dot=document.createElement('div');dot.className='fm-tdot';tl.appendChild(dot);tl.appendChild(document.createTextNode(lbl));tc.appendChild(tl);}
-
-    mid.appendChild(lc); mid.appendChild(tc); mid.appendChild(rc);
-
-    // Bottom chairs
-    const br2=document.createElement('div'); br2.className='ch-row';
-    for(let i=0;i<topCh;i++){const ch=document.createElement('div');ch.className='ch h';br2.appendChild(ch);}
-
-    slot.appendChild(tr); slot.appendChild(mid); slot.appendChild(br2);
-
-    if(fmSt.editMode){
-      fmMakeDraggable(slot, t, canvas);
-    } else {
-      slot.addEventListener('click',()=>fmOpenPan(t.id));
-    }
-
-    canvas.appendChild(slot);
-  });
-  c.appendChild(canvas);
-}
-
-// ── DRAG AND DROP ─────────────────────────────────────────────────────────────
-function fmMakeDraggable(slot, tableData, canvas){
-  let dragging=false, startX=0, startY=0, startLeft=0, startTop=0;
-
-  slot.addEventListener('mousedown',(e)=>{
-    e.preventDefault();
-    dragging=true;
-    slot.classList.add('dragging');
-    const rect=canvas.getBoundingClientRect();
-    startX=e.clientX; startY=e.clientY;
-    startLeft=tableData.x; startTop=tableData.y;
-    const onMove=(e2)=>{
-      if(!dragging) return;
-      const dx=((e2.clientX-startX)/rect.width)*100;
-      const dy=((e2.clientY-startY)/rect.height)*100;
-      const nx=Math.max(0,Math.min(95-tableData.w, startLeft+dx));
-      const ny=Math.max(0,Math.min(95-tableData.h, startTop+dy));
-      slot.style.left=nx+'%'; slot.style.top=ny+'%';
-      tableData.x=nx; tableData.y=ny;
-    };
-    const onUp=()=>{
-      dragging=false; slot.classList.remove('dragging');
-      document.removeEventListener('mousemove',onMove);
-      document.removeEventListener('mouseup',onUp);
-    };
-    document.addEventListener('mousemove',onMove);
-    document.addEventListener('mouseup',onUp);
-  });
-
-  // Touch support
-  slot.addEventListener('touchstart',(e)=>{
-    const t2=e.touches[0];
-    dragging=true; slot.classList.add('dragging');
-    const rect=canvas.getBoundingClientRect();
-    startX=t2.clientX; startY=t2.clientY;
-    startLeft=tableData.x; startTop=tableData.y;
-    const onMove=(e2)=>{
-      e2.preventDefault();
-      if(!dragging) return;
-      const touch=e2.touches[0];
-      const dx=((touch.clientX-startX)/rect.width)*100;
-      const dy=((touch.clientY-startY)/rect.height)*100;
-      const nx=Math.max(0,Math.min(95-tableData.w,startLeft+dx));
-      const ny=Math.max(0,Math.min(95-tableData.h,startTop+dy));
-      slot.style.left=nx+'%'; slot.style.top=ny+'%';
-      tableData.x=nx; tableData.y=ny;
-    };
-    const onUp=()=>{ dragging=false; slot.classList.remove('dragging'); slot.removeEventListener('touchmove',onMove); slot.removeEventListener('touchend',onUp); };
-    slot.addEventListener('touchmove',onMove,{passive:false});
-    slot.addEventListener('touchend',onUp);
-  });
-}
-
-function fmToggleEdit(){
-  fmSt.editMode=!fmSt.editMode;
-  $('btnEditLayout').textContent=fmSt.editMode?'✓ Готово':'✎ Схема';
-  $('btnEditLayout').classList.toggle('btn-primary',fmSt.editMode);
-  $('editBanner').classList.toggle('hidden',!fmSt.editMode);
-  fmDraw();
-}
-
-function fmSaveLayout(){
-  const fl=FLOORS[fmSt.branch];
-  const layout={};
-  fl.tables.forEach(t=>{ layout[t.id]={x:t.x,y:t.y}; });
-  localStorage.setItem(fmLayoutKey(fmSt.branch),JSON.stringify(layout));
-  toast('Схема сохранена ✓');
-}
-
-function fmResetLayout(){
-  localStorage.removeItem(fmLayoutKey(fmSt.branch));
-  // Reset to defaults
-  const defaults={
-    malygin:{M11:{x:14.5,y:4},M1:{x:37,y:2},M2:{x:58,y:9},M3:{x:73,y:9},M10:{x:0,y:54},M9:{x:13,y:55},M8:{x:24,y:55},M7:{x:35,y:55},M6:{x:46,y:55},M5:{x:61,y:55},M14:{x:72,y:55},M4:{x:83,y:55}},
-    let50:{L12:{x:2,y:2},L11:{x:16,y:2},L10:{x:30,y:2},L09:{x:44,y:2},L08:{x:65,y:2},L04:{x:16,y:21},L05:{x:30,y:21},L06:{x:44,y:21},L07:{x:65,y:18},L03:{x:2,y:38},L02:{x:16,y:58},L01:{x:65,y:79}}
-  };
-  FLOORS[fmSt.branch].tables.forEach(t=>{ if(defaults[fmSt.branch][t.id]) Object.assign(t,defaults[fmSt.branch][t.id]); });
-  fmDraw(); toast('Схема сброшена');
-}
-
-function fmOpenPan(tid){
-  fmSt.tid=tid;
-  const fl=FLOORS[fmSt.branch];
-  const td=fl.tables.find(t=>t.id===tid);
-  const bks=fmLoad(fmSt.branch,fDate()).filter(r=>r.tableId===tid).sort((a,b)=>a.from.localeCompare(b.from));
-  $('fmPT').textContent='Стол '+td.num+' — '+fl.name;
-  $('fmPS').textContent=bks.length+' брон'+(bks.length===1?'ь':bks.length<5?'и':'ей')+' · '+fDate();
-  const body=$('fmPB'); body.innerHTML='';
-  if(!bks.length){ body.innerHTML='<div style="color:var(--muted);padding:24px;text-align:center;font-size:13px">Броней нет</div>'; }
-  else{
-    const now=new Date(), mins=now.getHours()*60+now.getMinutes(), td2=today();
-    bks.forEach(b=>{
-      const card=document.createElement('div'); card.className='bkc';
-      const [fh,fm]=b.from.split(':').map(Number),[th,tm]=b.to.split(':').map(Number);
-      const fr=fh*60+fm, to=th*60+tm;
-      let cls='bb-up', lbl=b.from+'–'+b.to;
-      if(fDate()===td2){ if(mins>=fr&&mins<to){cls='bb-active';lbl='● Сейчас';} else if(to<=mins){cls='bb-done';} }
-      const stLbl={confirmed:'',vip:'⭐ VIP',waiting:'⏳ Ожидание'}[b.status]||'';
-      card.innerHTML=`<div class="bkc-top"><span class="bkc-name">${esc(b.name)}</span><span class="bkc-badge ${cls}">${lbl}</span></div>
-      <div class="bkc-meta"><span>👥 ${b.guests||1}</span><span>${esc(b.phone||'—')}</span>${stLbl?`<span>${stLbl}</span>`:''}</div>
-      ${b.hookah||b.dishes?`<div class="bkc-tags">${b.hookah?`<span class="bktag bktag-h">🌿 ${esc(b.hookah)}</span>`:''}${b.dishes?`<span class="bktag bktag-d">🍽 ${esc(b.dishes)}</span>`:''}</div>`:''}
-      ${b.notes?`<div style="margin-top:4px;font-size:11px;color:var(--muted);font-style:italic">"${esc(b.notes)}"</div>`:''}`;
-      card.addEventListener('click',()=>openBm(b.id,tid));
-      body.appendChild(card);
-    });
-  }
-  $('fmPanel').style.display='';
-}
-
-function fmClosePan(){ $('fmPanel').style.display='none'; fmSt.tid=null; }
-function fmBranch(br){ fmSt.branch=br; fmSt.tid=null; $('fmTM').classList.toggle('active',br==='malygin'); $('fmT5').classList.toggle('active',br==='let50'); fmClosePan(); fmRender(); }
-function fmSub(v){ fmSt.sub=v; $('fmMapView').style.display=v==='map'?'':'none'; $('fmListView').style.display=v==='list'?'':'none'; $('vtMap').classList.toggle('active',v==='map'); $('vtList').classList.toggle('active',v==='list'); fmRender(); }
-
-function fmRenderList(){
-  const q=($('fmSrch')?$('fmSrch').value.trim():''), dt=fDate();
-  const all=['malygin','let50'].flatMap(br=>fmLoad(br,dt).map(b=>({...b,br})));
-  const filtered=q?all.filter(b=>b.name.toLowerCase().includes(q.toLowerCase())||b.phone.includes(q)||b.tableId.toLowerCase().includes(q)):all;
-  filtered.sort((a,b)=>a.from.localeCompare(b.from));
-  const body=$('fmListBody');
-  if(!filtered.length){ body.innerHTML='<div style="color:var(--muted);padding:24px;font-size:14px">Броней нет на этот день.</div>'; return; }
-  const now=new Date(), mins=now.getHours()*60+now.getMinutes(), td2=today();
-  body.innerHTML=`<table class="table-list"><thead><tr><th>Стол</th><th>Гость</th><th>Телефон</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>
-  ${filtered.map(b=>{
-    const fl=FLOORS[b.br], tbl=fl.tables.find(t=>t.id===b.tableId);
-    const tn=tbl?fl.name+' · '+tbl.num:b.tableId;
-    const [fh,fm2]=b.from.split(':').map(Number),[th,tm2]=b.to.split(':').map(Number);
-    const fr=fh*60+fm2, to2=th*60+tm2;
-    let chip=`<span style="color:var(--teal)">▲ ${b.from}</span>`;
-    if(dt===td2){ if(mins>=fr&&mins<to2)chip=`<span style="color:var(--green)">● Сейчас</span>`; else if(to2<=mins)chip=`<span style="color:var(--faint)">✓ Завершена</span>`; }
-    return `<tr><td style="font-weight:700;color:var(--teal)">${esc(tn)}</td><td style="font-weight:600">${esc(b.name)}</td><td style="color:var(--muted)">${esc(b.phone||'—')}</td><td>${esc(b.from)}–${esc(b.to)}</td><td style="color:var(--muted)">${b.guests||1}</td><td style="font-size:12px">${esc(b.hookah||'—')}</td><td>${chip}</td><td><button class="btn btn-sm" onclick="openBm('${b.id}','${b.tableId}')" style="padding:3px 9px;font-size:12px">✎</button></td></tr>`;
-  }).join('')}</tbody></table>`;
-}
-
-// ── BOOKING MODAL ──────────────────────────────────────────────────────────────
+// ══ BOOKING MODAL ════════════════════════════════════
+let bmEditId=null;
 function openBm(bookingId,tableId){
-  fmSt.editId=bookingId;
-  const sel=$('bmTbl'); sel.innerHTML='';
+  bmEditId=bookingId;
+  // Populate table selector
+  const sel=$('bmTbl');sel.innerHTML='';
   ['malygin','let50'].forEach(br=>{
-    const fl=FLOORS[br], g=document.createElement('optgroup'); g.label=fl.name;
-    fl.tables.forEach(t=>{ const o=document.createElement('option'); o.value=t.id; o.textContent='Стол '+t.num; if(t.id===(tableId||fmSt.tid)) o.selected=true; g.appendChild(o); });
+    const fl=FLOORS[br],g=document.createElement('optgroup');g.label=fl.name;
+    fl.tables.forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent='Стол '+t.num;if(t.id===(tableId||fmSel))o.selected=true;g.appendChild(o);});
     sel.appendChild(g);
   });
   $('bmDt').value=fDate();
+  hideSugg();
   if(bookingId){
-    const br2=['malygin','let50'].find(br=>fmLoad(br,fDate()).find(b=>b.id===bookingId))||fmSt.branch;
-    const b=fmLoad(br2,fDate()).find(b=>b.id===bookingId);
+    const br2=findBrByBooking(bookingId,fDate());
+    const b=br2?fmLoad(br2,fDate()).find(x=>x.id===bookingId):null;
     if(b){
-      $('bmTtl').textContent='Бронь — '+b.name; $('bmDelBtn').style.display='';
-      $('bmNm').value=b.name||''; $('bmPh').value=b.phone||''; $('bmDt').value=b.date||fDate();
-      const o2=$('bmTbl').querySelector(`option[value="${b.tableId}"]`); if(o2) o2.selected=true;
-      $('bmFr').value=b.from||'19:00'; $('bmTo').value=b.to||'22:00';
-      $('bmGst').value=b.guests||2; $('bmSt').value=b.status||'confirmed';
-      $('bmHk').value=b.hookah||''; $('bmDs').value=b.dishes||''; $('bmNo').value=b.notes||'';
-      const gb2=gbLoad().find(g=>g.phone&&g.phone===b.phone);
-      if(gb2) bmShowGuest(gb2); else bmHideGuest();
+      $('bmTtl').textContent='Бронь — '+b.name;$('bmDel').style.display='';
+      $('bmPh').value=b.phone||'';$('bmNm').value=b.name||'';$('bmDt').value=b.date||fDate();
+      const o2=$('bmTbl').querySelector(`option[value="${b.tableId}"]`);if(o2)o2.selected=true;
+      $('bmFr').value=b.from||'19:00';$('bmTo').value=b.to||'22:00';$('bmGst').value=b.guests||2;$('bmStt').value=b.status||'confirmed';
+      $('bmHk').value=b.hookah||'';$('bmDs').value=b.dishes||'';$('bmNo').value=b.notes||'';
+      const g=gbFindByPhone(b.phone);if(g)showBmGuest(g);else hideBmGuest();
     }
   } else {
-    $('bmTtl').textContent='Новая бронь'; $('bmDelBtn').style.display='none';
-    $('bmNm').value=''; $('bmPh').value=''; $('bmFr').value='19:00'; $('bmTo').value='22:00';
-    $('bmGst').value=2; $('bmSt').value='confirmed'; $('bmHk').value=''; $('bmDs').value=''; $('bmNo').value='';
-    bmHideGuest();
+    $('bmTtl').textContent='Новая бронь';$('bmDel').style.display='none';
+    ['bmPh','bmNm','bmHk','bmDs','bmNo'].forEach(id=>$(id).value='');
+    $('bmFr').value='19:00';$('bmTo').value='22:00';$('bmGst').value=2;$('bmStt').value='confirmed';
+    hideBmGuest();
   }
   $('bmOvl').classList.remove('hidden');
 }
-
-function closeBm(){ $('bmOvl').classList.add('hidden'); }
-
-function bmFill(){
-  const q=$('bmNm').value.trim();
-  if(q.length<2){ bmHideGuest(); return; }
-  const g=gbLoad().find(x=>x.name.toLowerCase().includes(q.toLowerCase()));
-  if(g) bmShowGuest(g);
-  else { const gc=guestCache.find(x=>x.full_name&&x.full_name.toLowerCase().includes(q.toLowerCase())); if(gc) bmShowGuestCRM(gc); else bmHideGuest(); }
+function closeBm(){$('bmOvl').classList.add('hidden');hideSugg()}
+function bmFillByPhone(){
+  const ph=$('bmPh').value.trim(),n=normPhone(ph);
+  if(!n||n.length<7){hideBmGuest();hideSugg();return}
+  // Show suggestions dropdown
+  const matches=gbLoad().filter(g=>normPhone(g.phone).includes(n));
+  const sugg=$('phSugg');
+  if(matches.length){
+    sugg.innerHTML=matches.slice(0,5).map(g=>`<div class="ph-sugg-item" onclick="pickSugg('${g.id}')"><div class="ph-sugg-nm">${esc(g.name)}</div><div class="ph-sugg-ph">${esc(g.phone)}</div></div>`).join('');
+    sugg.classList.remove('hidden');
+    // Exact match → auto-fill
+    const exact=matches.find(g=>normPhone(g.phone)===n);
+    if(exact){hideSugg();$('bmNm').value=exact.name;showBmGuest(exact);}
+  } else {sugg.classList.add('hidden');hideBmGuest();}
 }
-
-function bmShowGuest(g){
-  $('bmGPA').classList.add('on');
-  $('bmAv').textContent=gbInitials(g.name); $('bmGN').textContent=g.name; $('bmGS').textContent=g.phone||'';
-  $('bmGRows').innerHTML=`${g.hookah?`<div class="gpa-row"><span class="gpa-lbl">🌿 Кальян</span><span class="gpa-val">${esc(g.hookah)}</span></div>`:''}${g.dishes?`<div class="gpa-row"><span class="gpa-lbl">🍽 Блюда</span><span class="gpa-val">${esc(g.dishes)}</span></div>`:''}${g.notes?`<div class="gpa-row"><span class="gpa-lbl">📝 Заметки</span><span class="gpa-val" style="color:var(--orange)">${esc(g.notes)}</span></div>`:''}`;
-  if(g.hookah&&!$('bmHk').value) $('bmHk').value=g.hookah;
-  if(g.phone&&!$('bmPh').value) $('bmPh').value=g.phone;
+function bmFillByName(){
+  hideSugg();
+  const nm=$('bmNm').value.trim();
+  if(nm.length<2){if(!$('bmPh').value.trim())hideBmGuest();return}
+  const g=gbFindByName(nm);
+  if(g){if(!$('bmPh').value.trim())$('bmPh').value=g.phone;showBmGuest(g);}
 }
-
-function bmShowGuestCRM(g){
-  $('bmGPA').classList.add('on');
-  const nm=g.full_name||''; $('bmAv').textContent=gbInitials(nm); $('bmGN').textContent=nm; $('bmGS').textContent=g.phone||'';
-  $('bmGRows').innerHTML=`${g.notes?`<div class="gpa-row"><span class="gpa-lbl">📝 Заметки CRM</span><span class="gpa-val">${esc(g.notes)}</span></div>`:''}`;
-  if(g.phone&&!$('bmPh').value) $('bmPh').value=g.phone;
+function pickSugg(id){
+  hideSugg();
+  const g=gbLoad().find(x=>x.id===id);
+  if(!g)return;
+  $('bmPh').value=g.phone;$('bmNm').value=g.name;showBmGuest(g);
 }
-
-function bmHideGuest(){ $('bmGPA').classList.remove('on'); }
-
+function hideSugg(){$('phSugg').classList.add('hidden')}
+function showBmGuest(g){
+  $('bmGPA').style.display='';
+  $('bmAv').textContent=gbInitials(g.name);$('bmGN').textContent=g.name;$('bmGS').textContent=g.phone||'';
+  $('bmGRows').innerHTML=`${g.hookah?`<div class="gpa-row"><span class="gpa-lbl">🌿 Кальян</span><span class="gpa-val">${esc(g.hookah)}</span></div>`:''}${g.dishes?`<div class="gpa-row"><span class="gpa-lbl">🍽 Блюда</span><span class="gpa-val">${esc(g.dishes)}</span></div>`:''}${g.notes?`<div class="gpa-row"><span class="gpa-lbl">📝 Заметка</span><span class="gpa-val" style="color:var(--orange)">${esc(g.notes)}</span></div>`:''}`;
+  if(g.hookah&&!$('bmHk').value)$('bmHk').value=g.hookah;
+  if(g.dishes&&!$('bmDs').value)$('bmDs').value=g.dishes;
+}
+function hideBmGuest(){$('bmGPA').style.display='none'}
 function bmSave(){
-  const name=$('bmNm').value.trim(); if(!name){ toast('Введите имя',false); return; }
-  const tableId=$('bmTbl').value, date=$('bmDt').value||fDate();
-  const br=['M11','M1','M2','M3','M10','M9','M8','M7','M6','M5','M14','M4'].includes(tableId)?'malygin':'let50';
-  const bk={id:fmSt.editId||fmGenId(),tableId,branch:br,date,name,phone:$('bmPh').value.trim(),from:$('bmFr').value,to:$('bmTo').value,guests:parseInt($('bmGst').value)||2,status:$('bmSt').value,hookah:$('bmHk').value.trim(),dishes:$('bmDs').value.trim(),notes:$('bmNo').value.trim()};
+  const name=$('bmNm').value.trim();if(!name){toast('Введите имя',false);return}
+  const tableId=$('bmTbl').value,date=$('bmDt').value||fDate();
+  const br=FLOORS.malygin.tables.find(t=>t.id===tableId)?'malygin':'let50';
+  const bk={id:bmEditId||('b'+Math.random().toString(36).slice(2,9)),tableId,branch:br,date,name,phone:$('bmPh').value.trim(),from:$('bmFr').value,to:$('bmTo').value,guests:parseInt($('bmGst').value)||2,status:$('bmStt').value,hookah:$('bmHk').value.trim(),dishes:$('bmDs').value.trim(),notes:$('bmNo').value.trim()};
   let rows=fmLoad(br,date);
-  if(fmSt.editId) rows=rows.filter(r=>r.id!==fmSt.editId);
-  rows.push(bk); fmSaveB(br,date,rows);
-  toast('Бронь сохранена ✓'); closeBm(); fmRender();
-  if(fmSt.tid) fmOpenPan(fmSt.tid);
+  if(bmEditId)rows=rows.filter(r=>r.id!==bmEditId);
+  rows.push(bk);fmSaveB(br,date,rows);
+  toast('Бронь сохранена ✓');closeBm();fmRefresh();if(fmSel)openBP(fmSel);
 }
-
-function bmDel(){
-  if(!fmSt.editId) return;
+function bmDelete(){
+  if(!bmEditId)return;
   const dt=$('bmDt').value||fDate();
-  ['malygin','let50'].forEach(br=>fmSaveB(br,dt,fmLoad(br,dt).filter(r=>r.id!==fmSt.editId)));
-  toast('Бронь удалена'); closeBm(); fmRender();
-  if(fmSt.tid) fmOpenPan(fmSt.tid);
+  ['malygin','let50'].forEach(br=>fmSaveB(br,dt,fmLoad(br,dt).filter(r=>r.id!==bmEditId)));
+  toast('Удалено');closeBm();fmRefresh();if(fmSel)openBP(fmSel);
+}
+function findBrByBooking(bid,dt){return['malygin','let50'].find(br=>fmLoad(br,dt).some(b=>b.id===bid))||null}
+
+// ══ BOOKINGS DATA ════════════════════════════════════
+function fmKey(br,dt){return'dg_bk3_'+br+'_'+dt}
+function fmLoad(br,dt){try{return JSON.parse(localStorage.getItem(fmKey(br,dt))||'[]')}catch(e){return[]}}
+function fmSaveB(br,dt,rows){localStorage.setItem(fmKey(br,dt),JSON.stringify(rows))}
+function fmStatus(tid,br,dt){
+  const bks=fmLoad(br,dt).filter(r=>r.tableId===tid);
+  if(!bks.length)return'free';
+  if(dt!==today())return'partial';
+  const now=new Date(),mins=now.getHours()*60+now.getMinutes();
+  if(bks.some(b=>{const[fh,fm]=b.from.split(':').map(Number),[th,tm]=b.to.split(':').map(Number);return mins>=fh*60+fm&&mins<th*60+tm}))return'booked';
+  if(bks.some(b=>{const[fh,fm]=b.from.split(':').map(Number),fr=fh*60+fm;return fr>mins&&fr-mins<=90}))return'soon';
+  return'partial';
+}
+function fmLabel(tid,br,dt){
+  const bks=fmLoad(br,dt).filter(r=>r.tableId===tid);if(!bks.length)return null;
+  if(dt!==today())return bks.length+'бр';
+  const now=new Date(),mins=now.getHours()*60+now.getMinutes();
+  for(const b of bks){const[fh,fm]=b.from.split(':').map(Number),[th,tm]=b.to.split(':').map(Number),fr=fh*60+fm,to=th*60+tm;if(mins>=fr&&mins<to){const el=mins-fr;return el<60?el+'м':Math.floor(el/60)+'ч'+(el%60?el%60+'м':'');}}
+  const up=bks.filter(b=>{const[fh,fm]=b.from.split(':').map(Number);return fh*60+fm>mins}).sort((a,b2)=>a.from.localeCompare(b2.from));
+  return up.length?up[0].from:bks.length+'бр';
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// CRM (Supabase guests)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-async function loadGuests(){
-  if(!sb){ $('guestListBody').innerHTML='<div style="color:var(--muted)">Нет подключения к CRM</div>'; return; }
-  const {data,error}=await sb.from('guests').select('*').order('full_name');
-  if(error){ $('guestListBody').innerHTML=`<div style="color:var(--red)">${esc(error.message)}</div>`; return; }
-  guestCache=data||[];
-  renderGuestList(guestCache);
+// ══ FLOOR MAP DATA ═══════════════════════════════════
+// Default layouts in PIXELS (virtual 1600×900 canvas)
+const DEFAULT_LAYOUTS={
+  malygin:[
+    {id:'M11',num:'11',x:160,y:30, w:80,h:160,chairs:{top:2,bot:2,left:2,right:2}},
+    {id:'M1', num:'1', x:500,y:20, w:80,h:190,chairs:{top:2,bot:2,left:2,right:2}},
+    {id:'M2', num:'2', x:760,y:70, w:140,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'M3', num:'3', x:930,y:70, w:140,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'M10',num:'10',x:20, y:510,w:150,h:90,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'M9', num:'9', x:195,y:520,w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'M8', num:'8', x:355,y:520,w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'M7', num:'7', x:515,y:520,w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'M6', num:'6', x:675,y:520,w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'M5', num:'5', x:865,y:520,w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'M14',num:'14',x:1025,y:520,w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'M4', num:'4', x:1185,y:520,w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+  ],
+  let50:[
+    {id:'L12',num:'12',x:30, y:20, w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'L11',num:'11',x:200,y:20, w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'L10',num:'10',x:370,y:20, w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'L09',num:'09',x:540,y:20, w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'L08',num:'08',x:790,y:20, w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'L04',num:'04',x:200,y:190,w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'L05',num:'05',x:370,y:190,w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'L06',num:'06',x:540,y:190,w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'L07',num:'07',x:790,y:160,w:130,h:160,chairs:{top:2,bot:2,left:2,right:2}},
+    {id:'L03',num:'03',x:30, y:360,w:130,h:160,chairs:{top:2,bot:2,left:2,right:2}},
+    {id:'L02',num:'02',x:200,y:560,w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+    {id:'L01',num:'01',x:790,y:730,w:130,h:80,chairs:{top:3,bot:3,left:1,right:1}},
+  ]
+};
+const FLOOR_LM={
+  malygin:[{l:'Кухня',x:20,y:20,w:130,h:300,vert:false},{l:'Вход',x:1430,y:20,w:60,h:200,vert:true}],
+  let50:[{l:'Бар',x:750,y:440,w:100,h:380,vert:false},{l:'Окно',x:20,y:350,w:50,h:200,vert:true},{l:'Вход',x:20,y:700,w:50,h:100,vert:true}]
+};
+const CANVAS_W={malygin:1550,let50:1000},CANVAS_H={malygin:720,let50:900};
+
+const FLOORS={
+  malygin:{name:'Малыгина',get tables(){return fmGetTables('malygin')}},
+  let50:{name:'50 лет',get tables(){return fmGetTables('let50')}}
+};
+
+function fmGetTables(br){
+  try{const s=localStorage.getItem('dg_tables_'+br);if(s)return JSON.parse(s);}catch(e){}
+  return DEFAULT_LAYOUTS[br].map(t=>({...t,chairs:{...t.chairs}}));
+}
+function fmSaveTables(br,tables){localStorage.setItem('dg_tables_'+br,JSON.stringify(tables))}
+
+// ══ FLOOR MAP RENDER ═════════════════════════════════
+let fmBr='malygin',fmSubView='map',fmSel=null,fmEditMode=false,zoomLevel=1.0;
+const ZOOM_STEPS=[0.4,0.5,0.6,0.7,0.8,0.9,1.0,1.1,1.25,1.5,1.75,2.0];
+let zIdx=6;
+
+function fmZoom(dir){
+  zIdx=Math.max(0,Math.min(ZOOM_STEPS.length-1,zIdx+dir));
+  zoomLevel=ZOOM_STEPS[zIdx];
+  $('zoomVal').textContent=Math.round(zoomLevel*100)+'%';
+  fmApplyZoom();
+}
+function fmApplyZoom(){
+  const inner=$('fmInner');if(!inner)return;
+  inner.style.transform=`scale(${zoomLevel})`;
+  inner.style.width=CANVAS_W[fmBr]+'px';
+  inner.style.height=CANVAS_H[fmBr]+'px';
+  const outer=$('fmOuter');
+  outer.style.width='100%';
+  outer.style.height=Math.min(560,Math.round(CANVAS_H[fmBr]*zoomLevel)+20)+'px';
 }
 
-function renderGuestList(list){
-  if(!list.length){ $('guestListBody').innerHTML='<div style="color:var(--muted);font-size:14px">Гостей нет</div>'; return; }
-  $('guestListBody').innerHTML=`<table class="table-list"><thead><tr><th>Имя</th><th>Телефон</th><th>Любимый стол</th><th>Заметки</th><th></th></tr></thead><tbody>
-  ${list.map(g=>`<tr><td style="font-weight:600">${esc(g.full_name||'—')}</td><td style="color:var(--muted)">${esc(g.phone||'—')}</td><td style="color:var(--muted)">${esc(g.favorite_table||'—')}</td><td style="color:var(--muted);font-size:12px">${esc((g.notes||'').slice(0,60))}</td><td><button class="btn btn-sm" onclick="openGuestCard('${g.id}')" style="padding:4px 10px;font-size:12px">Открыть</button></td></tr>`).join('')}
-  </tbody></table>`;
+function fmRefresh(){if(fmSubView==='map')fmDraw();else fmRenderList();if(fmSel&&!fmEditMode)openBP(fmSel);}
+
+function fmDraw(){
+  const br=fmBr,tables=fmGetTables(br),dt=fDate();
+  const inner=$('fmInner');inner.innerHTML='';
+  // Grid
+  const grid=document.createElement('div');grid.className='fm-grid';inner.appendChild(grid);
+  // Landmarks
+  FLOOR_LM[br].forEach(m=>{const el=document.createElement('div');el.className='fm-lm'+(m.vert?' vert':'');el.textContent=m.l;el.style.cssText=`left:${m.x}px;top:${m.y}px;width:${m.w}px;height:${m.h}px`;inner.appendChild(el);});
+  // Tables
+  tables.forEach(t=>{
+    const st=fmStatus(t.id,br,dt),lbl=fmLabel(t.id,br,dt);
+    const cnt=fmLoad(br,dt).filter(r=>r.tableId===t.id).length;
+    const ch=t.chairs,chSz=13,chGap=3,rowH=chSz+6,colW=chSz+6;
+    const slotX=t.x-(ch.left?colW:0),slotY=t.y-(ch.top?rowH:0);
+    const slotW=t.w+(ch.left?colW:0)+(ch.right?colW:0),slotH=t.h+(ch.top?rowH:0)+(ch.bot?rowH:0);
+
+    const slot=document.createElement('div');slot.className='fm-slot'+(fmEditMode?' editing':'')+(fmSel===t.id?' selected':'');
+    slot.style.cssText=`left:${slotX}px;top:${slotY}px;width:${slotW}px;height:${slotH}px`;
+    slot.dataset.tid=t.id;
+
+    // Delete button (shown when editing + selected)
+    const del=document.createElement('div');del.className='fm-del-btn';del.textContent='×';del.addEventListener('click',e=>{e.stopPropagation();edDeleteSel()});slot.appendChild(del);
+
+    // Top chairs
+    if(ch.top){const row=document.createElement('div');row.className='ch-row';row.style.paddingLeft=(ch.left?colW:0)+'px';row.style.paddingRight=(ch.right?colW:0)+'px';for(let i=0;i<ch.top;i++){const c=document.createElement('div');c.className='ch h';row.appendChild(c);}slot.appendChild(row);}
+
+    // Middle
+    const mid=document.createElement('div');mid.className='ch-mid';mid.style.flex='1';
+    // Left chairs
+    if(ch.left){const col=document.createElement('div');col.className='ch-col';for(let i=0;i<ch.left;i++){const c=document.createElement('div');c.className='ch v';col.appendChild(c);}mid.appendChild(col);}
+    // Table card
+    const tc=document.createElement('div');tc.className='fm-tc s-'+st;tc.style.cssText=`width:${t.w}px;height:${t.h}px;flex:none`;
+    const strip=document.createElement('div');strip.className='st';tc.appendChild(strip);
+    const num=document.createElement('span');num.className='fm-num';num.textContent=t.num;tc.appendChild(num);
+    if(cnt>0){const b=document.createElement('span');b.className='fm-cnt';b.textContent=cnt;tc.appendChild(b);}
+    if(lbl&&st!=='free'){const tl=document.createElement('div');tl.className='fm-tl';const dot=document.createElement('div');dot.className='fm-dot';tl.appendChild(dot);tl.appendChild(document.createTextNode(lbl));tc.appendChild(tl);}
+    mid.appendChild(tc);
+    // Right chairs
+    if(ch.right){const col=document.createElement('div');col.className='ch-col';for(let i=0;i<ch.right;i++){const c=document.createElement('div');c.className='ch v';col.appendChild(c);}mid.appendChild(col);}
+    slot.appendChild(mid);
+
+    // Bottom chairs
+    if(ch.bot){const row=document.createElement('div');row.className='ch-row';row.style.paddingLeft=(ch.left?colW:0)+'px';row.style.paddingRight=(ch.right?colW:0)+'px';for(let i=0;i<ch.bot;i++){const c=document.createElement('div');c.className='ch h';row.appendChild(c);}slot.appendChild(row);}
+
+    // Events
+    if(fmEditMode){
+      // Drag via table card
+      tc.addEventListener('mousedown',e=>startDrag(e,t,inner));
+      tc.addEventListener('touchstart',e=>startTouchDrag(e,t,inner),{passive:false});
+      slot.addEventListener('click',e=>{e.stopPropagation();fmSel=t.id;edSelect(t.id);fmDraw();});
+    } else {
+      slot.addEventListener('click',()=>{fmSel=t.id;openBP(t.id);fmDraw();});
+    }
+    inner.appendChild(slot);
+  });
+  inner.style.width=CANVAS_W[br]+'px';inner.style.height=CANVAS_H[br]+'px';
+  inner.style.transform=`scale(${zoomLevel})`;
+  // Click on floor = deselect
+  inner.addEventListener('click',e=>{if(e.target===inner||e.target.classList.contains('fm-grid')){fmSel=null;if(fmEditMode){edClear();fmDraw();}else{closeBP();fmDraw();}}},{once:false});
 }
 
-function searchGuests(){ const q=($('gSrch')?$('gSrch').value:'').toLowerCase(); renderGuestList(q?guestCache.filter(g=>(g.full_name||'').toLowerCase().includes(q)||(g.phone||'').includes(q)):guestCache); }
+// ── DRAG ─────────────────────────────────────────────
+function startDrag(e,tbl,canvas){
+  e.preventDefault();e.stopPropagation();
+  const startMX=e.clientX,startMY=e.clientY,startX=tbl.x,startY=tbl.y;
+  const tables=fmGetTables(fmBr);
 
-async function openGuestCard(id){
-  currentGuest=guestCache.find(g=>g.id===id)||null;
-  if(!currentGuest){ toast('Гость не найден',false); return; }
-  renderGuestCard(); showView('guest-card');
-}
-
-function renderGuestCard(){
-  if(!currentGuest){ $('guestCardContent').innerHTML='<div style="color:var(--muted)">Выберите гостя</div>'; return; }
-  const g=currentGuest;
-  $('guestCardContent').innerHTML=`<div class="grid-2" style="gap:16px">
-    <div class="card">
-      <div class="section-title">${esc(g.full_name||'Гость')}</div>
-      <div style="font-size:14px;color:var(--muted);margin-bottom:12px">${esc(g.phone||'')}</div>
-      <div class="grid" style="gap:10px">
-        <div><div class="label">Заметки</div><div style="font-size:14px;white-space:pre-wrap">${esc(g.notes||'—')}</div></div>
-        <div><div class="label">Любимый стол</div><div style="font-size:14px">${esc(g.favorite_table||'—')}</div></div>
-        <div><div class="label">Пиковые часы</div><div style="font-size:14px">${esc(g.peak_hours||'—')}</div></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="section-title">Редактировать в CRM</div>
-      <div class="grid" style="gap:10px">
-        <div class="field"><div class="label">Заметки сотрудника</div><textarea class="textarea" id="tNotes">${esc(g.notes||'')}</textarea></div>
-        <div class="field"><div class="label">Любимый стол</div><input class="input" id="tTable" value="${esc(g.favorite_table||'')}"></div>
-        <div class="field"><div class="label">Пиковые часы</div><input class="input" id="tHours" value="${esc(g.peak_hours||'')}"></div>
-      </div>
-      <div style="margin-top:12px;padding:10px;background:rgba(212,133,58,.08);border:1px solid rgba(212,133,58,.2);border-radius:10px;font-size:12px;color:var(--orange)">
-        💡 Кальян гостя — в <button onclick="showView('guestbank')" style="color:var(--teal);text-decoration:underline;background:none;border:none;cursor:pointer;font-size:12px">Банке гостей</button>
-      </div>
-      <button class="btn btn-primary" style="margin-top:12px" onclick="saveGuestCard()">Сохранить</button>
-    </div>
-  </div>`;
-}
-
-async function saveGuestCard(){
-  if(!sb||!currentGuest) return;
-  const {error}=await sb.from('guests').update({notes:$('tNotes')?.value,favorite_table:$('tTable')?.value,peak_hours:$('tHours')?.value}).eq('id',currentGuest.id);
-  if(error){ toast(error.message,false); return; }
-  toast('Сохранено ✓'); await loadGuests(); currentGuest=guestCache.find(g=>g.id===currentGuest.id)||currentGuest;
-}
-
-async function createGuest(){
-  if(!sb){ toast('Нет подключения',false); return; }
-  const name=$('newName').value.trim(); if(!name){ toast('Укажите имя',false); return; }
-  const {error}=await sb.from('guests').insert({full_name:name,phone:$('newPhone').value.trim(),nickname:$('newNick').value.trim(),favorite_table:$('newTable').value.trim(),peak_hours:$('newHours').value.trim()});
-  if(error){ toast(error.message,false); return; }
-  toast('Гость создан'); ['newName','newPhone','newNick','newTable','newHours'].forEach(id=>$(id).value='');
-  await loadGuests(); showView('guests');
-}
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// PREORDERS (no API key required)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-async function loadPreorders(){
-  const box=$('preorderListBody');
-  // First show local orders
-  const local=JSON.parse(localStorage.getItem('dg_po')||'[]');
-  // Try to also load from Supabase (anon or with key)
-  let dbOrders=[];
-  try{
-    const key=getKey()||'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ2bXRncGV1ZG1jc2RkanBrdG1lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU3NTQwMjEsImV4cCI6MjA2MTMzMDAyMX0.oO4RUPUi2BYJjqSMKtNRCzaToaFv-O5MxjvKqIjQq1M';
-    const cli=window.supabase.createClient(SUPABASE_URL,key);
-    const {data}=await cli.from('hookah_preorders').select('*, guests(full_name,phone)').order('created_at',{ascending:false}).limit(50);
-    dbOrders=data||[];
-  }catch(e){}
-
-  if(!dbOrders.length&&!local.length){ box.innerHTML='<div style="color:var(--muted);font-size:14px">Заявок пока нет.</div>'; return; }
-
-  let html='';
-  if(dbOrders.length){
-    html+=dbOrders.map(r=>`<div class="po-row">
-      <div class="po-time">${esc(r.time_slot||'—')}</div>
-      <div><div class="po-name">${esc(r.guests?.full_name||'Гость')}</div>
-      <div class="po-detail">${esc(r.guests?.phone||'')} · ${esc(r.address||'')} · ${esc(r.visit_date||'')}</div>
-      ${r.tobacco_brand?`<span class="po-tag">🌿 ${esc(r.tobacco_brand)}${r.strength?' · '+esc(r.strength):''}</span>`:''}
-      </div></div>`).join('');
-  } else {
-    html+=local.map(r=>`<div class="po-row">
-      <div class="po-time">${esc(r.time||'—')}</div>
-      <div><div class="po-name">${esc(r.name)}</div>
-      <div class="po-detail">${esc(r.phone||'')} · ${esc(r.addr||'')}</div>
-      ${r.brand&&r.brand!=='Как всегда'?`<span class="po-tag">🌿 ${esc(r.brand)}${r.strength?' · '+esc(r.strength):''}</span>`:''}
-      ${r.usual?`<span class="po-tag" style="background:rgba(109,170,69,.15);color:var(--green)">✓ Как всегда</span>`:''}
-      </div></div>`).join('');
+  function onMove(e2){
+    const dx=(e2.clientX-startMX)/zoomLevel,dy=(e2.clientY-startMY)/zoomLevel;
+    tbl.x=Math.max(0,Math.round(startX+dx));tbl.y=Math.max(0,Math.round(startY+dy));
+    const t=tables.find(t2=>t2.id===tbl.id);if(t){t.x=tbl.x;t.y=tbl.y;}
+    // Update slot position directly for smooth drag
+    const slot=canvas.querySelector(`[data-tid="${tbl.id}"]`);
+    if(slot){const ch=tbl.chairs,colW=tbl.chairs.left?16:0,rowH=tbl.chairs.top?16:0;slot.style.left=(tbl.x-colW)+'px';slot.style.top=(tbl.y-rowH)+'px';}
   }
-  box.innerHTML=html;
+  function onUp(){document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);}
+  document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp);
 }
 
-// ── INIT ─────────────────────────────────────────────────────────────────────
-const _savedKey=localStorage.getItem('dg_key')||'';
-if($('staffPass')) $('staffPass').value=_savedKey;
+function startTouchDrag(e,tbl,canvas){
+  e.preventDefault();e.stopPropagation();
+  const t0=e.touches[0],startMX=t0.clientX,startMY=t0.clientY,startX=tbl.x,startY=tbl.y;
+  const tables=fmGetTables(fmBr);
+  function onMove(e2){
+    e2.preventDefault();const tc=e2.touches[0];
+    const dx=(tc.clientX-startMX)/zoomLevel,dy=(tc.clientY-startMY)/zoomLevel;
+    tbl.x=Math.max(0,Math.round(startX+dx));tbl.y=Math.max(0,Math.round(startY+dy));
+    const t=tables.find(t2=>t2.id===tbl.id);if(t){t.x=tbl.x;t.y=tbl.y;}
+    const slot=canvas.querySelector(`[data-tid="${tbl.id}"]`);
+    if(slot){const colW=tbl.chairs.left?16:0,rowH=tbl.chairs.top?16:0;slot.style.left=(tbl.x-colW)+'px';slot.style.top=(tbl.y-rowH)+'px';}
+  }
+  function onUp(){canvas.removeEventListener('touchmove',onMove);canvas.removeEventListener('touchend',onUp);}
+  canvas.addEventListener('touchmove',onMove,{passive:false});canvas.addEventListener('touchend',onUp);
+}
+
+// ── EDITOR ────────────────────────────────────────────
+function fmToggleEdit(){
+  fmEditMode=!fmEditMode;
+  $('btnEdit').textContent=fmEditMode?'✓ Готово':'✎ Редактор';
+  $('btnEdit').classList.toggle('btn-primary',fmEditMode);
+  $('editBar').classList.toggle('hidden',!fmEditMode);
+  $('editBar').style.display=fmEditMode?'flex':'none';
+  if(!fmEditMode){fmSaveLayout();edClear();}
+  fmSel=null;fmDraw();
+}
+function fmSaveLayout(){fmSaveTables(fmBr,fmGetTables(fmBr));toast('Схема сохранена ✓');}
+function fmResetLayout(){localStorage.removeItem('dg_tables_'+fmBr);fmSel=null;edClear();fmDraw();toast('Схема сброшена')}
+
+function addTable(){
+  const tables=fmGetTables(fmBr);
+  const newT={id:'T'+Date.now(),num:(tables.length+1)+'',x:300,y:300,w:120,h:80,chairs:{top:3,bot:3,left:1,right:1}};
+  tables.push(newT);fmSaveTables(fmBr,tables);fmSel=newT.id;edSelect(newT.id);fmDraw();
+}
+
+function edSelect(tid){
+  const tables=fmGetTables(fmBr),t=tables.find(x=>x.id===tid);if(!t)return;
+  $('edPanelWrap').style.display='';$('bpWrap').style.display='none';
+  $('edPH').textContent='Стол '+t.num;
+  $('edNum').value=t.num;$('edW').textContent=t.w;$('edH').textContent=t.h;
+  $('chTop').textContent=t.chairs.top;$('chBot').textContent=t.chairs.bot;$('chLeft').textContent=t.chairs.left;$('chRight').textContent=t.chairs.right;
+}
+function edClear(){$('edPanelWrap').style.display='none';if(!fmEditMode)$('bpWrap').style.display='none';}
+function edUpdate(field,val){
+  if(!fmSel)return;const tables=fmGetTables(fmBr),t=tables.find(x=>x.id===fmSel);if(!t)return;
+  t[field]=val;fmSaveTables(fmBr,tables);$('edPH').textContent='Стол '+t.num;
+}
+function edSize(dim,delta){
+  if(!fmSel)return;const tables=fmGetTables(fmBr),t=tables.find(x=>x.id===fmSel);if(!t)return;
+  t[dim]=Math.max(50,t[dim]+delta);fmSaveTables(fmBr,tables);
+  $(dim==='w'?'edW':'edH').textContent=t[dim];fmDraw();edSelect(fmSel);
+}
+function edChair(side,delta){
+  if(!fmSel)return;const tables=fmGetTables(fmBr),t=tables.find(x=>x.id===fmSel);if(!t)return;
+  const k=side==='bot'?'bot':side;t.chairs[k]=Math.max(0,t.chairs[k]+delta);
+  fmSaveTables(fmBr,tables);$('ch'+side.charAt(0).toUpperCase()+side.slice(1)).textContent=t.chairs[k];fmDraw();edSelect(fmSel);
+}
+function edDeleteSel(){
+  if(!fmSel)return;const tables=fmGetTables(fmBr).filter(x=>x.id!==fmSel);fmSaveTables(fmBr,tables);fmSel=null;edClear();fmDraw();toast('Стол удалён');
+}
+
+// ── BOOKING PANEL ─────────────────────────────────────
+function openBP(tid){
+  if(fmEditMode)return;
+  fmSel=tid;
+  const tables=fmGetTables(fmBr),t=tables.find(x=>x.id===tid),br=fmBr,dt=fDate();
+  const bks=fmLoad(br,dt).filter(r=>r.tableId===tid).sort((a,b)=>a.from.localeCompare(b.from));
+  $('bpTitle').textContent='Стол '+(t?t.num:'?')+' — '+(FLOORS[br].name);
+  $('bpSub').textContent=bks.length+' брон'+(bks.length===1?'ь':bks.length<5?'и':'ей')+' · '+dt;
+  const body=$('bpBody');body.innerHTML='';
+  if(!bks.length){body.innerHTML='<div style="color:var(--muted);padding:20px;text-align:center;font-size:12px">Броней нет</div>'}
+  else{
+    const now=new Date(),mins=now.getHours()*60+now.getMinutes(),td2=today();
+    bks.forEach(b=>{
+      const card=document.createElement('div');card.className='bkc';
+      const[fh,fm]=b.from.split(':').map(Number),[th,tm]=b.to.split(':').map(Number),fr=fh*60+fm,to=th*60+tm;
+      let cls='bb-u',lbl=b.from+'–'+b.to;
+      if(dt===td2){if(mins>=fr&&mins<to){cls='bb-a';lbl='● Сейчас'}else if(to<=mins){cls='bb-d';}}
+      card.innerHTML=`<div class="bkc-top"><span class="bkc-name">${esc(b.name)}</span><span class="bk-badge ${cls}">${lbl}</span></div>
+      <div class="bkc-meta"><span>👥${b.guests||1}</span><span>${esc(b.phone||'—')}</span>${b.status==='vip'?'<span>⭐VIP</span>':''}</div>
+      ${b.hookah||b.dishes?`<div class="bkc-tags">${b.hookah?`<span class="bktag bktag-h">🌿${esc(b.hookah)}</span>`:''}${b.dishes?`<span class="bktag bktag-d">🍽${esc(b.dishes)}</span>`:''}</div>`:''}
+      ${b.notes?`<div style="margin-top:3px;font-size:10px;color:var(--muted);font-style:italic">"${esc(b.notes)}"</div>`:''}`;
+      card.addEventListener('click',()=>openBm(b.id,tid));body.appendChild(card);
+    });
+  }
+  $('bpWrap').style.display='';$('edPanelWrap').style.display='none';fmDraw();
+}
+function closeBP(){$('bpWrap').style.display='none';fmSel=null;fmDraw();}
+
+// ── BRANCH / SUB VIEW ─────────────────────────────────
+function fmBranch(br){fmBr=br;fmSel=null;edClear();closeBP();$('fmTM').classList.toggle('active',br==='malygin');$('fmT5').classList.toggle('active',br==='let50');fmApplyZoom();fmRefresh();}
+function fmSub(v){fmSubView=v;$('fmMapView').style.display=v==='map'?'':'none';$('fmListView').style.display=v==='list'?'':'none';$('vtMap').classList.toggle('active',v==='map');$('vtList').classList.toggle('active',v==='list');fmRefresh();}
+
+function fmRenderList(){
+  const q=($('fmSrch')?$('fmSrch').value:'').toLowerCase(),dt=fDate();
+  const all=['malygin','let50'].flatMap(br=>fmLoad(br,dt).map(b=>({...b,br})));
+  const filt=q?all.filter(b=>b.name.toLowerCase().includes(q)||b.phone.includes(q)):all;
+  filt.sort((a,b)=>a.from.localeCompare(b.from));
+  const body=$('fmListBody');
+  if(!filt.length){body.innerHTML='<div style="color:var(--muted);padding:20px;font-size:13px">Броней нет на этот день.</div>';return}
+  const now=new Date(),mins=now.getHours()*60+now.getMinutes(),td2=today();
+  body.innerHTML=`<table class="table-list"><thead><tr><th>Стол</th><th>Гость</th><th>Телефон</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>${filt.map(b=>{
+    const tables=fmGetTables(b.br),tbl=tables.find(t=>t.id===b.tableId);
+    const tn=tbl?(FLOORS[b.br].name+' · '+tbl.num):b.tableId;
+    const[fh,fm2]=b.from.split(':').map(Number),[th,tm2]=b.to.split(':').map(Number),fr=fh*60+fm2,to2=th*60+tm2;
+    let chip=`<span style="color:var(--teal)">▲${b.from}</span>`;
+    if(dt===td2){if(mins>=fr&&mins<to2)chip=`<span style="color:var(--green)">●Сейчас</span>`;else if(to2<=mins)chip=`<span style="color:var(--faint)">✓</span>`;}
+    return`<tr><td style="font-weight:700;color:var(--teal);font-size:12px">${esc(tn)}</td><td style="font-weight:600">${esc(b.name)}</td><td style="color:var(--muted);font-size:11px">${esc(b.phone||'—')}</td><td style="font-size:12px">${b.from}–${b.to}</td><td style="color:var(--muted);font-size:12px">${b.guests||1}</td><td style="font-size:11px">${esc(b.hookah||'—')}</td><td>${chip}</td><td><button class="btn btn-xs" onclick="openBm('${b.id}','${b.tableId}')">✎</button></td></tr>`;
+  }).join('')}</tbody></table>`;
+}
+
+// ══ CRM GUESTS ═══════════════════════════════════════
+async function loadGuests(){
+  if(!sb){$('guestListBody').innerHTML='<div style="color:var(--muted)">Нет подключения к CRM</div>';return}
+  const{data,error}=await sb.from('guests').select('*').order('full_name');
+  if(error){$('guestListBody').innerHTML=`<div style="color:var(--red)">${esc(error.message)}</div>`;return}
+  guestCache=data||[];renderGuestList(guestCache);
+}
+function renderGuestList(list){
+  if(!list.length){$('guestListBody').innerHTML='<div style="color:var(--muted);font-size:13px">Гостей нет</div>';return}
+  $('guestListBody').innerHTML=`<table class="table-list"><thead><tr><th>Имя</th><th>Телефон</th><th>Стол</th><th>Заметки</th></tr></thead><tbody>${list.map(g=>`<tr><td style="font-weight:600">${esc(g.full_name||'—')}</td><td style="color:var(--muted)">${esc(g.phone||'—')}</td><td style="color:var(--muted)">${esc(g.favorite_table||'—')}</td><td style="color:var(--muted);font-size:11px">${esc((g.notes||'').slice(0,50))}</td></tr>`).join('')}</tbody></table>`;
+}
+function searchGuests(){const q=($('gSrch')?$('gSrch').value:'').toLowerCase();renderGuestList(q?guestCache.filter(g=>(g.full_name||'').toLowerCase().includes(q)||(g.phone||'').includes(q)):guestCache)}
+async function createGuest(){
+  if(!sb){toast('Нет подключения',false);return}
+  const name=$('newName').value.trim();if(!name){toast('Укажите имя',false);return}
+  const{error}=await sb.from('guests').insert({full_name:name,phone:$('newPhone').value.trim(),nickname:$('newNick').value.trim(),favorite_table:$('newTable').value.trim(),peak_hours:$('newHours').value.trim()});
+  if(error){toast(error.message,false);return}
+  toast('Гость создан');['newName','newPhone','newNick','newTable','newHours'].forEach(id=>$(id).value='');await loadGuests();showView('guests');
+}
+
+// ══ PREORDERS ════════════════════════════════════════
+async function loadPreorders(){
+  const box=$('preorderListBody');let dbOrders=[];
+  try{const cli=window.supabase.createClient(SB_URL,getKey()||ANON_KEY);const{data}=await cli.from('hookah_preorders').select('*, guests(full_name,phone)').order('created_at',{ascending:false}).limit(60);dbOrders=data||[];}catch(e){}
+  const local=JSON.parse(localStorage.getItem('dg_po')||'[]');
+  if(!dbOrders.length&&!local.length){box.innerHTML='<div style="color:var(--muted);font-size:13px">Заявок нет.</div>';return}
+  const rows=dbOrders.length?dbOrders:local;
+  box.innerHTML=rows.map(r=>{
+    const isDB=!!r.guests;const nm=isDB?(r.guests?.full_name||'Гость'):r.name,ph=isDB?(r.guests?.phone||''):r.phone,tm=isDB?(r.time_slot||'?'):r.time,addr=isDB?(r.address||''):r.addr,brd=isDB?r.tobacco_brand:r.brand,str=isDB?r.strength:r.strength;
+    return`<div style="display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--line);align-items:flex-start"><div style="font-size:12px;font-weight:700;color:var(--teal);min-width:50px">${esc(tm||'—')}</div><div><div style="font-size:13px;font-weight:600">${esc(nm)}</div><div style="font-size:11px;color:var(--muted);margin-top:1px">${esc(ph)} · ${esc(addr)}</div>${brd?`<span style="display:inline-block;margin-top:4px;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600;background:rgba(79,152,163,.14);color:var(--teal)">🌿${esc(brd)}${str?' · '+esc(str):''}</span>`:''}${!brd&&r.usual?`<span style="display:inline-block;margin-top:4px;padding:2px 8px;border-radius:8px;font-size:10px;font-weight:600;background:rgba(109,170,69,.14);color:var(--green)">✓ Как всегда</span>`:''}</div></div>`;
+  }).join('');
+}
+
+// ══ GUEST PREORDER SUBMIT ════════════════════════════
+async function submitGuest(){
+  const name=$('grName').value.trim(),phone=$('grPhone').value.trim();
+  if(!name){toast('Введите имя',false);return}
+  const time=$('grTime').value.trim(),addr=$('grAddress').value;
+  const brand=hookahUsual==='yes'?'Как всегда':($('grBrand').value.trim()||''),strength=$('grStrength')?.value.trim()||'';
+  let saved=false;
+  try{const cli=window.supabase.createClient(SB_URL,ANON_KEY);
+    let gid=null;const{data:found}=await cli.from('guests').select('id').eq('phone',normPhone(phone)).limit(1);
+    if(found?.length)gid=found[0].id;else{const{data:ng}=await cli.from('guests').insert({full_name:name,phone}).select('id').single();gid=ng?.id||null;}
+    if(gid&&time)await cli.from('hookah_preorders').insert({guest_id:gid,time_slot:time,address:addr,tobacco_brand:brand,strength,usual_order:hookahUsual==='yes'});
+    saved=true;
+  }catch(e){}
+  const orders=JSON.parse(localStorage.getItem('dg_po')||'[]');orders.unshift({name,phone,time,addr,brand,strength,usual:hookahUsual==='yes',ts:Date.now()});localStorage.setItem('dg_po',JSON.stringify(orders.slice(0,100)));
+  toast(saved?'Заявка принята ✓':'Сохранено локально');openApp();
+}
+
+// ══ APP INIT / NAV ════════════════════════════════════
+async function doLogin(){const key=($('staffPass').value||'').trim();if(key)localStorage.setItem('dg_key',key);initSB();openApp();}
+async function restoreSession(){const k=getKey();if(k&&window.supabase)try{sb=window.supabase.createClient(SB_URL,k,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}})}catch(e){} openApp();}
+function openApp(){
+  $('loginView').classList.add('hidden');$('appView').classList.remove('hidden');
+  if(!$('bDate').value)$('bDate').value=today();
+  showView('bookings');loadGuests();
+}
+async function doLogout(){if(sb)try{await sb.auth.signOut()}catch(e){} localStorage.removeItem('dg_key');sb=null;guestCache=[];$('appView').classList.add('hidden');$('loginView').classList.remove('hidden');}
+
+function showView(v){
+  ['bookings','guestbank','guests','new-guest','preorders'].forEach(id=>{$('view-'+id).classList.toggle('hidden',id!==v)});
+  document.querySelectorAll('.nav-item').forEach(el=>{const m={'bookings':'Брони','guestbank':'Банк гостей','guests':'Гости (CRM)','new-guest':'Новый гость','preorders':'Заявки на кальян'};const txt=el.textContent.trim();el.classList.toggle('active',Object.entries(m).some(([k,t])=>k===v&&txt===t))});
+  if(v==='bookings'){if(!$('bDate').value)$('bDate').value=today();fmApplyZoom();fmDraw();}
+  if(v==='guests')loadGuests();
+  if(v==='guestbank')renderGB();
+  if(v==='preorders')loadPreorders();
+}
+
+// Close suggestions when clicking outside
+document.addEventListener('click',e=>{if(!e.target.closest('#phSugg')&&e.target.id!=='bmPh')hideSugg()});
+
+// ── INIT ─────────────────────────────────────────────
+const _k=localStorage.getItem('dg_key')||'';if($('staffPass'))$('staffPass').value=_k;
 restoreSession();
 </script>
 </body>
