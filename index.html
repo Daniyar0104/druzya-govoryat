@@ -658,12 +658,12 @@ function initSB(){if(sb)return;const k=getKey();if(!k||!window.supabase)return;s
 const VIEWS=['bk','gb','crm','ng','po'];
 const NAV_MAP={'bk':'Брони','gb':'Банк гостей','crm':'Гости (CRM)','ng':'Новый гость','po':'Заявки на кальян'};
 function sv(v){
-  VIEWS.forEach(id=>{const el=$('v-'+id);if(el)el.classList.toggle('h',id!==v)});
-  document.querySelectorAll('.nav').forEach(el=>{const t=el.textContent.trim();el.classList.toggle('on',NAV_MAP[v]===t)});
-  if(v==='bk'){if(!$('bDate').value)$('bDate').value=td();requestAnimationFrame(()=>{fmFit();fmRedraw();})}
-  if(v==='gb')renderGB();
-  if(v==='crm')loadCRM();
-  if(v==='po')loadPO();
+  fmSt.sub=v;
+  ['map','list','hist'].forEach(k=>{const el=$(k==='map'?'mapView':k==='list'?'listView':'histView'); if(el) el.classList.toggle('h',v!==k);});
+  const vm=$('viewMode'); if(vm) vm.value=v;
+  if(v==='list') fmRenderList();
+  if(v==='hist'){ initHistFilters(); renderHist(); }
+  if(v==='map') fmRedraw();
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -1080,7 +1080,7 @@ function openBP(tid){
   if(fmSt.edit)return;
   const br=fmSt.br,dt=fd();
   const t=getTables(br).find(x=>x.id===tid);
-  const bks=getBK(br,dt).filter(r=>r.tid===tid).sort((a,b)=>a.fr.localeCompare(b.fr));
+  const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left' && stOf(r)!=='free').sort((a,b)=>a.fr.localeCompare(b.fr));
   $('bpTtl').textContent='Стол '+(t?t.n:'?')+' — '+getBrName(br);
   $('bpSub').textContent=bks.length+' брон'+(bks.length===1?'ь':bks.length<5?'и':'ей')+' · '+dt;
   const body=$('bpBody');body.innerHTML='';
@@ -1112,21 +1112,49 @@ function fmSV(v){fmSt.sub=v;$('fmMapView').classList.toggle('h',v!=='map');$('fm
 // ──────────────────────────────────────────────────────────────────────────────
 // LIST VIEW
 // ──────────────────────────────────────────────────────────────────────────────
+function initHistFilters(){
+  const d=$('hDate'), br=$('hBr'), tb=$('hTbl');
+  if(d && !d.value) d.value=(typeof todayYMD==='function'?todayYMD():fd());
+  if(br){
+    const cur=br.value||'';
+    br.innerHTML='<option value="">Все залы</option>'+Object.keys(BRANCHES).map(k=>`<option value="${k}">${esc(getBrName(k))}</option>`).join('');
+    if(cur) br.value=cur;
+  }
+  fillHistTables();
+}
+function fillHistTables(){
+  const br=$('hBr')?$('hBr').value:''; const tb=$('hTbl'); if(!tb)return;
+  let rows=[];
+  const halls=br?[br]:Object.keys(BRANCHES);
+  halls.forEach(k=>getTables(k).forEach(t=>rows.push({br:k,id:t.id,n:t.n})));
+  const cur=tb.value||'';
+  tb.innerHTML='<option value="">Все столы</option>'+rows.map(r=>`<option value="${r.id}">${esc(getBrName(r.br)+' · '+r.n)}</option>`).join('');
+  if(cur) tb.value=cur;
+}
+function renderHist(){
+  initHistFilters();
+  const dt=($('hDate')&&$('hDate').value)|| (typeof todayYMD==='function'?todayYMD():fd());
+  const br=($('hBr')&&$('hBr').value)||'';
+  const tid=($('hTbl')&&$('hTbl').value)||'';
+  const q=(($('hSrch')&&$('hSrch').value)||'').toLowerCase();
+  const halls=br?[br]:Object.keys(BRANCHES);
+  let all=halls.flatMap(k=>getBK(k,dt).map(b=>({...b,br:k})));
+  if(tid) all=all.filter(b=>b.tid===tid);
+  if(q) all=all.filter(b=>(b.nm||'').toLowerCase().includes(q)||(b.ph||'').includes(q));
+  all.sort((a,b)=>(a.fr||'').localeCompare(b.fr||''));
+  const body=$('hBody'); if(!body)return;
+  if(!all.length){body.innerHTML='<div style="color:var(--muted);padding:18px;font-size:12px">За выбранную дату броней нет.</div>';return}
+  body.innerHTML=`<table class="tbl-list"><thead><tr><th>Дата</th><th>Стол</th><th>Имя</th><th>Телефон</th><th>Время</th><th>Статус</th></tr></thead><tbody>${all.map(b=>{const t=getTables(b.br).find(x=>x.id===b.tid);const tn=t?(getBrName(b.br)+' · '+t.n):b.tid;return `<tr><td>${esc(dt)}</td><td>${esc(tn)}</td><td>${esc(b.nm||'')}</td><td>${esc(b.ph||'')}</td><td>${esc(b.fr||'')}–${esc(b.to||'')}</td><td><span class="st ${b.st==='vip'?'vip':b.st==='waiting'?'waiting':b.st==='arrived'?'arrived':b.st==='left'?'left':'confirmed'}">${esc(lblOf(b.st))}</span></td></tr>`;}).join('')}</tbody></table>`;
+}
 function fmRenderList(){
-  const q=($('lSrch')?$('lSrch').value:'').toLowerCase(),dt=fd();
-  const all=Object.keys(BRANCHES).flatMap(br=>getBK(br,dt).map(b=>({...b,br})));
-  const filt=q?all.filter(b=>b.nm.toLowerCase().includes(q)||b.ph.includes(q)):all;
+  const q=($('lSrch')?$('lSrch').value:'').toLowerCase(),dt=(typeof todayYMD==='function'?todayYMD():fd());
+  const all=Object.keys(BRANCHES).flatMap(br=>getBK(br,dt).filter(b=>b.st!=='left' && stOf(b)!=='free').map(b=>({...b,br})));
+  const filt=q?all.filter(b=>(b.nm||'').toLowerCase().includes(q)||(b.ph||'').includes(q)):all;
   filt.sort((a,b)=>a.fr.localeCompare(b.fr));
   const body=$('lBody');
-  if(!filt.length){body.innerHTML='<div style="color:var(--muted);padding:18px;font-size:12px">Броней нет.</div>';return}
-  const now=new Date(),mins=now.getHours()*60+now.getMinutes(),today2=td();
-  body.innerHTML=`<table class="tbl-list"><thead><tr><th>Стол</th><th>Гость</th><th>Тел.</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>${filt.map(b=>{
-    const t=getTables(b.br).find(x=>x.id===b.tid);const tn=t?(getBrName(b.br)+' · '+t.n):b.tid;
-    const[fh,fm2]=b.fr.split(':').map(Number),[th,tm2]=b.to.split(':').map(Number),fr2=fh*60+fm2,to2=th*60+tm2;
-    let chip=`<span style="color:var(--teal)">▲${b.fr}</span>`;
-    if(dt===today2){if(mins>=fr2&&mins<to2)chip=`<span style="color:var(--grn)">●</span>`;else if(to2<=mins)chip=`<span style="color:var(--faint)">✓</span>`;}
-    return`<tr><td style="font-weight:700;color:var(--teal);font-size:11px">${esc(tn)}</td><td style="font-weight:600">${esc(b.nm)}</td><td style="color:var(--muted);font-size:10px">${esc(b.ph||'—')}</td><td style="font-size:11px">${b.fr}–${b.to}</td><td style="color:var(--muted)">${b.gs||1}</td><td style="font-size:10px">${esc(b.hk||'—')}</td><td>${chip}</td><td><button class="btn btn-xs" onclick="openBm('${b.id}','${b.tid}')">✎</button></td></tr>`;
-  }).join('')}</tbody></table>`;
+  if(!body)return;
+  if(!filt.length){body.innerHTML='<div style="color:var(--muted);padding:18px;font-size:12px">Активных броней нет.</div>';return}
+  body.innerHTML=`<table class="tbl-list"><thead><tr><th>Стол</th><th>Гость</th><th>Тел.</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>${filt.map(b=>{const t=getTables(b.br).find(x=>x.id===b.tid);const tn=t?(getBrName(b.br)+' · '+t.n):b.tid;return `<tr><td>${esc(tn)}</td><td>${esc(b.nm||'')}</td><td>${esc(b.ph||'')}</td><td>${esc(b.fr||'')}–${esc(b.to||'')}</td><td>${esc(String(b.gs||''))}</td><td>${esc(b.hk||'')}</td><td><span class="st ${b.st==='vip'?'vip':b.st==='waiting'?'waiting':b.st==='arrived'?'arrived':b.st==='left'?'left':'confirmed'}">${esc(lblOf(b.st))}</span></td><td><button class="btn btn-xs" onclick="openBm('${b.id}','${b.tid}')">Открыть</button></td></tr>`;}).join('')}</tbody></table>`;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
