@@ -880,7 +880,7 @@ function addHours(t,h){ const total=(fmMin(t)+h*60)%(24*60); const hh=String(Mat
 function stOf(tid,br,dt){
   const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left');
   if(!bks.length)return'fr';
-  if(dt!==td())return'pa';
+  if(dt!==fd())return'pa';
   const rawM=fmMin(fmTimeVal());
   if(bks.some(b=>b.st==='arrived'))return'bk';
   if(bks.some(b=>{const s=fmMin(b.fr),e=spanEndMin(b.fr,b.to),m=pointForBooking(rawM,b.fr,b.to);return m>=s&&m<e;}))return'bk';
@@ -890,7 +890,7 @@ function stOf(tid,br,dt){
 }
 function lblOf(tid,br,dt){
   const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left');if(!bks.length)return null;
-  if(dt!==td())return bks.length+'бр';
+  if(dt!==fd())return bks.length+'бр';
   const rawM=fmMin(fmTimeVal());
   for(const b of bks){const s=fmMin(b.fr),e=spanEndMin(b.fr,b.to),m=pointForBooking(rawM,b.fr,b.to);if(b.st==='arrived'||(m>=s&&m<e)){const el=Math.max(0,m-s);return el<60?el+'м':Math.floor(el/60)+'ч'+(el%60?el%60+'м':'');}}
   const up=bks.filter(b=>{const s=fmMin(b.fr),m=pointForBooking(rawM,b.fr,b.to);return s>m;}).sort((a,b2)=>a.fr.localeCompare(b2.fr));
@@ -1120,15 +1120,19 @@ function fmRenderList(){
       const bookings=getBK(br,dt).filter(b=>b.tid===t.id && b.st!=='left').sort((a,b)=>a.fr.localeCompare(b.fr));
       const rawM=fmMin(fmTimeVal());
       let active=bookings.find(b=>{const s=fmMin(b.fr),e=spanEndMin(b.fr,b.to),m=pointForBooking(rawM,b.fr,b.to);return b.st==='arrived'||(m>=s&&m<e);});
-      if(!active) active=bookings.find(b=>{const s=fmMin(b.fr),m=pointForBooking(rawM,b.fr,b.to);return s>m&&((state==='so'&&s-m<=90)||state==='pa');});
+      if(!active) active=bookings.find(b=>{const s=fmMin(b.fr),m=pointForBooking(rawM,b.fr,b.to);return s>m;});
+      if(!active && bookings.length) active=bookings[0];
       if(active) all.push({...active,br,tn:t.n,viewState:state});
     });
   });
   const filt=q?all.filter(b=>(b.nm||'').toLowerCase().includes(q)||(b.ph||'').includes(q)||(String(b.tn||'')).includes(q)):all;
-  filt.sort((a,b)=>(a.fr||'').localeCompare(b.fr||''));
+  filt.sort((a,b)=>{
+    const am=pointForBooking(fmMin(a.fr||'00:00'),a.fr,a.to), bm=pointForBooking(fmMin(b.fr||'00:00'),b.fr,b.to);
+    return am-bm;
+  });
   const body=$('lBody');
   if(!body)return;
-  if(!filt.length){body.innerHTML='<div style="color:var(--muted);padding:18px;font-size:12px">На выбранное время броней нет.</div>';return}
+  if(!filt.length){body.innerHTML='<div style="color:var(--muted);padding:18px;font-size:12px">На выбранную дату и время броней нет.</div>';return}
   body.innerHTML=`<table class="tbl-list"><thead><tr><th>Стол</th><th>Гость</th><th>Тел.</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>${filt.map(b=>{const tn=getBrName(b.br)+' · '+b.tn;const stateText=b.viewState==='bk'?'За столом':b.viewState==='so'?'Скоро':'Бронь';return `<tr><td>${esc(tn)}</td><td>${esc(b.nm||'')}</td><td>${esc(b.ph||'')}</td><td>${esc(b.fr||'')}–${esc(b.to||'')}</td><td>${esc(String(b.gs||''))}</td><td>${esc(b.hk||'')}</td><td>${esc(lblOfStatus(b.st||'confirmed'))} · ${stateText}</td><td><button class="btn btn-xs" onclick="openBm('${b.id}','${b.tid}')">Открыть</button></td></tr>`;}).join('')}</tbody></table>`;
 }
 
