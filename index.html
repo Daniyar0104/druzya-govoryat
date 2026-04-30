@@ -447,6 +447,7 @@ button{cursor:pointer;user-select:none}
         <div class="mo-foot">
           <button class="btn btn-xs btn-d" id="bmDel" style="margin-right:auto;display:none" onclick="bmDel()">Удалить</button>
           <button class="btn btn-xs" id="bmLeftBtn" style="display:none;border-color:#9a9a9a;color:#d6d6d6" onclick="bmMarkLeft()">Ушел</button>
+          <button class="btn btn-xs" id="bmLeftBtn" style="display:none;border-color:#9a9a9a;color:#d6d6d6" onclick="bmMarkLeft()">Ушел</button>
           <button class="btn btn-xs" onclick="closeBm()">Отмена</button>
           <button class="btn btn-xs btn-p" onclick="bmSave()">Сохранить</button>
         </div>
@@ -1084,6 +1085,8 @@ function openBP(tid){
   else{
     const now=new Date(),mins=now.getHours()*60+now.getMinutes(),today2=td();
     bks.forEach(b=>{
+      const isLeft=b.st==='left';
+      const isLeft=b.st==='left';
       const card=document.createElement('div');card.className='bkc';
       const[fh,fm]=b.fr.split(':').map(Number),[th,tm]=b.to.split(':').map(Number),fr2=fh*60+fm,to2=th*60+tm;
       let cls='bb-u',lbl2=b.fr+'–'+b.to;
