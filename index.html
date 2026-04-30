@@ -952,13 +952,20 @@ function fmDraw(){
     }
     inner.appendChild(slot);
   });
-  // Edit mode: click on floor to add table
-  inner.classList.toggle('edit-mode',fmSt.edit);
+    // Edit mode: click on floor to add table
   if(fmSt.edit){
-    inner._addH=inner._addH||null;
     if(inner._addH)inner.removeEventListener('click',inner._addH);
-    inner._addH=(e)=>{if(e.target===inner||e.target.classList.contains('fm-grid-bg')){const r=inner.getBoundingClientRect();const z2=ZOOM_S[fmSt.zi];const x=Math.round((e.clientX-r.left)/z2);const y=Math.round((e.clientY-r.top)/z2);addTableAt(x,y);}};
+    inner._addH=(e)=>{
+      if(e.target===inner||e.target.classList.contains('fm-grid-bg')){
+        const r=inner.getBoundingClientRect();const z2=ZOOM_S[fmSt.zi];
+        const x=Math.round((e.clientX-r.left)/z2);const y=Math.round((e.clientY-r.top)/z2);
+        addTableAt(x,y);
+      }
+    };
     inner.addEventListener('click',inner._addH);
+  } else if(inner._addH){
+    inner.removeEventListener('click',inner._addH);
+    inner._addH=null;
   }
 }
 
@@ -1104,7 +1111,7 @@ let bmEid=null;
 function openBm(bid,tid){
   bmEid=bid;
   const sel=$('bmTbl');sel.innerHTML='';
-  ['m','5'].forEach(br=>{const g=document.createElement('optgroup');g.label=getBrName(br);getTables(br).forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent='Стол '+t.n;if(t.id===(tid||fmSt.sel))o.selected=true;g.appendChild(o)});sel.appendChild(g)});
+  Object.keys(BRANCHES).forEach(br=>{const g=document.createElement('optgroup');g.label=getBrName(br);getTables(br).forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent='Стол '+t.n;if(t.id===(tid||fmSt.sel))o.selected=true;g.appendChild(o)});sel.appendChild(g)});
   $('bmDt').value=fd();hideDrop();
   if(bid){
     const br2=findBrByBid(bid,fd());const b=br2?getBK(br2,fd()).find(x=>x.id===bid):null;
@@ -1165,7 +1172,7 @@ function bmSave(){
 }
 function bmDel(){
   if(!bmEid)return;const dt=$('bmDt').value||fd();
-  ['m','5'].forEach(br2=>{const k=br2+'_'+dt;if(MEM.bk[k])MEM.bk[k]=MEM.bk[k].filter(r=>r.id!==bmEid);saveBK(br2,dt)});
+  Object.keys(BRANCHES).forEach(br2=>{const k=br2+'_'+dt;if(MEM.bk[k])MEM.bk[k]=MEM.bk[k].filter(r=>r.id!==bmEid);saveBK(br2,dt)});
   toast('Удалено');closeBm();fmRedraw();if(fmSt.sel)openBP(fmSt.sel);
 }
 
