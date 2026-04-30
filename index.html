@@ -1077,7 +1077,7 @@ function openBP(tid){
   if(fmSt.edit)return;
   const br=fmSt.br,dt=fd();
   const t=getTables(br).find(x=>x.id===tid);
-  const bks=getBK(br,dt).filter(r=>r.tid===tid).sort((a,b)=>a.fr.localeCompare(b.fr));
+  const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left').sort((a,b)=>a.fr.localeCompare(b.fr));
   $('bpTtl').textContent='Стол '+(t?t.n:'?')+' — '+getBrName(br);
   $('bpSub').textContent=bks.length+' брон'+(bks.length===1?'ь':bks.length<5?'и':'ей')+' · '+dt;
   const body=$('bpBody');body.innerHTML='';
@@ -1301,30 +1301,74 @@ async function subG(){
   const time=$('grTm').value.trim(),addr=$('grAd').value;
   const brand=hookahU==='y'?'Как всегда':($('grBr').value.trim()||''),strength=$('grSt')?.value.trim()||'';
 
-  const tgLinks = {'Малыгина 90':'friendstalk4','50 лет Октября':'friends_talk_tmn','Сперанского':'Friendstalk3','Чаркова':'T_Charkova'};
+  // Telegram accounts mapping
+  const tgLinks = {
+    'Малыгина 90': 'friendstalk4',
+    '50 лет Октября': 'friends_talk_tmn',
+    'Сперанского': 'Friendstalk3',
+    'Чаркова': 'T_Charkova'
+  };
   const tgid = tgLinks[addr] || 'friendstalk4';
 
   let saved=false;
-  try{const cli=window.supabase.createClient(SB_URL,ANON);let gid=null;
+  try{
+    const cli=window.supabase.createClient(SBURL,ANON);
+    let gid=null;
     const{data:found}=await cli.from('guests').select('id').eq('phone',nph(phone)).limit(1);
-    if(found?.length)gid=found[0].id;else{const{data:ng}=await cli.from('guests').insert({full_name:name,phone}).select('id').single();gid=ng?.id||null}
+    if(found?.length)gid=found[0].id;
+    else{const{data:ng}=await cli.from('guests').insert({full_name:name,phone}).select('id').single();gid=ng?.id||null}
     if(gid&&time)await cli.from('hookah_preorders').insert({guest_id:gid,time_slot:time,address:addr,tobacco_brand:brand,strength,usual_order:hookahU==='y'});
-    saved=true}catch(e){}
+    saved=true;
+  }catch(e){}
 
-  const orders=JSON.parse(localStorage.getItem('dg_po')||'[]');orders.unshift({nm:name,ph:phone,tm:time,addr,brd:brand,str:strength,usual:hookahU==='y',ts:Date.now()});localStorage.setItem('dg_po',JSON.stringify(orders.slice(0,100)));
+  const orders=JSON.parse(localStorage.getItem('dg_po')||'[]');
+  orders.unshift({nm:name,ph:phone,tm:time,addr,brd:brand,str:strength,usual:hookahU==='y',ts:Date.now()});
+  localStorage.setItem('dg_po',JSON.stringify(orders.slice(0,100)));
+
   toast(saved?'Заявка принята ✓':'Сохранено локально');
 
-  const msg = `Предзаказ кальяна:%0AИмя: ${name}%0AТелефон: ${phone}%0AВремя: ${time}%0AВкус: ${brand}%0AКрепость: ${strength}`;
-  window.open(`https://t.me/${tgid}?text=${msg}`, '_blank');
+  // Отправка в телеграм
+  const msg = `Заявка с сайта!%0AИмя: ${name}%0AТелефон: ${phone}%0AВремя: ${time}%0AАдрес: ${addr}%0AВкус/Бренд: ${brand}%0AКрепость: ${strength}`;
+  window.open(`https://t.me/${tgid}?text=${msg}`, '_self');
 
-  openApp();
+  setTimeout(() => openApp(), 500);
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
 // LOGIN / SESSION
 // ──────────────────────────────────────────────────────────────────────────────
-async function doLogin(){const k=($('stKy').value||'').trim();if(k==='9963977553'){localStorage.setItem('dg_key',ANON);initSB();openApp()}else{toast('Неверный код доступа',false)}}
-function openApp(){$('loginView').classList.add('h');$('appView').classList.remove('h');if(!$('bDate').value)$('bDate').value=td();renderBrTabs();sv('bk')}
+function doLogin(){const k=($('stKy').value||'').trim();if(k==='9963977553'){localStorage.setItem('dg_key',ANON);initSB();openApp();}else{toast('Неверный код доступа',false);}}
+function openApp(){
+  $('loginView').classList.add('h');
+  $('appView').classList.remove('h');
+  if(!$('bDate').value) $('bDate').value=td();
+
+  const isStaff = !!getKey();
+
+  if (isStaff) {
+    $('sbRole').textContent = 'Сотрудник';
+    // Показываем все кнопки навигации
+    document.querySelectorAll('.nav').forEach(n => {
+      if(!n.hasAttribute('onclick') || n.getAttribute('onclick') !== "togT()" && n.getAttribute('onclick') !== "doOut()") {
+        n.classList.remove('h');
+      }
+    });
+    // И показываем разделители
+    document.querySelectorAll('.nav-sep').forEach(s => s.classList.remove('h'));
+    renderBrTabs();
+    sv('bk'); // Открываем Брони
+  } else {
+    $('sbRole').textContent = 'Гость';
+    // Прячем всё, кроме вкладки "Заявки на кальян"
+    document.querySelectorAll('.nav').forEach(n => {
+      if(n.getAttribute('onclick') !== "sv('po')" && n.getAttribute('onclick') !== "togT()" && n.getAttribute('onclick') !== "doOut()") {
+        n.classList.add('h');
+      }
+    });
+    document.querySelectorAll('.nav-sep').forEach(s => s.classList.add('h'));
+    sv('po'); // Открываем Заявки
+  }
+}
 async function doOut(){if(sb)try{await sb.auth.signOut()}catch(e){}localStorage.removeItem('dg_key');sb=null;MEM.crm=[];$('appView').classList.add('h');$('loginView').classList.remove('h')}
 async function restoreSession(){const k=getKey();if(k&&window.supabase)try{sb=window.supabase.createClient(SB_URL,k,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}})}catch(e){}openApp()}
 
