@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ru" data-theme="dark">
 <head>
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Друзья Говорят</title>
@@ -262,13 +262,13 @@ button{cursor:pointer;user-select:none}
 <div id="appView" class="shell h">
   <nav class="sb">
     <div class="brand"><div class="brand-ico">🔥</div><div><div class="brand-t">Друзья говорят</div><div class="brand-s" id="sbRole">Сотрудник</div></div></div>
-    <button class="nav on" id="bkNav" onclick="sv('bk')">Брони</button>
-    <button class="nav" id="gbNav" onclick="sv('gb')">Банк гостей</button>
+    <button class="nav on" onclick="sv('bk')">Брони</button>
+    <button class="nav" onclick="sv('gb')">Банк гостей</button>
     <div class="nav-sep"></div>
-    <button class="nav" id="crmNav" onclick="sv('crm')">Гости (CRM)</button>
-    <button class="nav" id="ngNav" onclick="sv('ng')">Новый гость</button>
+    <button class="nav" onclick="sv('crm')">Гости (CRM)</button>
+    <button class="nav" onclick="sv('ng')">Новый гость</button>
     <div class="nav-sep"></div>
-    <button class="nav" id="poNav" onclick="sv('po')">Заявки на кальян</button>
+    <button class="nav" onclick="sv('po')">Заявки на кальян</button>
     <div class="sb-bot">
       <button class="nav" onclick="togT()" style="font-size:12px;color:var(--muted)">🌙 Тема</button>
       <button class="nav" onclick="doOut()" style="font-size:12px;color:var(--muted)">← Выйти</button>
@@ -282,15 +282,15 @@ button{cursor:pointer;user-select:none}
       <div class="rowb" style="margin-bottom:11px">
         <div class="main-ttl">Брони</div>
         <div class="row" style="gap:6px;align-items:center;flex-wrap:wrap">
-          <input id="bDate" type="date" class="inp" style="width:148px" onchange="fmRefresh()">
-          <input id="selTime" type="time" class="inp" style="width:118px" onchange="fmSetTime(this.value)">
-          <button class="btn btn-sm" onclick="fmNow()">Сейчас</button>
+          <input id="bDate" type="date" class="inp" style="width:148px" onchange="fmRefreshAll()">
+          <input id="fmTime" type="time" class="inp" style="width:118px" onchange="fmSetSelTime(this.value)">
+          <button class="btn btn-sm" onclick="fmSetNow()">Сейчас</button>
           <button class="btn btn-p btn-sm" onclick="openBm(null,null)">+ Бронь</button>
         </div>
       </div>
       <div class="card" style="padding:10px 12px;margin-bottom:10px">
         <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Лента времени</div>
-        <div id="timeRibbon" class="row" style="gap:6px;flex-wrap:wrap"></div>
+        <div id="fmRibbon" class="row" style="gap:6px;flex-wrap:wrap"></div>
       </div>
 
       <!-- Floor toolbar -->
@@ -430,7 +430,7 @@ button{cursor:pointer;user-select:none}
             </div>
             <div class="g2" style="gap:8px">
               <div class="fld"><div class="lbl">Гостей</div><input id="bmGs" class="inp" type="number" min="1" max="30" value="2"></div>
-              <div class="fld"><div class="lbl">Статус</div><select id="bmSt" class="sel"><option value="confirmed">Подтверждена</option><option value="arrived">Пришёл</option><option value="left">Ушёл</option><option value="vip">⭐ VIP</option><option value="waiting">Ожидание</option></select></div>
+              <div class="fld"><div class="lbl">Статус</div><select id="bmSt" class="sel"><option value="confirmed">Подтверждена</option><option value="vip">⭐ VIP</option><option value="waiting">Ожидание</option></select></div>
             </div>
           </div>
           <div class="mo-sec">
@@ -866,34 +866,30 @@ function fmZoom(d){fmSt.zi=Math.max(0,Math.min(ZOOM_S.length-1,fmSt.zi+d));apply
 // ──────────────────────────────────────────────────────────────────────────────
 // STATUS / LABEL (uses in-memory cache, no localStorage reads)
 // ──────────────────────────────────────────────────────────────────────────────
-const FM_SLOTS=['12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00'];
-let fmSelectedTime='19:00';
-function fmTimeVal(){ return $('selTime')&&$('selTime').value ? $('selTime').value : fmSelectedTime; }
-function fmSetTime(v){ fmSelectedTime=v||fmSelectedTime; if($('selTime')) $('selTime').value=fmSelectedTime; fmRenderRibbon(); fmRefresh(); }
-function fmNow(){ const d=new Date(); const v=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); fmSetTime(v); }
-function fmRenderRibbon(){ const w=$('timeRibbon'); if(!w) return; const cur=fmTimeVal(); w.innerHTML=FM_SLOTS.map(t=>`<button class="btn btn-sm ${t===cur?'btn-p':''}" style="font-size:12px;padding:6px 10px" onclick="fmSetTime('${t}')">${t}</button>`).join(''); }
-function fmRefresh(){ if(fmSt.sub==='list'){ fmRenderList(); } else { fmRedraw(); } }
-function fmMin(t){ const a=(t||'00:00').split(':').map(Number); return (a[0]||0)*60+(a[1]||0); }
-function spanEndMin(fr,to){ const s=fmMin(fr), e=fmMin(to); return e<=s ? e+1440 : e; }
-function pointForBooking(m,fr,to){ const s=fmMin(fr), e=spanEndMin(fr,to); if(e>1440 && m<s) return m+1440; return m; }
-function addHours(t,h){ const total=(fmMin(t)+h*60)%(24*60); const hh=String(Math.floor(total/60)).padStart(2,'0'); const mm=String(total%60).padStart(2,'0'); return `${hh}:${mm}`; }
+const FM_RIBBON=['12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00'];
+let fmSelTime='19:00';
+function fmMinutes(v){const a=(v||'00:00').split(':').map(Number);return (a[0]||0)*60+(a[1]||0)}
+function fmEndMinutes(fr,to){const s=fmMinutes(fr),e=fmMinutes(to);return e<=s?e+1440:e}
+function fmPoint(fr,to){const cur=fmMinutes(fmSelTime),s=fmMinutes(fr),e=fmEndMinutes(fr,to);return (e>1440&&cur<s)?cur+1440:cur}
+function fmSetSelTime(v){fmSelTime=v||fmSelTime; if($('fmTime')) $('fmTime').value=fmSelTime; fmRenderRibbon(); fmRefreshAll();}
+function fmSetNow(){const d=new Date(); fmSetSelTime(String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'));}
+function fmRenderRibbon(){const el=$('fmRibbon'); if(!el) return; el.innerHTML=FM_RIBBON.map(t=>`<button class="btn btn-sm ${t===fmSelTime?'btn-p':''}" style="font-size:12px;padding:6px 10px" onclick="fmSetSelTime('${t}')">${t}</button>`).join(''); if($('fmTime')) $('fmTime').value=fmSelTime;}
+function fmRefreshAll(){ if(typeof fmRedraw==='function') fmRedraw(); if(typeof fmRenderList==='function') fmRenderList(); }
+function lblOfStatus(s){return s==='vip'?'⭐ VIP':s==='waiting'?'Ожидание':s==='arrived'?'Пришёл':s==='left'?'Ушёл':'Подтверждена'}
 function stOf(tid,br,dt){
   const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left');
   if(!bks.length)return'fr';
-  if(dt!==fd())return'pa';
-  const rawM=fmMin(fmTimeVal());
-  if(bks.some(b=>b.st==='arrived'))return'bk';
-  if(bks.some(b=>{const s=fmMin(b.fr),e=spanEndMin(b.fr,b.to),m=pointForBooking(rawM,b.fr,b.to);return m>=s&&m<e;}))return'bk';
-  if(bks.some(b=>{const s=fmMin(b.fr),m=pointForBooking(rawM,b.fr,b.to);return s>m&&s-m<=90;}))return'so';
-  if(bks.some(b=>{const s=fmMin(b.fr),m=pointForBooking(rawM,b.fr,b.to);return s>m;}))return'pa';
-  return'fr';
+  const hasBusy=bks.some(b=>b.st==='arrived'||(()=>{const m=fmPoint(b.fr,b.to), st=fmMinutes(b.fr), en=fmEndMinutes(b.fr,b.to); return m>=st&&m<en;})());
+  if(hasBusy)return'bk';
+  const hasSoon=bks.some(b=>{const m=fmPoint(b.fr,b.to), st=fmMinutes(b.fr); return st>m && st-m<=90;});
+  if(hasSoon)return'so';
+  return'pa';
 }
 function lblOf(tid,br,dt){
-  const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left');if(!bks.length)return null;
-  if(dt!==fd())return bks.length+'бр';
-  const rawM=fmMin(fmTimeVal());
-  for(const b of bks){const s=fmMin(b.fr),e=spanEndMin(b.fr,b.to),m=pointForBooking(rawM,b.fr,b.to);if(b.st==='arrived'||(m>=s&&m<e)){const el=Math.max(0,m-s);return el<60?el+'м':Math.floor(el/60)+'ч'+(el%60?el%60+'м':'');}}
-  const up=bks.filter(b=>{const s=fmMin(b.fr),m=pointForBooking(rawM,b.fr,b.to);return s>m;}).sort((a,b2)=>a.fr.localeCompare(b2.fr));
+  const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left');
+  if(!bks.length)return null;
+  for(const b of bks){const m=fmPoint(b.fr,b.to), st=fmMinutes(b.fr), en=fmEndMinutes(b.fr,b.to); if(b.st==='arrived'||(m>=st&&m<en)){const el=Math.max(0,m-st); return el<60?el+'м':Math.floor(el/60)+'ч'+(el%60?el%60+'м':'');}}
+  const up=bks.filter(b=>fmMinutes(b.fr)>fmPoint(b.fr,b.to)).sort((a,b)=>a.fr.localeCompare(b.fr));
   return up.length?up[0].fr:bks.length+'бр';
 }
 
@@ -1077,7 +1073,7 @@ function openBP(tid){
   if(fmSt.edit)return;
   const br=fmSt.br,dt=fd();
   const t=getTables(br).find(x=>x.id===tid);
-  const rawM=fmMin(fmTimeVal()); const bks=getBK(br,dt).filter(r=>{ if(r.tid!==tid||r.st==='left') return false; if(r.st==='arrived') return true; const s=fmMin(r.fr), e=spanEndMin(r.fr,r.to), m=pointForBooking(rawM,r.fr,r.to); return e>m; }).sort((a,b)=>a.fr.localeCompare(b.fr));
+  const bks=getBK(br,dt).filter(r=>r.tid===tid).sort((a,b)=>a.fr.localeCompare(b.fr));
   $('bpTtl').textContent='Стол '+(t?t.n:'?')+' — '+getBrName(br);
   $('bpSub').textContent=bks.length+' брон'+(bks.length===1?'ь':bks.length<5?'и':'ей')+' · '+dt;
   const body=$('bpBody');body.innerHTML='';
@@ -1110,30 +1106,26 @@ function fmSV(v){fmSt.sub=v;$('fmMapView').classList.toggle('h',v!=='map');$('fm
 // LIST VIEW
 // ──────────────────────────────────────────────────────────────────────────────
 function fmRenderList(){
-  const q=($('lSrch')?$('lSrch').value:'').toLowerCase(),dt=fd();
-  const all=[];
+  const dt=$('bDate')?($('bDate').value||td()):td();
+  const q=($('lSrch')?$('lSrch').value:'').toLowerCase();
+  const rows=[];
   Object.keys(BRANCHES).forEach(br=>{
-    const tables=getTables(br);
-    tables.forEach(t=>{
-      const state=stOf(t.id,br,dt);
-      if(state==='fr') return;
-      const bookings=getBK(br,dt).filter(b=>b.tid===t.id && b.st!=='left').sort((a,b)=>a.fr.localeCompare(b.fr));
-      const rawM=fmMin(fmTimeVal());
-      let active=bookings.find(b=>{const s=fmMin(b.fr),e=spanEndMin(b.fr,b.to),m=pointForBooking(rawM,b.fr,b.to);return b.st==='arrived'||(m>=s&&m<e);});
-      if(!active) active=bookings.find(b=>{const s=fmMin(b.fr),m=pointForBooking(rawM,b.fr,b.to);return s>m;});
-      if(!active && bookings.length) active=bookings[0];
-      if(active) all.push({...active,br,tn:t.n,viewState:state});
+    getBK(br,dt).filter(b=>b.st!=='left').forEach(b=>{
+      const m=fmPoint(b.fr,b.to), st=fmMinutes(b.fr), en=fmEndMinutes(b.fr,b.to);
+      let state='pa';
+      if(b.st==='arrived' || (m>=st&&m<en)) state='bk';
+      else if(st>m && st-m<=90) state='so';
+      else if(st>m) state='pa';
+      else return;
+      const t=(getTables(br).find(x=>x.id===b.tid)||{}).n||b.tid;
+      rows.push({...b,br,tn:t,viewState:state,sortStart:st});
     });
   });
-  const filt=q?all.filter(b=>(b.nm||'').toLowerCase().includes(q)||(b.ph||'').includes(q)||(String(b.tn||'')).includes(q)):all;
-  filt.sort((a,b)=>{
-    const am=pointForBooking(fmMin(a.fr||'00:00'),a.fr,a.to), bm=pointForBooking(fmMin(b.fr||'00:00'),b.fr,b.to);
-    return am-bm;
-  });
-  const body=$('lBody');
-  if(!body)return;
-  if(!filt.length){body.innerHTML='<div style="color:var(--muted);padding:18px;font-size:12px">На выбранную дату и время броней нет.</div>';return}
-  body.innerHTML=`<table class="tbl-list"><thead><tr><th>Стол</th><th>Гость</th><th>Тел.</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>${filt.map(b=>{const tn=getBrName(b.br)+' · '+b.tn;const stateText=b.viewState==='bk'?'За столом':b.viewState==='so'?'Скоро':'Бронь';return `<tr><td>${esc(tn)}</td><td>${esc(b.nm||'')}</td><td>${esc(b.ph||'')}</td><td>${esc(b.fr||'')}–${esc(b.to||'')}</td><td>${esc(String(b.gs||''))}</td><td>${esc(b.hk||'')}</td><td>${esc(lblOfStatus(b.st||'confirmed'))} · ${stateText}</td><td><button class="btn btn-xs" onclick="openBm('${b.id}','${b.tid}')">Открыть</button></td></tr>`;}).join('')}</tbody></table>`;
+  const out=q?rows.filter(b=>(b.nm||'').toLowerCase().includes(q)||(b.ph||'').includes(q)||(String(b.tn||'')).includes(q)):rows;
+  out.sort((a,b)=>a.sortStart-b.sortStart);
+  const body=$('lBody'); if(!body) return;
+  if(!out.length){ body.innerHTML='<div style="color:var(--muted);padding:18px;font-size:12px">На выбранную дату и время броней нет.</div>'; return; }
+  body.innerHTML=`<table class="tbl-list"><thead><tr><th>Стол</th><th>Гость</th><th>Тел.</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>${out.map(b=>{const stateText=b.viewState==='bk'?'За столом':b.viewState==='so'?'Скоро':'Бронь';return `<tr><td>${esc(getBrName(b.br)+' · '+b.tn)}</td><td>${esc(b.nm||'')}</td><td>${esc(b.ph||'')}</td><td>${esc(b.fr||'')}–${esc(b.to||'')}</td><td>${esc(String(b.gs||''))}</td><td>${esc(b.hk||'')}</td><td>${esc(lblOfStatus(b.st||'confirmed'))} · ${stateText}</td><td><button class="btn btn-xs" onclick="openBm('${b.id}','${b.tid}')">Открыть</button></td></tr>`;}).join('')}</tbody></table>`;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -1177,7 +1169,8 @@ function bmByPh(){
     if(exact){hideDrop();if(!$('bmNm').value)$('bmNm').value=exact.nm;showGPA(exact);}
   } else {drop.classList.add('h');hideGPA()}
 }
-function bmAutoEnd(){ const fr=$('bmFr'); const to=$('bmTo'); if(!fr||!to||!fr.value) return; to.value=addHours(fr.value,2); }
+function fmAddHours(t,h){const total=(fmMinutes(t)+h*60)%(24*60);return String(Math.floor(total/60)).padStart(2,'0')+':'+String(total%60).padStart(2,'0')}
+function bmAutoEnd(){if($('bmFr')&&$('bmTo')&&$('bmFr').value){$('bmTo').value=fmAddHours($('bmFr').value,2)}}
 function bmByNm(){
   hideDrop();const nm=$('bmNm').value.trim();if(nm.length<2){if(!$('bmPh').value.trim())hideGPA();return}
   const g=findInBank(nm,'nm');if(g){if(!$('bmPh').value.trim())$('bmPh').value=g.ph;showGPA(g)}
@@ -1193,27 +1186,21 @@ function showGPA(g){
 }
 function hideGPA(){$('bmGPA').classList.add('h')}
 
-function isOverlap(fr1,to1,fr2,to2){const s1=fmMin(fr1),e1=spanEndMin(fr1,to1),s2=fmMin(fr2),e2=spanEndMin(fr2,to2);return s1<e2&&s2<e1;}
 function bmSave(){
   const nm=$('bmNm').value.trim();if(!nm){toast('Введите имя',false);return}
   const tid=$('bmTbl').value,dt=$('bmDt').value||fd(),fr=$('bmFr').value,to=$('bmTo').value;
   if(!tid){toast('Выберите стол',false);return}
   if(!fr||!to){toast('Укажите время',false);return}
-  const start=fmMin(fr), end=spanEndMin(fr,to);
+  const start=fmMinutes(fr), end=fmEndMinutes(fr,to);
   if(end<=start){toast('Время окончания должно быть позже начала',false);return}
-  if(dt===fd()){
-    const now=new Date(), nowM=now.getHours()*60+now.getMinutes();
-    if(start<=nowM){toast('Нельзя ставить бронь в прошедшее время',false);return}
-  }
-  const br2=Object.keys(BRANCHES).find(k=>getTables(k).some(t=>t.id===tid))||fmSt.br;
+  const br2=fmSt.br;
   const sameDay=getBK(br2,dt);
-  const conflict=sameDay.find(b=>b.tid===tid&&b.id!==bmEid&&b.st!=='left'&&isOverlap(fr,to,b.fr,b.to));
+  const conflict=sameDay.find(b=>b.tid===tid&&b.id!==bmEid&&b.st!=='left'&&start<fmEndMinutes(b.fr,b.to)&&fmMinutes(b.fr)<end);
   if(conflict){toast('На это время уже есть бронь на этом столе',false);return}
-  const bk={id:bmEid||('b'+Date.now()+Math.random().toString(36).slice(2,6)),tid,br:br2,dt,nm,ph:$('bmPh').value.trim(),fr,to,gs:parseInt($('bmGs').value)||2,st:$('bmSt').value,hk:$('bmHk').value.trim(),ds:$('bmDs').value.trim(),no:$('bmNo').value.trim()};
+  const bk={id:bmEid||('b'+Date.now()+Math.random().toString(36).slice(2,6)),tid,dt,nm,ph:$('bmPh').value.trim(),fr,to,gs:parseInt($('bmGs').value)||2,st:$('bmSt').value,hk:$('bmHk').value.trim(),ds:$('bmDs').value.trim(),no:$('bmNo').value.trim()};
   const k=br2+'_'+dt;if(!MEM.bk[k])MEM.bk[k]=[];
-  if(bmEid){Object.keys(BRANCHES).forEach(brx=>{const kk=brx+'_'+dt;if(MEM.bk[kk])MEM.bk[kk]=MEM.bk[kk].filter(r=>r.id!==bmEid);saveBK(brx,dt);});}
-  MEM.bk[k].push(bk);saveBK(br2,dt);
-  toast('Бронь сохранена ✓');closeBm();fmRefresh();if(fmSt.sel)openBP(fmSt.sel);if(fmSt.sub==='list')fmRenderList();
+  if(bmEid)MEM.bk[k]=MEM.bk[k].filter(r=>r.id!==bmEid);
+  MEM.bk[k].push(bk);saveBK(br2,dt);toast('Бронь сохранена ✓');closeBm();fmRefreshAll();if(fmSt.sel)openBP(fmSt.sel);
 }
 function bmDel(){
   if(!bmEid)return;const dt=$('bmDt').value||fd();
@@ -1332,8 +1319,8 @@ const _k=getKey();if($('stKy'))$('stKy').value=_k;
 // Clean up old layout keys from previous versions
 ['dg_tbl_m','dg_tbl_5','dg_tbl5_m','dg_tbl5_5'].forEach(k=>localStorage.removeItem(k));
 restoreSession();
-if($('selTime')) $('selTime').value=fmSelectedTime;
 fmRenderRibbon();
+if($('fmTime')) $('fmTime').value=fmSelTime;
 const _brTabs=document.getElementById('brTabs');
 if(_brTabs){
   _brTabs.addEventListener('click',function(e){
