@@ -432,7 +432,7 @@ button{cursor:pointer;user-select:none}
             </div>
             <div class="g2" style="gap:8px">
               <div class="fld"><div class="lbl">Гостей</div><input id="bmGs" class="inp" type="number" min="1" max="30" value="2"></div>
-              <div class="fld"><div class="lbl">Статус</div><select id="bmSt" class="sel"><option value="confirmed">Подтверждена</option><option value="vip">⭐ VIP</option><option value="waiting">Ожидание</option></select></div>
+              <div class="fld"><div class="lbl">Статус</div><select id="bmSt" class="sel"><option value="confirmed">Подтверждена</option><option value="vip">⭐ VIP</option><option value="waiting">Ожидание</option><option value="left">Ушел</option></select></div>
             </div>
           </div>
           <div class="mo-sec">
@@ -446,6 +446,7 @@ button{cursor:pointer;user-select:none}
         </div>
         <div class="mo-foot">
           <button class="btn btn-xs btn-d" id="bmDel" style="margin-right:auto;display:none" onclick="bmDel()">Удалить</button>
+          <button class="btn btn-xs" id="bmLeftBtn" style="display:none;border-color:#9a9a9a;color:#d6d6d6" onclick="bmMarkLeft()">Ушел</button>
           <button class="btn btn-xs" onclick="closeBm()">Отмена</button>
           <button class="btn btn-xs btn-p" onclick="bmSave()">Сохранить</button>
         </div>
