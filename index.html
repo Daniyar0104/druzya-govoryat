@@ -1086,7 +1086,6 @@ function openBP(tid){
     const now=new Date(),mins=now.getHours()*60+now.getMinutes(),today2=td();
     bks.forEach(b=>{
       const isLeft=b.st==='left';
-      const isLeft=b.st==='left';
       const card=document.createElement('div');card.className='bkc';
       const[fh,fm]=b.fr.split(':').map(Number),[th,tm]=b.to.split(':').map(Number),fr2=fh*60+fm,to2=th*60+tm;
       let cls='bb-u',lbl2=b.fr+'–'+b.to;
@@ -1296,7 +1295,7 @@ async function loadPO(){
 // ──────────────────────────────────────────────────────────────────────────────
 // GUEST PREORDER SUBMIT
 // ──────────────────────────────────────────────────────────────────────────────
-async async function subG(){
+async function subG(){
   const name=$('grNm').value.trim(),phone=$('grPh').value.trim();
   if(!name || !phone){toast('Укажите имя и телефон',false);return}
   const time=$('grTm').value.trim(),addr=$('grAd').value;
