@@ -425,7 +425,7 @@ button{cursor:pointer;user-select:none}
               <div class="fld"><div class="lbl">Дата</div><input id="bmDt" class="inp" type="date"></div>
             </div>
             <div class="g2" style="gap:8px;margin-bottom:8px">
-              <div class="fld"><div class="lbl">Начало</div><input id="bmFr" class="inp" type="time" value="19:00"></div>
+              <div class="fld"><div class="lbl">Начало</div><input id="bmFr" onchange="bmAutoEnd()" class="inp" type="time" value="19:00"></div>
               <div class="fld"><div class="lbl">Конец</div><input id="bmTo" class="inp" type="time" value="22:00"></div>
             </div>
             <div class="g2" style="gap:8px">
@@ -874,23 +874,26 @@ function fmNow(){ const d=new Date(); const v=String(d.getHours()).padStart(2,'0
 function fmRenderRibbon(){ const w=$('timeRibbon'); if(!w) return; const cur=fmTimeVal(); w.innerHTML=FM_SLOTS.map(t=>`<button class="btn btn-sm ${t===cur?'btn-p':''}" style="font-size:12px;padding:6px 10px" onclick="fmSetTime('${t}')">${t}</button>`).join(''); }
 function fmRefresh(){ if(fmSt.sub==='list'){ fmRenderList(); } else { fmRedraw(); } }
 function fmMin(t){ const a=(t||'00:00').split(':').map(Number); return (a[0]||0)*60+(a[1]||0); }
+function spanEndMin(fr,to){ const s=fmMin(fr), e=fmMin(to); return e<=s ? e+1440 : e; }
+function pointForBooking(m,fr,to){ const s=fmMin(fr), e=spanEndMin(fr,to); if(e>1440 && m<s) return m+1440; return m; }
+function addHours(t,h){ const total=(fmMin(t)+h*60)%(24*60); const hh=String(Math.floor(total/60)).padStart(2,'0'); const mm=String(total%60).padStart(2,'0'); return `${hh}:${mm}`; }
 function stOf(tid,br,dt){
   const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left');
   if(!bks.length)return'fr';
   if(dt!==td())return'pa';
-  const m=fmMin(fmTimeVal());
+  const rawM=fmMin(fmTimeVal());
   if(bks.some(b=>b.st==='arrived'))return'bk';
-  if(bks.some(b=>{const s=fmMin(b.fr),e=fmMin(b.to);return m>=s&&m<e;}))return'bk';
-  if(bks.some(b=>{const s=fmMin(b.fr);return s>m&&s-m<=90;}))return'so';
-  if(bks.some(b=>fmMin(b.fr)>m))return'pa';
+  if(bks.some(b=>{const s=fmMin(b.fr),e=spanEndMin(b.fr,b.to),m=pointForBooking(rawM,b.fr,b.to);return m>=s&&m<e;}))return'bk';
+  if(bks.some(b=>{const s=fmMin(b.fr),m=pointForBooking(rawM,b.fr,b.to);return s>m&&s-m<=90;}))return'so';
+  if(bks.some(b=>{const s=fmMin(b.fr),m=pointForBooking(rawM,b.fr,b.to);return s>m;}))return'pa';
   return'fr';
 }
 function lblOf(tid,br,dt){
   const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left');if(!bks.length)return null;
   if(dt!==td())return bks.length+'бр';
-  const m=fmMin(fmTimeVal());
-  for(const b of bks){const s=fmMin(b.fr),e=fmMin(b.to);if(b.st==='arrived'||(m>=s&&m<e)){const el=Math.max(0,m-s);return el<60?el+'м':Math.floor(el/60)+'ч'+(el%60?el%60+'м':'');}}
-  const up=bks.filter(b=>fmMin(b.fr)>m).sort((a,b2)=>a.fr.localeCompare(b2.fr));
+  const rawM=fmMin(fmTimeVal());
+  for(const b of bks){const s=fmMin(b.fr),e=spanEndMin(b.fr,b.to),m=pointForBooking(rawM,b.fr,b.to);if(b.st==='arrived'||(m>=s&&m<e)){const el=Math.max(0,m-s);return el<60?el+'м':Math.floor(el/60)+'ч'+(el%60?el%60+'м':'');}}
+  const up=bks.filter(b=>{const s=fmMin(b.fr),m=pointForBooking(rawM,b.fr,b.to);return s>m;}).sort((a,b2)=>a.fr.localeCompare(b2.fr));
   return up.length?up[0].fr:bks.length+'бр';
 }
 
@@ -1074,7 +1077,7 @@ function openBP(tid){
   if(fmSt.edit)return;
   const br=fmSt.br,dt=fd();
   const t=getTables(br).find(x=>x.id===tid);
-  const m=fmMin(fmTimeVal()); const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left' && (r.st==='arrived' || fmMin(r.to)>m)).sort((a,b)=>a.fr.localeCompare(b.fr));
+  const rawM=fmMin(fmTimeVal()); const bks=getBK(br,dt).filter(r=>{ if(r.tid!==tid||r.st==='left') return false; if(r.st==='arrived') return true; const s=fmMin(r.fr), e=spanEndMin(r.fr,r.to), m=pointForBooking(rawM,r.fr,r.to); return e>m; }).sort((a,b)=>a.fr.localeCompare(b.fr));
   $('bpTtl').textContent='Стол '+(t?t.n:'?')+' — '+getBrName(br);
   $('bpSub').textContent=bks.length+' брон'+(bks.length===1?'ь':bks.length<5?'и':'ей')+' · '+dt;
   const body=$('bpBody');body.innerHTML='';
@@ -1108,19 +1111,25 @@ function fmSV(v){fmSt.sub=v;$('fmMapView').classList.toggle('h',v!=='map');$('fm
 // ──────────────────────────────────────────────────────────────────────────────
 function fmRenderList(){
   const q=($('lSrch')?$('lSrch').value:'').toLowerCase(),dt=fd();
-  const m=fmMin(fmTimeVal());
-  const all=Object.keys(BRANCHES).flatMap(br=>getBK(br,dt).filter(b=>{
-    if(b.st==='left') return false;
-    if(b.st==='arrived') return true;
-    const s=fmMin(b.fr),e=fmMin(b.to);
-    return (m>=s&&m<e) || (s>m&&s-m<=90) || s>m;
-  }).map(b=>({...b,br})));
-  const filt=q?all.filter(b=>(b.nm||'').toLowerCase().includes(q)||(b.ph||'').includes(q)):all;
-  filt.sort((a,b)=>a.fr.localeCompare(b.fr));
+  const all=[];
+  Object.keys(BRANCHES).forEach(br=>{
+    const tables=getTables(br);
+    tables.forEach(t=>{
+      const state=stOf(t.id,br,dt);
+      if(state==='fr') return;
+      const bookings=getBK(br,dt).filter(b=>b.tid===t.id && b.st!=='left').sort((a,b)=>a.fr.localeCompare(b.fr));
+      const rawM=fmMin(fmTimeVal());
+      let active=bookings.find(b=>{const s=fmMin(b.fr),e=spanEndMin(b.fr,b.to),m=pointForBooking(rawM,b.fr,b.to);return b.st==='arrived'||(m>=s&&m<e);});
+      if(!active) active=bookings.find(b=>{const s=fmMin(b.fr),m=pointForBooking(rawM,b.fr,b.to);return s>m&&((state==='so'&&s-m<=90)||state==='pa');});
+      if(active) all.push({...active,br,tn:t.n,viewState:state});
+    });
+  });
+  const filt=q?all.filter(b=>(b.nm||'').toLowerCase().includes(q)||(b.ph||'').includes(q)||(String(b.tn||'')).includes(q)):all;
+  filt.sort((a,b)=>(a.fr||'').localeCompare(b.fr||''));
   const body=$('lBody');
   if(!body)return;
   if(!filt.length){body.innerHTML='<div style="color:var(--muted);padding:18px;font-size:12px">На выбранное время броней нет.</div>';return}
-  body.innerHTML=`<table class="tbl-list"><thead><tr><th>Стол</th><th>Гость</th><th>Тел.</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>${filt.map(b=>{const t=getTables(b.br).find(x=>x.id===b.tid);const tn=t?(getBrName(b.br)+' · '+t.n):b.tid;return `<tr><td>${esc(tn)}</td><td>${esc(b.nm||'')}</td><td>${esc(b.ph||'')}</td><td>${esc(b.fr||'')}–${esc(b.to||'')}</td><td>${esc(String(b.gs||''))}</td><td>${esc(b.hk||'')}</td><td>${esc(lblOfStatus(b.st||'confirmed'))}</td><td><button class="btn btn-xs" onclick="openBm('${b.id}','${b.tid}')">Открыть</button></td></tr>`;}).join('')}</tbody></table>`;
+  body.innerHTML=`<table class="tbl-list"><thead><tr><th>Стол</th><th>Гость</th><th>Тел.</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>${filt.map(b=>{const tn=getBrName(b.br)+' · '+b.tn;const stateText=b.viewState==='bk'?'За столом':b.viewState==='so'?'Скоро':'Бронь';return `<tr><td>${esc(tn)}</td><td>${esc(b.nm||'')}</td><td>${esc(b.ph||'')}</td><td>${esc(b.fr||'')}–${esc(b.to||'')}</td><td>${esc(String(b.gs||''))}</td><td>${esc(b.hk||'')}</td><td>${esc(lblOfStatus(b.st||'confirmed'))} · ${stateText}</td><td><button class="btn btn-xs" onclick="openBm('${b.id}','${b.tid}')">Открыть</button></td></tr>`;}).join('')}</tbody></table>`;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -1164,6 +1173,7 @@ function bmByPh(){
     if(exact){hideDrop();if(!$('bmNm').value)$('bmNm').value=exact.nm;showGPA(exact);}
   } else {drop.classList.add('h');hideGPA()}
 }
+function bmAutoEnd(){ const fr=$('bmFr'); const to=$('bmTo'); if(!fr||!to||!fr.value) return; to.value=addHours(fr.value,2); }
 function bmByNm(){
   hideDrop();const nm=$('bmNm').value.trim();if(nm.length<2){if(!$('bmPh').value.trim())hideGPA();return}
   const g=findInBank(nm,'nm');if(g){if(!$('bmPh').value.trim())$('bmPh').value=g.ph;showGPA(g)}
@@ -1179,16 +1189,17 @@ function showGPA(g){
 }
 function hideGPA(){$('bmGPA').classList.add('h')}
 
-function isOverlap(fr1,to1,fr2,to2){const s1=fmMin(fr1),e1=fmMin(to1),s2=fmMin(fr2),e2=fmMin(to2);return s1<e2&&s2<e1;}
+function isOverlap(fr1,to1,fr2,to2){const s1=fmMin(fr1),e1=spanEndMin(fr1,to1),s2=fmMin(fr2),e2=spanEndMin(fr2,to2);return s1<e2&&s2<e1;}
 function bmSave(){
   const nm=$('bmNm').value.trim();if(!nm){toast('Введите имя',false);return}
   const tid=$('bmTbl').value,dt=$('bmDt').value||fd(),fr=$('bmFr').value,to=$('bmTo').value;
   if(!tid){toast('Выберите стол',false);return}
   if(!fr||!to){toast('Укажите время',false);return}
-  if(fmMin(to)<=fmMin(fr)){toast('Время окончания должно быть позже начала',false);return}
+  const start=fmMin(fr), end=spanEndMin(fr,to);
+  if(end<=start){toast('Время окончания должно быть позже начала',false);return}
   if(dt===fd()){
     const now=new Date(), nowM=now.getHours()*60+now.getMinutes();
-    if(fmMin(fr)<=nowM){toast('Нельзя ставить бронь в прошедшее время',false);return}
+    if(start<=nowM){toast('Нельзя ставить бронь в прошедшее время',false);return}
   }
   const br2=Object.keys(BRANCHES).find(k=>getTables(k).some(t=>t.id===tid))||fmSt.br;
   const sameDay=getBK(br2,dt);
