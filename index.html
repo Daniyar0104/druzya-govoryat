@@ -263,25 +263,25 @@ button{cursor:pointer;user-select:none}
 <div id="appView" class="shell h">
   <nav class="sb">
     <div class="brand"><div class="brand-ico">🔥</div><div><div class="brand-t">Друзья говорят</div><div class="brand-s" id="sbRole">Сотрудник</div></div></div>
-    <button class="nav on" onclick="sv('bk')">Брони</button>
-    <button class="nav" onclick="sv('gb')">Банк гостей</button>
+    <button class="nav on" id="bkNav" onclick="sv('bk')">Брони</button>
+    <button class="nav" id="gbNav" onclick="sv('gb')">Банк гостей</button>
     <div class="nav-sep"></div>
-    <button class="nav" onclick="sv('crm')">Гости (CRM)</button>
-    <button class="nav" onclick="sv('ng')">Новый гость</button>
+    <button class="nav" id="crmNav" onclick="sv('crm')">Гости (CRM)</button>
+    <button class="nav" id="ngNav" onclick="sv('ng')">Новый гость</button>
     <div class="nav-sep"></div>
-    <button class="nav" onclick="sv('po')">Заявки на кальян</button>
+    <button class="nav" id="poNav" onclick="sv('po')">Заявки на кальян</button>
     <div class="sb-bot">
       <button class="nav" onclick="togT()" style="font-size:12px;color:var(--muted)">🌙 Тема</button>
       <button class="nav" onclick="doOut()" style="font-size:12px;color:var(--muted)">← Выйти</button>
     </div>
   </nav>
 
-  <main class="main">
+  <main class="main" id="bkPg">
 
     <!-- BOOKINGS -->
     <div id="v-bk">
       <div class="rowb" style="margin-bottom:11px">
-        <div class="main-ttl">Брони</div>
+        <div class="main-ttl" id="pageTtl">Брони</div>
         <div class="row" style="gap:6px">
           <input id="bDate" type="date" class="inp" style="width:148px" onchange="fmRedraw()">
           <button class="btn btn-p btn-sm" onclick="openBm(null,null)">+ Бронь</button>
@@ -387,6 +387,16 @@ button{cursor:pointer;user-select:none}
       <div id="fmListView" class="h">
         <div style="margin-bottom:8px"><input class="inp" id="lSrch" placeholder="Поиск..." oninput="fmRenderList()" style="max-width:320px"></div>
         <div id="lBody"></div>
+      </div>
+      <!-- History view -->
+      <div id="fmHistView" class="h">
+        <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:8px">
+          <input id="hDate" class="inp" type="date" style="max-width:170px" onchange="renderHist()">
+          <select id="hBr" class="sel" style="max-width:180px" onchange="fillHistTables();renderHist()"></select>
+          <select id="hTbl" class="sel" style="max-width:220px" onchange="renderHist()"></select>
+          <input id="hSrch" class="inp" placeholder="Имя или телефон" oninput="renderHist()" style="max-width:260px">
+        </div>
+        <div id="hBody"></div>
       </div>
     </div>
 
@@ -607,13 +617,13 @@ function setupSync(){
     if(!e.key) return;
     if(e.key.startsWith('dg_')){
       MEM.tables={}; MEM.bk={}; MEM.bank=null; MEM.lms={};
-      renderBrTabs(); fmRedraw(); if($('viewMode')&&$('viewMode').value==='list')fmRenderList(); if(typeof renderLmList==='function'&&fmSt&&fmSt.lmOpen)renderLmList();
+      renderBrTabs(); if(fmSt.sub==='map') fmRedraw(); else if(fmSt.sub==='list') fmRenderList(); else if(fmSt.sub==='hist'){ initHistFilters(); renderHist(); } if(typeof renderLmList==='function'&&fmSt&&fmSt.lmOpen)renderLmList();
     }
   });
   document.addEventListener('visibilitychange',()=>{
     if(document.visibilityState==='visible'){
       MEM.tables={}; MEM.bk={}; MEM.bank=null; MEM.lms={};
-      renderBrTabs(); fmRedraw(); if($('viewMode')&&$('viewMode').value==='list')fmRenderList(); if(typeof renderLmList==='function'&&fmSt&&fmSt.lmOpen)renderLmList();
+      renderBrTabs(); if(fmSt.sub==='map') fmRedraw(); else if(fmSt.sub==='list') fmRenderList(); else if(fmSt.sub==='hist'){ initHistFilters(); renderHist(); } if(typeof renderLmList==='function'&&fmSt&&fmSt.lmOpen)renderLmList();
     }
   });
 }
@@ -659,12 +669,20 @@ function initSB(){if(sb)return;const k=getKey();if(!k||!window.supabase)return;s
 const VIEWS=['bk','gb','crm','ng','po'];
 const NAV_MAP={'bk':'Брони','gb':'Банк гостей','crm':'Гости (CRM)','ng':'Новый гость','po':'Заявки на кальян'};
 function sv(v){
-  fmSt.sub=v;
-  ['map','list','hist'].forEach(k=>{const el=$(k==='map'?'mapView':k==='list'?'listView':'histView'); if(el) el.classList.toggle('h',v!==k);});
-  const vm=$('viewMode'); if(vm) vm.value=v;
-  if(v==='list') fmRenderList();
-  if(v==='hist'){ initHistFilters(); renderHist(); }
-  if(v==='map') fmRedraw();
+  appV=v;
+  const map={bk:'v-bk',gb:'v-gb',crm:'v-crm',ng:'v-ng',po:'v-po'};
+  Object.entries(map).forEach(([k,id])=>{
+    const page=$(id);
+    if(page) page.classList.toggle('h', k!==v);
+    const nav=$(k+'Nav');
+    if(nav) nav.classList.toggle('on', k===v);
+  });
+  const ttl=$('pageTtl');
+  if(ttl) ttl.textContent=P[v]||'Брони';
+  if(v==='bk') fmSV(fmSt.sub||'map');
+  else if(v==='gb' && typeof renderBank==='function') renderBank();
+  else if(v==='crm' && typeof loadCRM==='function') loadCRM();
+  else if(v==='po' && typeof loadPO==='function') loadPO();
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -884,21 +902,21 @@ function fmZoom(d){fmSt.zi=Math.max(0,Math.min(ZOOM_S.length-1,fmSt.zi+d));apply
 // STATUS / LABEL (uses in-memory cache, no localStorage reads)
 // ──────────────────────────────────────────────────────────────────────────────
 function stOf(tid,br,dt){
-  const bks=getBK(br,dt).filter(r=>r.tid===tid);
+  const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left');
   if(!bks.length)return'fr';
   if(dt!==td())return'pa';
   const now=new Date(),m=now.getHours()*60+now.getMinutes();
   if(bks.some(b=>{const[fh,fm]=b.fr.split(':').map(Number),[th,tm]=b.to.split(':').map(Number);return m>=fh*60+fm&&m<th*60+tm}))return'bk';
   if(bks.some(b=>{const[fh,fm]=b.fr.split(':').map(Number),fr2=fh*60+fm;return fr2>m&&fr2-m<=90}))return'so';
-  return'pa';
+  return'fr';
 }
 function lblOf(tid,br,dt){
-  const bks=getBK(br,dt).filter(r=>r.tid===tid);if(!bks.length)return null;
+  const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left');if(!bks.length)return null;
   if(dt!==td())return bks.length+'бр';
   const now=new Date(),m=now.getHours()*60+now.getMinutes();
   for(const b of bks){const[fh,fm]=b.fr.split(':').map(Number),[th,tm]=b.to.split(':').map(Number),fr2=fh*60+fm,to2=th*60+tm;if(m>=fr2&&m<to2){const el=m-fr2;return el<60?el+'м':Math.floor(el/60)+'ч'+(el%60?el%60+'м':'');}}
   const up=bks.filter(b=>{const[fh,fm]=b.fr.split(':').map(Number);return fh*60+fm>m}).sort((a,b2)=>a.fr.localeCompare(b2.fr));
-  return up.length?up[0].fr:bks.length+'бр';
+  return up.length?up[0].fr:null;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -1081,7 +1099,7 @@ function openBP(tid){
   if(fmSt.edit)return;
   const br=fmSt.br,dt=fd();
   const t=getTables(br).find(x=>x.id===tid);
-  const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left' && stOf(r)!=='free').sort((a,b)=>a.fr.localeCompare(b.fr));
+  const bks=getBK(br,dt).filter(r=>{ if(r.tid!==tid||r.st==='left') return false; if(dt!==td()) return true; const [th,tm]=(r.to||'00:00').split(':').map(Number); const end=th*60+tm; const now=new Date(), mins=now.getHours()*60+now.getMinutes(); return end>mins; }).sort((a,b)=>a.fr.localeCompare(b.fr));
   $('bpTtl').textContent='Стол '+(t?t.n:'?')+' — '+getBrName(br);
   $('bpSub').textContent=bks.length+' брон'+(bks.length===1?'ь':bks.length<5?'и':'ей')+' · '+dt;
   const body=$('bpBody');body.innerHTML='';
@@ -1109,14 +1127,18 @@ function closeBP(){$('bpanel').classList.add('h');$('rpWrap').style.display='non
 // ──────────────────────────────────────────────────────────────────────────────
 function fmBr(br){ if(!BRANCHES[br]) return; fmSt.br=br; fmSt.sel=null; fmSt.lmSel=null; closeBP(); edClear(); renderBrTabs(); if(fmSt.lmOpen){$('lmpanel').classList.remove('h');$('rpWrap').style.display='';renderLmList();} applyZoom(); fmRedraw(); }
 function fmSV(v){
-  ['map','list','hist'].forEach(k=>{const el=$(k==='map'?'mapView':k==='list'?'listView':'histView'); if(el) el.classList.toggle('h',v!==k);});
-  const vm=$('vtMap'),vl=$('vtList'),vh=$('vtHist');
+  fmSt.sub=v;
+  const mapEl=$('fmMapView'), listEl=$('fmListView'), histEl=$('fmHistView');
+  if(mapEl) mapEl.classList.toggle('h', v!=='map');
+  if(listEl) listEl.classList.toggle('h', v!=='list');
+  if(histEl) histEl.classList.toggle('h', v!=='hist');
+  const vm=$('vtMap'), vl=$('vtList'), vh=$('vtHist');
   if(vm) vm.disabled=v==='map';
   if(vl) vl.disabled=v==='list';
   if(vh) vh.disabled=v==='hist';
   if(v==='map') fmRedraw();
-  if(v==='list') fmRenderList();
-  if(v==='hist'){ initHistFilters(); renderHist(); }
+  else if(v==='list') fmRenderList();
+  else if(v==='hist'){ initHistFilters(); renderHist(); }
 }
 function fillHistTables(){
   const br=$('hBr')?$('hBr').value:''; const tb=$('hTbl'); if(!tb)return;
@@ -1142,15 +1164,23 @@ function renderHist(){
   if(!all.length){body.innerHTML='<div style="color:var(--muted);padding:18px;font-size:12px">За выбранную дату броней нет.</div>';return}
   body.innerHTML=`<table class="tbl-list"><thead><tr><th>Дата</th><th>Стол</th><th>Имя</th><th>Телефон</th><th>Время</th><th>Статус</th></tr></thead><tbody>${all.map(b=>{const t=getTables(b.br).find(x=>x.id===b.tid);const tn=t?(getBrName(b.br)+' · '+t.n):b.tid;return `<tr><td>${esc(dt)}</td><td>${esc(tn)}</td><td>${esc(b.nm||'')}</td><td>${esc(b.ph||'')}</td><td>${esc(b.fr||'')}–${esc(b.to||'')}</td><td><span class="st ${b.st==='vip'?'vip':b.st==='waiting'?'waiting':b.st==='arrived'?'arrived':b.st==='left'?'left':'confirmed'}">${esc(lblOf(b.st))}</span></td></tr>`;}).join('')}</tbody></table>`;
 }
+function lblOfStatus(s){return s==='vip'?'⭐ VIP':s==='waiting'?'Ожидание':s==='arrived'?'Пришёл':s==='left'?'Ушёл':'Подтверждена'}
 function fmRenderList(){
   const q=($('lSrch')?$('lSrch').value:'').toLowerCase(),dt=(typeof todayYMD==='function'?todayYMD():fd());
-  const all=Object.keys(BRANCHES).flatMap(br=>getBK(br,dt).filter(b=>b.st!=='left' && stOf(b)!=='free').map(b=>({...b,br})));
+  const now=new Date(), mins=now.getHours()*60+now.getMinutes();
+  const all=Object.keys(BRANCHES).flatMap(br=>getBK(br,dt)
+    .filter(b=>{
+      if(b.st==='left') return false;
+      const [th,tm]=(b.to||'00:00').split(':').map(Number);
+      return th*60+tm>mins;
+    })
+    .map(b=>({...b,br}))
+  );
   const filt=q?all.filter(b=>(b.nm||'').toLowerCase().includes(q)||(b.ph||'').includes(q)):all;
   filt.sort((a,b)=>a.fr.localeCompare(b.fr));
-  const body=$('lBody');
-  if(!body)return;
+  const body=$('lBody'); if(!body) return;
   if(!filt.length){body.innerHTML='<div style="color:var(--muted);padding:18px;font-size:12px">Активных броней нет.</div>';return}
-  body.innerHTML=`<table class="tbl-list"><thead><tr><th>Стол</th><th>Гость</th><th>Тел.</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>${filt.map(b=>{const t=getTables(b.br).find(x=>x.id===b.tid);const tn=t?(getBrName(b.br)+' · '+t.n):b.tid;return `<tr><td>${esc(tn)}</td><td>${esc(b.nm||'')}</td><td>${esc(b.ph||'')}</td><td>${esc(b.fr||'')}–${esc(b.to||'')}</td><td>${esc(String(b.gs||''))}</td><td>${esc(b.hk||'')}</td><td><span class="st ${b.st==='vip'?'vip':b.st==='waiting'?'waiting':b.st==='arrived'?'arrived':b.st==='left'?'left':'confirmed'}">${esc(lblOf(b.st))}</span></td><td><button class="btn btn-xs" onclick="openBm('${b.id}','${b.tid}')">Открыть</button></td></tr>`;}).join('')}</tbody></table>`;
+  body.innerHTML=`<table class="tbl-list"><thead><tr><th>Стол</th><th>Гость</th><th>Тел.</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>${filt.map(b=>{const t=getTables(b.br).find(x=>x.id===b.tid);const tn=t?(getBrName(b.br)+' · '+t.n):b.tid;return `<tr><td>${esc(tn)}</td><td>${esc(b.nm||'')}</td><td>${esc(b.ph||'')}</td><td>${esc(b.fr||'')}–${esc(b.to||'')}</td><td>${esc(String(b.gs||''))}</td><td>${esc(b.hk||'')}</td><td><span class="st ${b.st==='vip'?'vip':b.st==='waiting'?'waiting':b.st==='arrived'?'arrived':b.st==='left'?'left':'confirmed'}">${esc(lblOfStatus(b.st))}</span></td><td><button class="btn btn-xs" onclick="openBm('${b.id}','${b.tid}')">Открыть</button></td></tr>`;}).join('')}</tbody></table>`;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -1352,6 +1382,7 @@ const _k=getKey();if($('stKy'))$('stKy').value=_k;
 ['dg_tbl_m','dg_tbl_5','dg_tbl5_m','dg_tbl5_5'].forEach(k=>localStorage.removeItem(k));
 restoreSession();
 setupSync();
+sv('bk');
 const _brTabs=document.getElementById('brTabs');
 if(_brTabs){
   _brTabs.addEventListener('click',function(e){
