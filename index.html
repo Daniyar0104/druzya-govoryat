@@ -283,8 +283,21 @@ button{cursor:pointer;user-select:none}
       <div class="rowb" style="margin-bottom:11px">
         <div class="main-ttl" id="pageTtl">Брони</div>
         <div class="row" style="gap:6px">
-          <input id="bDate" type="date" class="inp" style="width:148px" onchange="fmRedraw()">
+          <input id="bDate" type="date" class="inp" style="width:148px" onchange="refreshTimeViews()">
           <button class="btn btn-p btn-sm" onclick="openBm(null,null)">+ Бронь</button>
+        </div>
+      </div>
+      <div class="card" style="padding:10px 12px;margin-bottom:10px">
+        <div class="row" style="justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Лента времени</div>
+            <div id="timeRibbon" class="row" style="gap:6px;flex-wrap:wrap"></div>
+          </div>
+          <div class="row" style="gap:8px;align-items:center;flex-wrap:wrap">
+            <div style="font-size:12px;color:var(--muted)">Выбранное время</div>
+            <input id="selTime" type="time" class="inp" style="width:118px" onchange="setSelectedTime(this.value)">
+            <button class="btn btn-sm" onclick="jumpNow()">Сейчас</button>
+          </div>
         </div>
       </div>
 
@@ -629,6 +642,50 @@ function setupSync(){
 }
 
 
+const TIME_SLOTS=['12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00'];
+let selectedTime='';
+function getSelectedDate(){ return $('bDate')&&$('bDate').value ? $('bDate').value : (typeof todayYMD==='function'?todayYMD():fd()); }
+function getSelectedTime(){
+  if(selectedTime) return selectedTime;
+  const now=new Date();
+  return String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+}
+function setSelectedTime(v){
+  if(!v) return;
+  selectedTime=v;
+  if($('selTime')) $('selTime').value=v;
+  renderTimeRibbon();
+  refreshTimeViews();
+}
+function jumpNow(){
+  const now=new Date();
+  setSelectedTime(String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'));
+}
+function timePoint(){ return toMin(getSelectedTime()); }
+function bookingStateAtTime(b, dt){
+  if(b.st==='left') return 'free';
+  if(b.st==='arrived') return 'busy';
+  const curDt=getSelectedDate();
+  const bdt=normalizeDate(b.dt||dt||'');
+  if(bdt!==curDt) return 'book';
+  const m=timePoint(), s=toMin(b.fr), e=toMin(b.to);
+  if(m>=s && m<e) return 'busy';
+  if(s>m && s-m<=90) return 'soon';
+  if(s>m) return 'book';
+  return 'past';
+}
+function renderTimeRibbon(){
+  const wrap=$('timeRibbon'); if(!wrap) return;
+  const cur=getSelectedTime();
+  wrap.innerHTML=TIME_SLOTS.map(t=>`<button class="btn btn-sm ${t===cur?'btn-p':''}" style="font-size:12px;padding:6px 10px" onclick="setSelectedTime('${t}')">${t}</button>`).join('');
+  if($('selTime')) $('selTime').value=cur;
+}
+function refreshTimeViews(){
+  renderTimeRibbon();
+  if(fmSt.sub==='map') fmRedraw();
+  else if(fmSt.sub==='list') fmRenderList();
+  else if(fmSt.sub==='hist' && typeof renderHist==='function') renderHist();
+}
 function getTables(br){
   if(!MEM.tables[br]){
     const s=localStorage.getItem('dg_lay6_'+br);
@@ -673,13 +730,13 @@ function sv(v){
   const map={bk:'v-bk',gb:'v-gb',crm:'v-crm',ng:'v-ng',po:'v-po'};
   Object.entries(map).forEach(([k,id])=>{
     const page=$(id);
-    if(page) page.classList.toggle('h', k!==v);
+    if(page) page.style.display=(k===v?'':'none');
     const nav=$(k+'Nav');
     if(nav) nav.classList.toggle('on', k===v);
   });
   const ttl=$('pageTtl');
-  if(ttl) ttl.textContent=P[v]||'Брони';
-  if(v==='bk') fmSV(fmSt.sub||'map');
+  if(ttl && NAV_MAP[v]) ttl.textContent=NAV_MAP[v];
+  if(v==='bk'){ renderTimeRibbon(); fmSV(fmSt.sub||'map'); }
   else if(v==='gb' && typeof renderBank==='function') renderBank();
   else if(v==='crm' && typeof loadCRM==='function') loadCRM();
   else if(v==='po' && typeof loadPO==='function') loadPO();
@@ -904,18 +961,27 @@ function fmZoom(d){fmSt.zi=Math.max(0,Math.min(ZOOM_S.length-1,fmSt.zi+d));apply
 function stOf(tid,br,dt){
   const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left');
   if(!bks.length)return'fr';
-  if(dt!==td())return'pa';
-  const now=new Date(),m=now.getHours()*60+now.getMinutes();
-  if(bks.some(b=>{const[fh,fm]=b.fr.split(':').map(Number),[th,tm]=b.to.split(':').map(Number);return m>=fh*60+fm&&m<th*60+tm}))return'bk';
-  if(bks.some(b=>{const[fh,fm]=b.fr.split(':').map(Number),fr2=fh*60+fm;return fr2>m&&fr2-m<=90}))return'so';
+  const curDt=getSelectedDate();
+  if((dt||'')!==curDt)return'pa';
+  const m=timePoint();
+  if(bks.some(b=>bookingStateAtTime(b,dt)==='busy'))return'bk';
+  if(bks.some(b=>bookingStateAtTime(b,dt)==='soon'))return'so';
+  if(bks.some(b=>bookingStateAtTime(b,dt)==='book'))return'pa';
   return'fr';
 }
 function lblOf(tid,br,dt){
   const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left');if(!bks.length)return null;
-  if(dt!==td())return bks.length+'бр';
-  const now=new Date(),m=now.getHours()*60+now.getMinutes();
-  for(const b of bks){const[fh,fm]=b.fr.split(':').map(Number),[th,tm]=b.to.split(':').map(Number),fr2=fh*60+fm,to2=th*60+tm;if(m>=fr2&&m<to2){const el=m-fr2;return el<60?el+'м':Math.floor(el/60)+'ч'+(el%60?el%60+'м':'');}}
-  const up=bks.filter(b=>{const[fh,fm]=b.fr.split(':').map(Number);return fh*60+fm>m}).sort((a,b2)=>a.fr.localeCompare(b2.fr));
+  const curDt=getSelectedDate();
+  if((dt||'')!==curDt)return bks.length+'бр';
+  const m=timePoint();
+  for(const b of bks.sort((a,b2)=>(a.fr||'').localeCompare(b2.fr||''))){
+    const s=toMin(b.fr), e=toMin(b.to);
+    if(b.st==='arrived' || (m>=s&&m<e)){
+      const el=Math.max(0,m-s);
+      return el<60?el+'м':Math.floor(el/60)+'ч'+(el%60?el%60+'м':'');
+    }
+  }
+  const up=bks.filter(b=>toMin(b.fr)>m).sort((a,b2)=>(a.fr||'').localeCompare(b2.fr||''));
   return up.length?up[0].fr:null;
 }
 
@@ -1099,7 +1165,7 @@ function openBP(tid){
   if(fmSt.edit)return;
   const br=fmSt.br,dt=fd();
   const t=getTables(br).find(x=>x.id===tid);
-  const bks=getBK(br,dt).filter(r=>{ if(r.tid!==tid||r.st==='left') return false; if(dt!==td()) return true; const [th,tm]=(r.to||'00:00').split(':').map(Number); const end=th*60+tm; const now=new Date(), mins=now.getHours()*60+now.getMinutes(); return end>mins; }).sort((a,b)=>a.fr.localeCompare(b.fr));
+  const bks=getBK(br,dt).filter(r=>r.tid===tid && ['busy','soon','book'].includes(bookingStateAtTime(r,dt))).sort((a,b)=>a.fr.localeCompare(b.fr));
   $('bpTtl').textContent='Стол '+(t?t.n:'?')+' — '+getBrName(br);
   $('bpSub').textContent=bks.length+' брон'+(bks.length===1?'ь':bks.length<5?'и':'ей')+' · '+dt;
   const body=$('bpBody');body.innerHTML='';
@@ -1166,21 +1232,19 @@ function renderHist(){
 }
 function lblOfStatus(s){return s==='vip'?'⭐ VIP':s==='waiting'?'Ожидание':s==='arrived'?'Пришёл':s==='left'?'Ушёл':'Подтверждена'}
 function fmRenderList(){
-  const q=($('lSrch')?$('lSrch').value:'').toLowerCase(),dt=(typeof todayYMD==='function'?todayYMD():fd());
-  const now=new Date(), mins=now.getHours()*60+now.getMinutes();
+  const q=($('lSrch')?$('lSrch').value:'').toLowerCase(),dt=getSelectedDate();
   const all=Object.keys(BRANCHES).flatMap(br=>getBK(br,dt)
     .filter(b=>{
-      if(b.st==='left') return false;
-      const [th,tm]=(b.to||'00:00').split(':').map(Number);
-      return th*60+tm>mins;
+      const st=bookingStateAtTime(b,dt);
+      return st==='busy' || st==='soon' || st==='book';
     })
-    .map(b=>({...b,br}))
+    .map(b=>({...b,br,viewState:bookingStateAtTime(b,dt)}))
   );
   const filt=q?all.filter(b=>(b.nm||'').toLowerCase().includes(q)||(b.ph||'').includes(q)):all;
-  filt.sort((a,b)=>a.fr.localeCompare(b.fr));
+  filt.sort((a,b)=>(a.fr||'').localeCompare(b.fr||''));
   const body=$('lBody'); if(!body) return;
-  if(!filt.length){body.innerHTML='<div style="color:var(--muted);padding:18px;font-size:12px">Активных броней нет.</div>';return}
-  body.innerHTML=`<table class="tbl-list"><thead><tr><th>Стол</th><th>Гость</th><th>Тел.</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>${filt.map(b=>{const t=getTables(b.br).find(x=>x.id===b.tid);const tn=t?(getBrName(b.br)+' · '+t.n):b.tid;return `<tr><td>${esc(tn)}</td><td>${esc(b.nm||'')}</td><td>${esc(b.ph||'')}</td><td>${esc(b.fr||'')}–${esc(b.to||'')}</td><td>${esc(String(b.gs||''))}</td><td>${esc(b.hk||'')}</td><td><span class="st ${b.st==='vip'?'vip':b.st==='waiting'?'waiting':b.st==='arrived'?'arrived':b.st==='left'?'left':'confirmed'}">${esc(lblOfStatus(b.st))}</span></td><td><button class="btn btn-xs" onclick="openBm('${b.id}','${b.tid}')">Открыть</button></td></tr>`;}).join('')}</tbody></table>`;
+  if(!filt.length){body.innerHTML='<div style="color:var(--muted);padding:18px;font-size:12px">На выбранное время броней нет.</div>';return}
+  body.innerHTML=`<table class="tbl-list"><thead><tr><th>Стол</th><th>Гость</th><th>Тел.</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>${filt.map(b=>{const t=getTables(b.br).find(x=>x.id===b.tid);const tn=t?(getBrName(b.br)+' · '+t.n):b.tid;const stateText=b.viewState==='busy'?'За столом':b.viewState==='soon'?'Скоро':'Бронь';return `<tr><td>${esc(tn)}</td><td>${esc(b.nm||'')}</td><td>${esc(b.ph||'')}</td><td>${esc(b.fr||'')}–${esc(b.to||'')}</td><td>${esc(String(b.gs||''))}</td><td>${esc(b.hk||'')}</td><td><span class="st ${b.st==='vip'?'vip':b.st==='waiting'?'waiting':b.st==='arrived'?'arrived':'confirmed'}">${esc(lblOfStatus(b.st))} · ${stateText}</span></td><td><button class="btn btn-xs" onclick="openBm('${b.id}','${b.tid}')">Открыть</button></td></tr>`;}).join('')}</tbody></table>`;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -1382,7 +1446,12 @@ const _k=getKey();if($('stKy'))$('stKy').value=_k;
 ['dg_tbl_m','dg_tbl_5','dg_tbl5_m','dg_tbl5_5'].forEach(k=>localStorage.removeItem(k));
 restoreSession();
 setupSync();
+['v-bk','v-gb','v-crm','v-ng','v-po'].forEach(id=>{const el=$(id); if(el) el.style.display='none';});
+selectedTime='19:00';
+renderTimeRibbon();
 sv('bk');
+
+['bk','gb','crm','ng','po'].forEach(k=>{const el=document.getElementById(k+'Nav'); if(el){ el.addEventListener('click',function(e){ e.preventDefault(); e.stopPropagation(); sv(k); }); }});
 const _brTabs=document.getElementById('brTabs');
 if(_brTabs){
   _brTabs.addEventListener('click',function(e){
