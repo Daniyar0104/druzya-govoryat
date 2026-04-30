@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="ru" data-theme="dark">
 <head>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <meta name="app-version" content="2026-04-30-optimized-v13">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Друзья Говорят</title>
@@ -421,7 +425,7 @@ button{cursor:pointer;user-select:none}
             </div>
             <div class="g2" style="gap:8px">
               <div class="fld"><div class="lbl">Гостей</div><input id="bmGs" class="inp" type="number" min="1" max="30" value="2"></div>
-              <div class="fld"><div class="lbl">Статус</div><select id="bmSt" class="sel"><option value="confirmed">Подтверждена</option><option value="vip">⭐ VIP</option><option value="waiting">Ожидание</option></select></div>
+              <div class="fld"><div class="lbl">Статус</div><select id="bmSt" class="sel"><option value="confirmed">Подтверждена</option><option value="arrived">Пришёл</option><option value="left">Ушёл</option><option value="vip">⭐ VIP</option><option value="waiting">Ожидание</option></select></div>
             </div>
           </div>
           <div class="mo-sec">
@@ -595,21 +599,39 @@ const MEM={
   crm:[],      // supabase guests
   lms:{}       // custom landmarks per branch
 };
+const APP_VERSION='2026-04-30-optimized-v13';
+function touchVersion(){localStorage.setItem('dg_app_version',APP_VERSION+'_'+Date.now());}
+function setupSync(){
+  window.addEventListener('storage',(e)=>{
+    if(!e.key) return;
+    if(e.key.startsWith('dg_')){
+      MEM.tables={}; MEM.bk={}; MEM.bank=null; MEM.lms={};
+      renderBrTabs(); fmRedraw(); if($('viewMode')&&$('viewMode').value==='list')fmRenderList(); if(typeof renderLmList==='function'&&fmSt&&fmSt.lmOpen)renderLmList();
+    }
+  });
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible'){
+      MEM.tables={}; MEM.bk={}; MEM.bank=null; MEM.lms={};
+      renderBrTabs(); fmRedraw(); if($('viewMode')&&$('viewMode').value==='list')fmRenderList(); if(typeof renderLmList==='function'&&fmSt&&fmSt.lmOpen)renderLmList();
+    }
+  });
+}
+
 
 function getTables(br){
   if(!MEM.tables[br]){
     const s=localStorage.getItem('dg_lay6_'+br);
-    MEM.tables[br]=s?JSON.parse(s):DEF_TABLES[br].map(t=>({...t,c:{...t.c}}));
+    MEM.tables[br]=s?JSON.parse(s):(DEF_TABLES[br]||[]).map(t=>({...t,c:{...t.c}}));
   }
   return MEM.tables[br];
 }
-function saveTables(br){localStorage.setItem('dg_lay6_'+br,JSON.stringify(MEM.tables[br]))}
+function saveTables(br){localStorage.setItem('dg_lay6_'+br,JSON.stringify(MEM.tables[br]||[]));touchVersion();}
 function getBK(br,dt){
   const k=br+'_'+dt;
   if(!MEM.bk[k]){const s=localStorage.getItem('dg_bk4_'+k);MEM.bk[k]=s?JSON.parse(s):[];}
   return MEM.bk[k];
 }
-function saveBK(br,dt){const k=br+'_'+dt;localStorage.setItem('dg_bk4_'+k,JSON.stringify(MEM.bk[k]||[]))}
+function saveBK(br,dt){const k=br+'_'+dt;localStorage.setItem('dg_bk4_'+k,JSON.stringify(MEM.bk[k]||[]));touchVersion();}
 function getBank(){if(!MEM.bank){const s=localStorage.getItem('dg_bank2');MEM.bank=s?JSON.parse(s):[];}return MEM.bank}
 function saveBank(){localStorage.setItem('dg_bank2',JSON.stringify(MEM.bank))}
 
@@ -675,7 +697,7 @@ function getLMS(br){
   }
   return MEM.lms[br];
 }
-function saveLMS(br){ localStorage.setItem('dg_lms_'+br, JSON.stringify(MEM.lms[br]||[])); }
+function saveLMS(br){ localStorage.setItem('dg_lms_'+br, JSON.stringify(MEM.lms[br]||[])); touchVersion(); }
 function lmIcon(lbl){ return ({'Бар':'🍸','Туалет':'🚻','Кухня':'🍽','Вход':'🚪'})[lbl] || '📍'; }
 
 function renderBrTabs(){
@@ -786,6 +808,9 @@ function deleteBr(){
   toast('Зал удалён');
 }
 const fmSt={br:'5',sub:'map',sel:null,edit:false,zi:6,lmSel:null,lmOpen:false};
+let redrawQueued=false;
+function queueRedraw(){if(redrawQueued)return;redrawQueued=true;requestAnimationFrame(()=>{redrawQueued=false;fmRedraw();});}
+
 
 function toggleLmPanel(){
   fmSt.lmOpen=!fmSt.lmOpen;
@@ -797,7 +822,7 @@ function addLm(lbl){
   const {w,h}=getBrCanvas(fmSt.br);
   const arr=getLMS(fmSt.br);
   const item={id:'lm'+Date.now()+Math.random().toString(36).slice(2,5),l:lbl,x:Math.max(20,Math.round(w/2)-50),y:Math.max(20,Math.round(h/2)-25),w:lbl==='Вход'?70:110,h:lbl==='Вход'?56:58,v:false};
-  arr.push(item); saveLMS(fmSt.br); fmSt.lmSel=item.id; renderLmList(); fmDraw();
+  arr.push(item); saveLMS(fmSt.br); fmSt.lmSel=item.id; renderLmList(); queueRedraw();
 }
 function renderLmList(){
   const box=$('lmList'); if(!box) return;
@@ -811,13 +836,13 @@ function renderLmList(){
   });
 }
 function selLm(id){ fmSt.lmSel=id; fmDraw(); }
-function delLm(id){ MEM.lms[fmSt.br]=getLMS(fmSt.br).filter(x=>x.id!==id); if(fmSt.lmSel===id) fmSt.lmSel=null; saveLMS(fmSt.br); renderLmList(); fmDraw(); }
+function delLm(id){ MEM.lms[fmSt.br]=getLMS(fmSt.br).filter(x=>x.id!==id); if(fmSt.lmSel===id) fmSt.lmSel=null; saveLMS(fmSt.br); renderLmList(); queueRedraw(); }
 function startLmDrag(e,m){
   if(!fmSt.edit) return;
   e.preventDefault(); e.stopPropagation();
   fmSt.lmSel=m.id; renderLmList();
   const z=ZOOM_S[fmSt.zi], sx=e.clientX, sy=e.clientY, ox=m.x, oy=m.y;
-  function mv(ev){ const dx=(ev.clientX-sx)/z, dy=(ev.clientY-sy)/z; m.x=Math.max(0,Math.round(ox+dx)); m.y=Math.max(0,Math.round(oy+dy)); saveLMS(fmSt.br); fmDraw(); }
+  function mv(ev){ const dx=(ev.clientX-sx)/z, dy=(ev.clientY-sy)/z; m.x=Math.max(0,Math.round(ox+dx)); m.y=Math.max(0,Math.round(oy+dy)); saveLMS(fmSt.br); queueRedraw(); }
   function up(){ document.removeEventListener('mousemove',mv); document.removeEventListener('mouseup',up); renderLmList(); }
   document.addEventListener('mousemove',mv,{passive:true}); document.addEventListener('mouseup',up);
 }
@@ -826,7 +851,7 @@ function startLmTouchDrag(e,m){
   e.preventDefault(); e.stopPropagation();
   fmSt.lmSel=m.id; renderLmList();
   const z=ZOOM_S[fmSt.zi], t0=e.touches[0], sx=t0.clientX, sy=t0.clientY, ox=m.x, oy=m.y;
-  function mv(ev){ const tc=ev.touches[0]; const dx=(tc.clientX-sx)/z, dy=(tc.clientY-sy)/z; m.x=Math.max(0,Math.round(ox+dx)); m.y=Math.max(0,Math.round(oy+dy)); saveLMS(fmSt.br); fmDraw(); }
+  function mv(ev){ const tc=ev.touches[0]; const dx=(tc.clientX-sx)/z, dy=(tc.clientY-sy)/z; m.x=Math.max(0,Math.round(ox+dx)); m.y=Math.max(0,Math.round(oy+dy)); saveLMS(fmSt.br); queueRedraw(); }
   function up(){ e.target.removeEventListener('touchmove',mv); e.target.removeEventListener('touchend',up); renderLmList(); }
   e.target.addEventListener('touchmove',mv,{passive:false}); e.target.addEventListener('touchend',up);
 }
@@ -1112,11 +1137,11 @@ function openBm(bid,tid){
   bmEid=bid;
   const sel=$('bmTbl');sel.innerHTML='';
   Object.keys(BRANCHES).forEach(br=>{const g=document.createElement('optgroup');g.label=getBrName(br);getTables(br).forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent='Стол '+t.n;if(t.id===(tid||fmSt.sel))o.selected=true;g.appendChild(o)});sel.appendChild(g)});
-  $('bmDt').value=fd();hideDrop();
+  $('bmDt').value=todayYMD();hideDrop();
   if(bid){
     const br2=findBrByBid(bid,fd());const b=br2?getBK(br2,fd()).find(x=>x.id===bid):null;
     if(b){$('bmTtl').textContent='Бронь — '+b.nm;$('bmDel').style.display='';
-      $('bmPh').value=b.ph||'';$('bmNm').value=b.nm||'';$('bmDt').value=b.dt||fd();
+      $('bmPh').value=b.ph||'';$('bmNm').value=b.nm||'';$('bmDt').value=normalizeDate(b.dt)||todayYMD();
       const o2=$('bmTbl').querySelector(`option[value="${b.tid}"]`);if(o2)o2.selected=true;
       $('bmFr').value=b.fr||'19:00';$('bmTo').value=b.to||'22:00';$('bmGs').value=b.gs||2;$('bmSt').value=b.st||'confirmed';
       $('bmHk').value=b.hk||'';$('bmDs').value=b.ds||'';$('bmNo').value=b.no||'';
@@ -1160,15 +1185,30 @@ function showGPA(g){
 }
 function hideGPA(){$('bmGPA').classList.add('h')}
 
+function toMin(t){const a=(t||'').split(':').map(Number);return (a[0]||0)*60+(a[1]||0);}
+function isOverlap(fr1,to1,fr2,to2){const s1=toMin(fr1),e1=toMin(to1),s2=toMin(fr2),e2=toMin(to2);return s1<e2&&s2<e1;}
+function todayYMD(){const d=new Date();const y=d.getFullYear();const m=String(d.getMonth()+1).padStart(2,'0');const day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`;}
+function normalizeDate(v){if(!v)return '';if(/^\d{4}-\d{2}-\d{2}$/.test(v))return v;const m=v.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);if(m)return `${m[3]}-${m[2]}-${m[1]}`;return v;}
 function bmSave(){
   const nm=$('bmNm').value.trim();if(!nm){toast('Введите имя',false);return}
-  const tid=$('bmTbl').value,dt=$('bmDt').value||fd();
+  const tid=$('bmTbl').value,dtRaw=$('bmDt').value||fd(),dt=normalizeDate(dtRaw),fr=$('bmFr').value,to=$('bmTo').value;
+  if(!tid){toast('Выберите стол',false);return}
+  if(!fr||!to){toast('Укажите время',false);return}
+  if(toMin(to)<=toMin(fr)){toast('Время окончания должно быть позже начала',false);return}
+  const today=todayYMD();
+  if(dt===today){
+    const now=new Date(), nowMin=now.getHours()*60+now.getMinutes();
+    if(toMin(fr)<=nowMin){toast('Нельзя ставить бронь в прошедшее время',false);return}
+  }
   const br2=Object.keys(BRANCHES).find(k=>getTables(k).some(t=>t.id===tid))||fmSt.br;
-  const bk={id:bmEid||('b'+Date.now()+Math.random().toString(36).slice(2,6)),tid,br:br2,dt,nm,ph:$('bmPh').value.trim(),fr:$('bmFr').value,to:$('bmTo').value,gs:parseInt($('bmGs').value)||2,st:$('bmSt').value,hk:$('bmHk').value.trim(),ds:$('bmDs').value.trim(),no:$('bmNo').value.trim()};
+  const sameDay=getBK(br2,dt);
+  const conflict=sameDay.find(b=>b.tid===tid&&b.id!==bmEid&&isOverlap(fr,to,b.fr,b.to)&&b.st!=='left');
+  if(conflict){toast('На это время уже есть бронь на этом столе',false);return}
+  const bk={id:bmEid||('b'+Date.now()+Math.random().toString(36).slice(2,6)),tid,br:br2,dt,nm,ph:$('bmPh').value.trim(),fr,to,gs:parseInt($('bmGs').value)||2,st:$('bmSt').value,hk:$('bmHk').value.trim(),ds:$('bmDs').value.trim(),no:$('bmNo').value.trim()};
   const k=br2+'_'+dt;if(!MEM.bk[k])MEM.bk[k]=[];
-  if(bmEid)MEM.bk[k]=MEM.bk[k].filter(r=>r.id!==bmEid);
+  if(bmEid){Object.keys(BRANCHES).forEach(brx=>{const kk=brx+'_'+dt;if(MEM.bk[kk])MEM.bk[kk]=MEM.bk[kk].filter(r=>r.id!==bmEid);saveBK(brx,dt);});}
   MEM.bk[k].push(bk);saveBK(br2,dt);
-  toast('Бронь сохранена ✓');closeBm();fmRedraw();if(fmSt.sel)openBP(fmSt.sel);
+  toast('Бронь сохранена ✓');closeBm();queueRedraw();if(fmSt.sel)openBP(fmSt.sel);if($('viewMode')&&$('viewMode').value==='list')fmRenderList();
 }
 function bmDel(){
   if(!bmEid)return;const dt=$('bmDt').value||fd();
@@ -1287,6 +1327,7 @@ const _k=getKey();if($('stKy'))$('stKy').value=_k;
 // Clean up old layout keys from previous versions
 ['dg_tbl_m','dg_tbl_5','dg_tbl5_m','dg_tbl5_5'].forEach(k=>localStorage.removeItem(k));
 restoreSession();
+setupSync();
 const _brTabs=document.getElementById('brTabs');
 if(_brTabs){
   _brTabs.addEventListener('click',function(e){
