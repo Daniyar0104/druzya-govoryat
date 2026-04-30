@@ -297,6 +297,7 @@ button{cursor:pointer;user-select:none}
         <div class="row" style="gap:5px">
           <button class="btn btn-sm" id="vtMap" onclick="fmSV('map')" style="padding:5px 10px;font-size:11px" disabled>Карта</button>
           <button class="btn btn-sm" id="vtList" onclick="fmSV('list')" style="padding:5px 10px;font-size:11px">Список</button>
+          <button class="btn btn-sm" id="vtHist" onclick="fmSV('hist')" style="padding:5px 10px;font-size:11px">История</button>
         </div>
         <div class="zoom-ctl">
           <button class="z-btn" onclick="fmZoom(-1)">−</button>
@@ -1107,20 +1108,15 @@ function closeBP(){$('bpanel').classList.add('h');$('rpWrap').style.display='non
 // BRANCH / SUB VIEW SWITCH
 // ──────────────────────────────────────────────────────────────────────────────
 function fmBr(br){ if(!BRANCHES[br]) return; fmSt.br=br; fmSt.sel=null; fmSt.lmSel=null; closeBP(); edClear(); renderBrTabs(); if(fmSt.lmOpen){$('lmpanel').classList.remove('h');$('rpWrap').style.display='';renderLmList();} applyZoom(); fmRedraw(); }
-function fmSV(v){fmSt.sub=v;$('fmMapView').classList.toggle('h',v!=='map');$('fmListView').classList.toggle('h',v!=='list');$('vtMap').disabled=v==='map';$('vtList').disabled=v==='list';fmRedraw()}
-
-// ──────────────────────────────────────────────────────────────────────────────
-// LIST VIEW
-// ──────────────────────────────────────────────────────────────────────────────
-function initHistFilters(){
-  const d=$('hDate'), br=$('hBr'), tb=$('hTbl');
-  if(d && !d.value) d.value=(typeof todayYMD==='function'?todayYMD():fd());
-  if(br){
-    const cur=br.value||'';
-    br.innerHTML='<option value="">Все залы</option>'+Object.keys(BRANCHES).map(k=>`<option value="${k}">${esc(getBrName(k))}</option>`).join('');
-    if(cur) br.value=cur;
-  }
-  fillHistTables();
+function fmSV(v){
+  ['map','list','hist'].forEach(k=>{const el=$(k==='map'?'mapView':k==='list'?'listView':'histView'); if(el) el.classList.toggle('h',v!==k);});
+  const vm=$('vtMap'),vl=$('vtList'),vh=$('vtHist');
+  if(vm) vm.disabled=v==='map';
+  if(vl) vl.disabled=v==='list';
+  if(vh) vh.disabled=v==='hist';
+  if(v==='map') fmRedraw();
+  if(v==='list') fmRenderList();
+  if(v==='hist'){ initHistFilters(); renderHist(); }
 }
 function fillHistTables(){
   const br=$('hBr')?$('hBr').value:''; const tb=$('hTbl'); if(!tb)return;
