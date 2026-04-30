@@ -4,7 +4,6 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <meta name="app-version" content="2026-04-30-optimized-v13">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Друзья Говорят</title>
@@ -276,29 +275,22 @@ button{cursor:pointer;user-select:none}
     </div>
   </nav>
 
-  <main class="main" id="bkPg">
+  <main class="main">
 
     <!-- BOOKINGS -->
     <div id="v-bk">
       <div class="rowb" style="margin-bottom:11px">
-        <div class="main-ttl" id="pageTtl">Брони</div>
-        <div class="row" style="gap:6px">
-          <input id="bDate" type="date" class="inp" style="width:148px" onchange="refreshTimeViews()">
+        <div class="main-ttl">Брони</div>
+        <div class="row" style="gap:6px;align-items:center;flex-wrap:wrap">
+          <input id="bDate" type="date" class="inp" style="width:148px" onchange="fmRefresh()">
+          <input id="selTime" type="time" class="inp" style="width:118px" onchange="fmSetTime(this.value)">
+          <button class="btn btn-sm" onclick="fmNow()">Сейчас</button>
           <button class="btn btn-p btn-sm" onclick="openBm(null,null)">+ Бронь</button>
         </div>
       </div>
       <div class="card" style="padding:10px 12px;margin-bottom:10px">
-        <div class="row" style="justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-          <div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Лента времени</div>
-            <div id="timeRibbon" class="row" style="gap:6px;flex-wrap:wrap"></div>
-          </div>
-          <div class="row" style="gap:8px;align-items:center;flex-wrap:wrap">
-            <div style="font-size:12px;color:var(--muted)">Выбранное время</div>
-            <input id="selTime" type="time" class="inp" style="width:118px" onchange="setSelectedTime(this.value)">
-            <button class="btn btn-sm" onclick="jumpNow()">Сейчас</button>
-          </div>
-        </div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Лента времени</div>
+        <div id="timeRibbon" class="row" style="gap:6px;flex-wrap:wrap"></div>
       </div>
 
       <!-- Floor toolbar -->
@@ -310,7 +302,6 @@ button{cursor:pointer;user-select:none}
         <div class="row" style="gap:5px">
           <button class="btn btn-sm" id="vtMap" onclick="fmSV('map')" style="padding:5px 10px;font-size:11px" disabled>Карта</button>
           <button class="btn btn-sm" id="vtList" onclick="fmSV('list')" style="padding:5px 10px;font-size:11px">Список</button>
-          <button class="btn btn-sm" id="vtHist" onclick="fmSV('hist')" style="padding:5px 10px;font-size:11px">История</button>
         </div>
         <div class="zoom-ctl">
           <button class="z-btn" onclick="fmZoom(-1)">−</button>
@@ -400,16 +391,6 @@ button{cursor:pointer;user-select:none}
       <div id="fmListView" class="h">
         <div style="margin-bottom:8px"><input class="inp" id="lSrch" placeholder="Поиск..." oninput="fmRenderList()" style="max-width:320px"></div>
         <div id="lBody"></div>
-      </div>
-      <!-- History view -->
-      <div id="fmHistView" class="h">
-        <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:8px">
-          <input id="hDate" class="inp" type="date" style="max-width:170px" onchange="renderHist()">
-          <select id="hBr" class="sel" style="max-width:180px" onchange="fillHistTables();renderHist()"></select>
-          <select id="hTbl" class="sel" style="max-width:220px" onchange="renderHist()"></select>
-          <input id="hSrch" class="inp" placeholder="Имя или телефон" oninput="renderHist()" style="max-width:260px">
-        </div>
-        <div id="hBody"></div>
       </div>
     </div>
 
@@ -623,83 +604,21 @@ const MEM={
   crm:[],      // supabase guests
   lms:{}       // custom landmarks per branch
 };
-const APP_VERSION='2026-04-30-optimized-v13';
-function touchVersion(){localStorage.setItem('dg_app_version',APP_VERSION+'_'+Date.now());}
-function setupSync(){
-  window.addEventListener('storage',(e)=>{
-    if(!e.key) return;
-    if(e.key.startsWith('dg_')){
-      MEM.tables={}; MEM.bk={}; MEM.bank=null; MEM.lms={};
-      renderBrTabs(); if(fmSt.sub==='map') fmRedraw(); else if(fmSt.sub==='list') fmRenderList(); else if(fmSt.sub==='hist'){ initHistFilters(); renderHist(); } if(typeof renderLmList==='function'&&fmSt&&fmSt.lmOpen)renderLmList();
-    }
-  });
-  document.addEventListener('visibilitychange',()=>{
-    if(document.visibilityState==='visible'){
-      MEM.tables={}; MEM.bk={}; MEM.bank=null; MEM.lms={};
-      renderBrTabs(); if(fmSt.sub==='map') fmRedraw(); else if(fmSt.sub==='list') fmRenderList(); else if(fmSt.sub==='hist'){ initHistFilters(); renderHist(); } if(typeof renderLmList==='function'&&fmSt&&fmSt.lmOpen)renderLmList();
-    }
-  });
-}
 
-
-const TIME_SLOTS=['12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00'];
-let selectedTime='';
-function getSelectedDate(){ return $('bDate')&&$('bDate').value ? $('bDate').value : (typeof todayYMD==='function'?todayYMD():fd()); }
-function getSelectedTime(){
-  if(selectedTime) return selectedTime;
-  const now=new Date();
-  return String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
-}
-function setSelectedTime(v){
-  if(!v) return;
-  selectedTime=v;
-  if($('selTime')) $('selTime').value=v;
-  renderTimeRibbon();
-  refreshTimeViews();
-}
-function jumpNow(){
-  const now=new Date();
-  setSelectedTime(String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0'));
-}
-function timePoint(){ return toMin(getSelectedTime()); }
-function bookingStateAtTime(b, dt){
-  if(b.st==='left') return 'free';
-  if(b.st==='arrived') return 'busy';
-  const curDt=getSelectedDate();
-  const bdt=normalizeDate(b.dt||dt||'');
-  if(bdt!==curDt) return 'book';
-  const m=timePoint(), s=toMin(b.fr), e=toMin(b.to);
-  if(m>=s && m<e) return 'busy';
-  if(s>m && s-m<=90) return 'soon';
-  if(s>m) return 'book';
-  return 'past';
-}
-function renderTimeRibbon(){
-  const wrap=$('timeRibbon'); if(!wrap) return;
-  const cur=getSelectedTime();
-  wrap.innerHTML=TIME_SLOTS.map(t=>`<button class="btn btn-sm ${t===cur?'btn-p':''}" style="font-size:12px;padding:6px 10px" onclick="setSelectedTime('${t}')">${t}</button>`).join('');
-  if($('selTime')) $('selTime').value=cur;
-}
-function refreshTimeViews(){
-  renderTimeRibbon();
-  if(fmSt.sub==='map') fmRedraw();
-  else if(fmSt.sub==='list') fmRenderList();
-  else if(fmSt.sub==='hist' && typeof renderHist==='function') renderHist();
-}
 function getTables(br){
   if(!MEM.tables[br]){
     const s=localStorage.getItem('dg_lay6_'+br);
-    MEM.tables[br]=s?JSON.parse(s):(DEF_TABLES[br]||[]).map(t=>({...t,c:{...t.c}}));
+    MEM.tables[br]=s?JSON.parse(s):DEF_TABLES[br].map(t=>({...t,c:{...t.c}}));
   }
   return MEM.tables[br];
 }
-function saveTables(br){localStorage.setItem('dg_lay6_'+br,JSON.stringify(MEM.tables[br]||[]));touchVersion();}
+function saveTables(br){localStorage.setItem('dg_lay6_'+br,JSON.stringify(MEM.tables[br]))}
 function getBK(br,dt){
   const k=br+'_'+dt;
   if(!MEM.bk[k]){const s=localStorage.getItem('dg_bk4_'+k);MEM.bk[k]=s?JSON.parse(s):[];}
   return MEM.bk[k];
 }
-function saveBK(br,dt){const k=br+'_'+dt;localStorage.setItem('dg_bk4_'+k,JSON.stringify(MEM.bk[k]||[]));touchVersion();}
+function saveBK(br,dt){const k=br+'_'+dt;localStorage.setItem('dg_bk4_'+k,JSON.stringify(MEM.bk[k]||[]))}
 function getBank(){if(!MEM.bank){const s=localStorage.getItem('dg_bank2');MEM.bank=s?JSON.parse(s):[];}return MEM.bank}
 function saveBank(){localStorage.setItem('dg_bank2',JSON.stringify(MEM.bank))}
 
@@ -726,20 +645,12 @@ function initSB(){if(sb)return;const k=getKey();if(!k||!window.supabase)return;s
 const VIEWS=['bk','gb','crm','ng','po'];
 const NAV_MAP={'bk':'Брони','gb':'Банк гостей','crm':'Гости (CRM)','ng':'Новый гость','po':'Заявки на кальян'};
 function sv(v){
-  appV=v;
-  const map={bk:'v-bk',gb:'v-gb',crm:'v-crm',ng:'v-ng',po:'v-po'};
-  Object.entries(map).forEach(([k,id])=>{
-    const page=$(id);
-    if(page) page.style.display=(k===v?'':'none');
-    const nav=$(k+'Nav');
-    if(nav) nav.classList.toggle('on', k===v);
-  });
-  const ttl=$('pageTtl');
-  if(ttl && NAV_MAP[v]) ttl.textContent=NAV_MAP[v];
-  if(v==='bk'){ renderTimeRibbon(); fmSV(fmSt.sub||'map'); }
-  else if(v==='gb' && typeof renderBank==='function') renderBank();
-  else if(v==='crm' && typeof loadCRM==='function') loadCRM();
-  else if(v==='po' && typeof loadPO==='function') loadPO();
+  VIEWS.forEach(id=>{const el=$('v-'+id);if(el)el.classList.toggle('h',id!==v)});
+  document.querySelectorAll('.nav').forEach(el=>{const t=el.textContent.trim();el.classList.toggle('on',NAV_MAP[v]===t)});
+  if(v==='bk'){if(!$('bDate').value)$('bDate').value=td();requestAnimationFrame(()=>{fmFit();fmRedraw();})}
+  if(v==='gb')renderGB();
+  if(v==='crm')loadCRM();
+  if(v==='po')loadPO();
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -773,7 +684,7 @@ function getLMS(br){
   }
   return MEM.lms[br];
 }
-function saveLMS(br){ localStorage.setItem('dg_lms_'+br, JSON.stringify(MEM.lms[br]||[])); touchVersion(); }
+function saveLMS(br){ localStorage.setItem('dg_lms_'+br, JSON.stringify(MEM.lms[br]||[])); }
 function lmIcon(lbl){ return ({'Бар':'🍸','Туалет':'🚻','Кухня':'🍽','Вход':'🚪'})[lbl] || '📍'; }
 
 function renderBrTabs(){
@@ -884,9 +795,6 @@ function deleteBr(){
   toast('Зал удалён');
 }
 const fmSt={br:'5',sub:'map',sel:null,edit:false,zi:6,lmSel:null,lmOpen:false};
-let redrawQueued=false;
-function queueRedraw(){if(redrawQueued)return;redrawQueued=true;requestAnimationFrame(()=>{redrawQueued=false;fmRedraw();});}
-
 
 function toggleLmPanel(){
   fmSt.lmOpen=!fmSt.lmOpen;
@@ -898,7 +806,7 @@ function addLm(lbl){
   const {w,h}=getBrCanvas(fmSt.br);
   const arr=getLMS(fmSt.br);
   const item={id:'lm'+Date.now()+Math.random().toString(36).slice(2,5),l:lbl,x:Math.max(20,Math.round(w/2)-50),y:Math.max(20,Math.round(h/2)-25),w:lbl==='Вход'?70:110,h:lbl==='Вход'?56:58,v:false};
-  arr.push(item); saveLMS(fmSt.br); fmSt.lmSel=item.id; renderLmList(); queueRedraw();
+  arr.push(item); saveLMS(fmSt.br); fmSt.lmSel=item.id; renderLmList(); fmDraw();
 }
 function renderLmList(){
   const box=$('lmList'); if(!box) return;
@@ -912,13 +820,13 @@ function renderLmList(){
   });
 }
 function selLm(id){ fmSt.lmSel=id; fmDraw(); }
-function delLm(id){ MEM.lms[fmSt.br]=getLMS(fmSt.br).filter(x=>x.id!==id); if(fmSt.lmSel===id) fmSt.lmSel=null; saveLMS(fmSt.br); renderLmList(); queueRedraw(); }
+function delLm(id){ MEM.lms[fmSt.br]=getLMS(fmSt.br).filter(x=>x.id!==id); if(fmSt.lmSel===id) fmSt.lmSel=null; saveLMS(fmSt.br); renderLmList(); fmDraw(); }
 function startLmDrag(e,m){
   if(!fmSt.edit) return;
   e.preventDefault(); e.stopPropagation();
   fmSt.lmSel=m.id; renderLmList();
   const z=ZOOM_S[fmSt.zi], sx=e.clientX, sy=e.clientY, ox=m.x, oy=m.y;
-  function mv(ev){ const dx=(ev.clientX-sx)/z, dy=(ev.clientY-sy)/z; m.x=Math.max(0,Math.round(ox+dx)); m.y=Math.max(0,Math.round(oy+dy)); saveLMS(fmSt.br); queueRedraw(); }
+  function mv(ev){ const dx=(ev.clientX-sx)/z, dy=(ev.clientY-sy)/z; m.x=Math.max(0,Math.round(ox+dx)); m.y=Math.max(0,Math.round(oy+dy)); saveLMS(fmSt.br); fmDraw(); }
   function up(){ document.removeEventListener('mousemove',mv); document.removeEventListener('mouseup',up); renderLmList(); }
   document.addEventListener('mousemove',mv,{passive:true}); document.addEventListener('mouseup',up);
 }
@@ -927,7 +835,7 @@ function startLmTouchDrag(e,m){
   e.preventDefault(); e.stopPropagation();
   fmSt.lmSel=m.id; renderLmList();
   const z=ZOOM_S[fmSt.zi], t0=e.touches[0], sx=t0.clientX, sy=t0.clientY, ox=m.x, oy=m.y;
-  function mv(ev){ const tc=ev.touches[0]; const dx=(tc.clientX-sx)/z, dy=(tc.clientY-sy)/z; m.x=Math.max(0,Math.round(ox+dx)); m.y=Math.max(0,Math.round(oy+dy)); saveLMS(fmSt.br); queueRedraw(); }
+  function mv(ev){ const tc=ev.touches[0]; const dx=(tc.clientX-sx)/z, dy=(tc.clientY-sy)/z; m.x=Math.max(0,Math.round(ox+dx)); m.y=Math.max(0,Math.round(oy+dy)); saveLMS(fmSt.br); fmDraw(); }
   function up(){ e.target.removeEventListener('touchmove',mv); e.target.removeEventListener('touchend',up); renderLmList(); }
   e.target.addEventListener('touchmove',mv,{passive:false}); e.target.addEventListener('touchend',up);
 }
@@ -958,31 +866,32 @@ function fmZoom(d){fmSt.zi=Math.max(0,Math.min(ZOOM_S.length-1,fmSt.zi+d));apply
 // ──────────────────────────────────────────────────────────────────────────────
 // STATUS / LABEL (uses in-memory cache, no localStorage reads)
 // ──────────────────────────────────────────────────────────────────────────────
+const FM_SLOTS=['12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00'];
+let fmSelectedTime='19:00';
+function fmTimeVal(){ return $('selTime')&&$('selTime').value ? $('selTime').value : fmSelectedTime; }
+function fmSetTime(v){ fmSelectedTime=v||fmSelectedTime; if($('selTime')) $('selTime').value=fmSelectedTime; fmRenderRibbon(); fmRefresh(); }
+function fmNow(){ const d=new Date(); const v=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); fmSetTime(v); }
+function fmRenderRibbon(){ const w=$('timeRibbon'); if(!w) return; const cur=fmTimeVal(); w.innerHTML=FM_SLOTS.map(t=>`<button class="btn btn-sm ${t===cur?'btn-p':''}" style="font-size:12px;padding:6px 10px" onclick="fmSetTime('${t}')">${t}</button>`).join(''); }
+function fmRefresh(){ if(fmSt.sub==='list'){ fmRenderList(); } else { fmRedraw(); } }
+function fmMin(t){ const a=(t||'00:00').split(':').map(Number); return (a[0]||0)*60+(a[1]||0); }
 function stOf(tid,br,dt){
   const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left');
   if(!bks.length)return'fr';
-  const curDt=getSelectedDate();
-  if((dt||'')!==curDt)return'pa';
-  const m=timePoint();
-  if(bks.some(b=>bookingStateAtTime(b,dt)==='busy'))return'bk';
-  if(bks.some(b=>bookingStateAtTime(b,dt)==='soon'))return'so';
-  if(bks.some(b=>bookingStateAtTime(b,dt)==='book'))return'pa';
+  if(dt!==td())return'pa';
+  const m=fmMin(fmTimeVal());
+  if(bks.some(b=>b.st==='arrived'))return'bk';
+  if(bks.some(b=>{const s=fmMin(b.fr),e=fmMin(b.to);return m>=s&&m<e;}))return'bk';
+  if(bks.some(b=>{const s=fmMin(b.fr);return s>m&&s-m<=90;}))return'so';
+  if(bks.some(b=>fmMin(b.fr)>m))return'pa';
   return'fr';
 }
 function lblOf(tid,br,dt){
   const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left');if(!bks.length)return null;
-  const curDt=getSelectedDate();
-  if((dt||'')!==curDt)return bks.length+'бр';
-  const m=timePoint();
-  for(const b of bks.sort((a,b2)=>(a.fr||'').localeCompare(b2.fr||''))){
-    const s=toMin(b.fr), e=toMin(b.to);
-    if(b.st==='arrived' || (m>=s&&m<e)){
-      const el=Math.max(0,m-s);
-      return el<60?el+'м':Math.floor(el/60)+'ч'+(el%60?el%60+'м':'');
-    }
-  }
-  const up=bks.filter(b=>toMin(b.fr)>m).sort((a,b2)=>(a.fr||'').localeCompare(b2.fr||''));
-  return up.length?up[0].fr:null;
+  if(dt!==td())return bks.length+'бр';
+  const m=fmMin(fmTimeVal());
+  for(const b of bks){const s=fmMin(b.fr),e=fmMin(b.to);if(b.st==='arrived'||(m>=s&&m<e)){const el=Math.max(0,m-s);return el<60?el+'м':Math.floor(el/60)+'ч'+(el%60?el%60+'м':'');}}
+  const up=bks.filter(b=>fmMin(b.fr)>m).sort((a,b2)=>a.fr.localeCompare(b2.fr));
+  return up.length?up[0].fr:bks.length+'бр';
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -1165,7 +1074,7 @@ function openBP(tid){
   if(fmSt.edit)return;
   const br=fmSt.br,dt=fd();
   const t=getTables(br).find(x=>x.id===tid);
-  const bks=getBK(br,dt).filter(r=>r.tid===tid && ['busy','soon','book'].includes(bookingStateAtTime(r,dt))).sort((a,b)=>a.fr.localeCompare(b.fr));
+  const m=fmMin(fmTimeVal()); const bks=getBK(br,dt).filter(r=>r.tid===tid && r.st!=='left' && (r.st==='arrived' || fmMin(r.to)>m)).sort((a,b)=>a.fr.localeCompare(b.fr));
   $('bpTtl').textContent='Стол '+(t?t.n:'?')+' — '+getBrName(br);
   $('bpSub').textContent=bks.length+' брон'+(bks.length===1?'ь':bks.length<5?'и':'ей')+' · '+dt;
   const body=$('bpBody');body.innerHTML='';
@@ -1192,59 +1101,26 @@ function closeBP(){$('bpanel').classList.add('h');$('rpWrap').style.display='non
 // BRANCH / SUB VIEW SWITCH
 // ──────────────────────────────────────────────────────────────────────────────
 function fmBr(br){ if(!BRANCHES[br]) return; fmSt.br=br; fmSt.sel=null; fmSt.lmSel=null; closeBP(); edClear(); renderBrTabs(); if(fmSt.lmOpen){$('lmpanel').classList.remove('h');$('rpWrap').style.display='';renderLmList();} applyZoom(); fmRedraw(); }
-function fmSV(v){
-  fmSt.sub=v;
-  const mapEl=$('fmMapView'), listEl=$('fmListView'), histEl=$('fmHistView');
-  if(mapEl) mapEl.classList.toggle('h', v!=='map');
-  if(listEl) listEl.classList.toggle('h', v!=='list');
-  if(histEl) histEl.classList.toggle('h', v!=='hist');
-  const vm=$('vtMap'), vl=$('vtList'), vh=$('vtHist');
-  if(vm) vm.disabled=v==='map';
-  if(vl) vl.disabled=v==='list';
-  if(vh) vh.disabled=v==='hist';
-  if(v==='map') fmRedraw();
-  else if(v==='list') fmRenderList();
-  else if(v==='hist'){ initHistFilters(); renderHist(); }
-}
-function fillHistTables(){
-  const br=$('hBr')?$('hBr').value:''; const tb=$('hTbl'); if(!tb)return;
-  let rows=[];
-  const halls=br?[br]:Object.keys(BRANCHES);
-  halls.forEach(k=>getTables(k).forEach(t=>rows.push({br:k,id:t.id,n:t.n})));
-  const cur=tb.value||'';
-  tb.innerHTML='<option value="">Все столы</option>'+rows.map(r=>`<option value="${r.id}">${esc(getBrName(r.br)+' · '+r.n)}</option>`).join('');
-  if(cur) tb.value=cur;
-}
-function renderHist(){
-  initHistFilters();
-  const dt=($('hDate')&&$('hDate').value)|| (typeof todayYMD==='function'?todayYMD():fd());
-  const br=($('hBr')&&$('hBr').value)||'';
-  const tid=($('hTbl')&&$('hTbl').value)||'';
-  const q=(($('hSrch')&&$('hSrch').value)||'').toLowerCase();
-  const halls=br?[br]:Object.keys(BRANCHES);
-  let all=halls.flatMap(k=>getBK(k,dt).map(b=>({...b,br:k})));
-  if(tid) all=all.filter(b=>b.tid===tid);
-  if(q) all=all.filter(b=>(b.nm||'').toLowerCase().includes(q)||(b.ph||'').includes(q));
-  all.sort((a,b)=>(a.fr||'').localeCompare(b.fr||''));
-  const body=$('hBody'); if(!body)return;
-  if(!all.length){body.innerHTML='<div style="color:var(--muted);padding:18px;font-size:12px">За выбранную дату броней нет.</div>';return}
-  body.innerHTML=`<table class="tbl-list"><thead><tr><th>Дата</th><th>Стол</th><th>Имя</th><th>Телефон</th><th>Время</th><th>Статус</th></tr></thead><tbody>${all.map(b=>{const t=getTables(b.br).find(x=>x.id===b.tid);const tn=t?(getBrName(b.br)+' · '+t.n):b.tid;return `<tr><td>${esc(dt)}</td><td>${esc(tn)}</td><td>${esc(b.nm||'')}</td><td>${esc(b.ph||'')}</td><td>${esc(b.fr||'')}–${esc(b.to||'')}</td><td><span class="st ${b.st==='vip'?'vip':b.st==='waiting'?'waiting':b.st==='arrived'?'arrived':b.st==='left'?'left':'confirmed'}">${esc(lblOf(b.st))}</span></td></tr>`;}).join('')}</tbody></table>`;
-}
-function lblOfStatus(s){return s==='vip'?'⭐ VIP':s==='waiting'?'Ожидание':s==='arrived'?'Пришёл':s==='left'?'Ушёл':'Подтверждена'}
+function fmSV(v){fmSt.sub=v;$('fmMapView').classList.toggle('h',v!=='map');$('fmListView').classList.toggle('h',v!=='list');$('vtMap').disabled=v==='map';$('vtList').disabled=v==='list';fmRedraw()}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// LIST VIEW
+// ──────────────────────────────────────────────────────────────────────────────
 function fmRenderList(){
-  const q=($('lSrch')?$('lSrch').value:'').toLowerCase(),dt=getSelectedDate();
-  const all=Object.keys(BRANCHES).flatMap(br=>getBK(br,dt)
-    .filter(b=>{
-      const st=bookingStateAtTime(b,dt);
-      return st==='busy' || st==='soon' || st==='book';
-    })
-    .map(b=>({...b,br,viewState:bookingStateAtTime(b,dt)}))
-  );
+  const q=($('lSrch')?$('lSrch').value:'').toLowerCase(),dt=fd();
+  const m=fmMin(fmTimeVal());
+  const all=Object.keys(BRANCHES).flatMap(br=>getBK(br,dt).filter(b=>{
+    if(b.st==='left') return false;
+    if(b.st==='arrived') return true;
+    const s=fmMin(b.fr),e=fmMin(b.to);
+    return (m>=s&&m<e) || (s>m&&s-m<=90) || s>m;
+  }).map(b=>({...b,br})));
   const filt=q?all.filter(b=>(b.nm||'').toLowerCase().includes(q)||(b.ph||'').includes(q)):all;
-  filt.sort((a,b)=>(a.fr||'').localeCompare(b.fr||''));
-  const body=$('lBody'); if(!body) return;
+  filt.sort((a,b)=>a.fr.localeCompare(b.fr));
+  const body=$('lBody');
+  if(!body)return;
   if(!filt.length){body.innerHTML='<div style="color:var(--muted);padding:18px;font-size:12px">На выбранное время броней нет.</div>';return}
-  body.innerHTML=`<table class="tbl-list"><thead><tr><th>Стол</th><th>Гость</th><th>Тел.</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>${filt.map(b=>{const t=getTables(b.br).find(x=>x.id===b.tid);const tn=t?(getBrName(b.br)+' · '+t.n):b.tid;const stateText=b.viewState==='busy'?'За столом':b.viewState==='soon'?'Скоро':'Бронь';return `<tr><td>${esc(tn)}</td><td>${esc(b.nm||'')}</td><td>${esc(b.ph||'')}</td><td>${esc(b.fr||'')}–${esc(b.to||'')}</td><td>${esc(String(b.gs||''))}</td><td>${esc(b.hk||'')}</td><td><span class="st ${b.st==='vip'?'vip':b.st==='waiting'?'waiting':b.st==='arrived'?'arrived':'confirmed'}">${esc(lblOfStatus(b.st))} · ${stateText}</span></td><td><button class="btn btn-xs" onclick="openBm('${b.id}','${b.tid}')">Открыть</button></td></tr>`;}).join('')}</tbody></table>`;
+  body.innerHTML=`<table class="tbl-list"><thead><tr><th>Стол</th><th>Гость</th><th>Тел.</th><th>Время</th><th>Гостей</th><th>Кальян</th><th>Статус</th><th></th></tr></thead><tbody>${filt.map(b=>{const t=getTables(b.br).find(x=>x.id===b.tid);const tn=t?(getBrName(b.br)+' · '+t.n):b.tid;return `<tr><td>${esc(tn)}</td><td>${esc(b.nm||'')}</td><td>${esc(b.ph||'')}</td><td>${esc(b.fr||'')}–${esc(b.to||'')}</td><td>${esc(String(b.gs||''))}</td><td>${esc(b.hk||'')}</td><td>${esc(lblOfStatus(b.st||'confirmed'))}</td><td><button class="btn btn-xs" onclick="openBm('${b.id}','${b.tid}')">Открыть</button></td></tr>`;}).join('')}</tbody></table>`;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -1255,11 +1131,11 @@ function openBm(bid,tid){
   bmEid=bid;
   const sel=$('bmTbl');sel.innerHTML='';
   Object.keys(BRANCHES).forEach(br=>{const g=document.createElement('optgroup');g.label=getBrName(br);getTables(br).forEach(t=>{const o=document.createElement('option');o.value=t.id;o.textContent='Стол '+t.n;if(t.id===(tid||fmSt.sel))o.selected=true;g.appendChild(o)});sel.appendChild(g)});
-  $('bmDt').value=todayYMD();hideDrop();
+  $('bmDt').value=fd();hideDrop();
   if(bid){
     const br2=findBrByBid(bid,fd());const b=br2?getBK(br2,fd()).find(x=>x.id===bid):null;
     if(b){$('bmTtl').textContent='Бронь — '+b.nm;$('bmDel').style.display='';
-      $('bmPh').value=b.ph||'';$('bmNm').value=b.nm||'';$('bmDt').value=normalizeDate(b.dt)||todayYMD();
+      $('bmPh').value=b.ph||'';$('bmNm').value=b.nm||'';$('bmDt').value=b.dt||fd();
       const o2=$('bmTbl').querySelector(`option[value="${b.tid}"]`);if(o2)o2.selected=true;
       $('bmFr').value=b.fr||'19:00';$('bmTo').value=b.to||'22:00';$('bmGs').value=b.gs||2;$('bmSt').value=b.st||'confirmed';
       $('bmHk').value=b.hk||'';$('bmDs').value=b.ds||'';$('bmNo').value=b.no||'';
@@ -1303,30 +1179,26 @@ function showGPA(g){
 }
 function hideGPA(){$('bmGPA').classList.add('h')}
 
-function toMin(t){const a=(t||'').split(':').map(Number);return (a[0]||0)*60+(a[1]||0);}
-function isOverlap(fr1,to1,fr2,to2){const s1=toMin(fr1),e1=toMin(to1),s2=toMin(fr2),e2=toMin(to2);return s1<e2&&s2<e1;}
-function todayYMD(){const d=new Date();const y=d.getFullYear();const m=String(d.getMonth()+1).padStart(2,'0');const day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`;}
-function normalizeDate(v){if(!v)return '';if(/^\d{4}-\d{2}-\d{2}$/.test(v))return v;const m=v.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);if(m)return `${m[3]}-${m[2]}-${m[1]}`;return v;}
+function isOverlap(fr1,to1,fr2,to2){const s1=fmMin(fr1),e1=fmMin(to1),s2=fmMin(fr2),e2=fmMin(to2);return s1<e2&&s2<e1;}
 function bmSave(){
   const nm=$('bmNm').value.trim();if(!nm){toast('Введите имя',false);return}
-  const tid=$('bmTbl').value,dtRaw=$('bmDt').value||fd(),dt=normalizeDate(dtRaw),fr=$('bmFr').value,to=$('bmTo').value;
+  const tid=$('bmTbl').value,dt=$('bmDt').value||fd(),fr=$('bmFr').value,to=$('bmTo').value;
   if(!tid){toast('Выберите стол',false);return}
   if(!fr||!to){toast('Укажите время',false);return}
-  if(toMin(to)<=toMin(fr)){toast('Время окончания должно быть позже начала',false);return}
-  const today=todayYMD();
-  if(dt===today){
-    const now=new Date(), nowMin=now.getHours()*60+now.getMinutes();
-    if(toMin(fr)<=nowMin){toast('Нельзя ставить бронь в прошедшее время',false);return}
+  if(fmMin(to)<=fmMin(fr)){toast('Время окончания должно быть позже начала',false);return}
+  if(dt===fd()){
+    const now=new Date(), nowM=now.getHours()*60+now.getMinutes();
+    if(fmMin(fr)<=nowM){toast('Нельзя ставить бронь в прошедшее время',false);return}
   }
   const br2=Object.keys(BRANCHES).find(k=>getTables(k).some(t=>t.id===tid))||fmSt.br;
   const sameDay=getBK(br2,dt);
-  const conflict=sameDay.find(b=>b.tid===tid&&b.id!==bmEid&&isOverlap(fr,to,b.fr,b.to)&&b.st!=='left');
+  const conflict=sameDay.find(b=>b.tid===tid&&b.id!==bmEid&&b.st!=='left'&&isOverlap(fr,to,b.fr,b.to));
   if(conflict){toast('На это время уже есть бронь на этом столе',false);return}
   const bk={id:bmEid||('b'+Date.now()+Math.random().toString(36).slice(2,6)),tid,br:br2,dt,nm,ph:$('bmPh').value.trim(),fr,to,gs:parseInt($('bmGs').value)||2,st:$('bmSt').value,hk:$('bmHk').value.trim(),ds:$('bmDs').value.trim(),no:$('bmNo').value.trim()};
   const k=br2+'_'+dt;if(!MEM.bk[k])MEM.bk[k]=[];
   if(bmEid){Object.keys(BRANCHES).forEach(brx=>{const kk=brx+'_'+dt;if(MEM.bk[kk])MEM.bk[kk]=MEM.bk[kk].filter(r=>r.id!==bmEid);saveBK(brx,dt);});}
   MEM.bk[k].push(bk);saveBK(br2,dt);
-  toast('Бронь сохранена ✓');closeBm();queueRedraw();if(fmSt.sel)openBP(fmSt.sel);if($('viewMode')&&$('viewMode').value==='list')fmRenderList();
+  toast('Бронь сохранена ✓');closeBm();fmRefresh();if(fmSt.sel)openBP(fmSt.sel);if(fmSt.sub==='list')fmRenderList();
 }
 function bmDel(){
   if(!bmEid)return;const dt=$('bmDt').value||fd();
@@ -1445,13 +1317,8 @@ const _k=getKey();if($('stKy'))$('stKy').value=_k;
 // Clean up old layout keys from previous versions
 ['dg_tbl_m','dg_tbl_5','dg_tbl5_m','dg_tbl5_5'].forEach(k=>localStorage.removeItem(k));
 restoreSession();
-setupSync();
-['v-bk','v-gb','v-crm','v-ng','v-po'].forEach(id=>{const el=$(id); if(el) el.style.display='none';});
-selectedTime='19:00';
-renderTimeRibbon();
-sv('bk');
-
-['bk','gb','crm','ng','po'].forEach(k=>{const el=document.getElementById(k+'Nav'); if(el){ el.addEventListener('click',function(e){ e.preventDefault(); e.stopPropagation(); sv(k); }); }});
+if($('selTime')) $('selTime').value=fmSelectedTime;
+fmRenderRibbon();
 const _brTabs=document.getElementById('brTabs');
 if(_brTabs){
   _brTabs.addEventListener('click',function(e){
