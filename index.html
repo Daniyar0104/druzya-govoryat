@@ -866,7 +866,7 @@ function fmZoom(d){fmSt.zi=Math.max(0,Math.min(ZOOM_S.length-1,fmSt.zi+d));apply
 // ──────────────────────────────────────────────────────────────────────────────
 // STATUS / LABEL (uses in-memory cache, no localStorage reads)
 // ──────────────────────────────────────────────────────────────────────────────
-const FM_RIBBON=['12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00'];
+const FM_RIBBON=['12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00','01:00','02:00'];
 let fmSelTime='19:00';
 function fmMinutes(v){const a=(v||'00:00').split(':').map(Number);return (a[0]||0)*60+(a[1]||0)}
 function fmEndMinutes(fr,to){const s=fmMinutes(fr),e=fmMinutes(to);return e<=s?e+1440:e}
