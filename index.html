@@ -243,8 +243,8 @@ button{cursor:pointer;user-select:none}
           <div class="tog-row"><button class="tog-btn on" id="bUY" onclick="setU('y')">Да</button><button class="tog-btn" id="bUN" onclick="setU('n')">Нет, другой</button></div>
         </div>
         <div class="g2" style="gap:9px">
-          <div class="fld"><div class="lbl">Время</div><input id="grTm" class="inp" placeholder="19:30"></div>
-          <div class="fld"><div class="lbl">Адрес</div><select id="grAd" class="sel"><option>Малыгина 90</option><option>50 лет Октября</option></select></div>
+          <div class="fld"><div class="lbl">Время</div><input id="grTm" class="inp" type="time" value="19:30"></div>
+          <div class="fld"><div class="lbl">Адрес</div><select id="grAd" class="sel"><option>Малыгина 90</option><option>50 лет Октября</option><option>Чаркова</option><option>Сперанского</option></select></div>
         </div>
         <div id="cHk" class="g2 h" style="gap:9px;margin-top:9px">
           <div class="fld"><div class="lbl">Марка/вкус</div><input id="grBr" class="inp" placeholder="Что хотите?"></div>
@@ -639,7 +639,7 @@ function nph(p){return(p||'').replace(/\D/g,'')}
 function ini(n){return(n||'?').split(' ').slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'?'}
 function togT(){theme=theme==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',theme)}
 function swM(m){$('mG').classList.toggle('h',m!=='g');$('mS').classList.toggle('h',m!=='s');$('tG').classList.toggle('on',m==='g');$('tS').classList.toggle('on',m==='s')}
-function setU(v){hookahU=v;$('bUY').classList.toggle('on',v==='y');$('bUN').classList.toggle('on',v==='n');$('cHk').classList.toggle('h',v==='y')}
+function setU(v){hookahU=v;const elY=document.getElementById('bUY'),elN=document.getElementById('bUN'),elC=document.getElementById('cHk');if(elY)elY.classList.toggle('on',v==='y');if(elN)elN.classList.toggle('on',v==='n');if(elC)if(v==='y')elC.classList.add('h');else elC.classList.remove('h');}
 function getKey(){return(localStorage.getItem('dg_key')||'').trim()}
 function initSB(){if(sb)return;const k=getKey();if(!k||!window.supabase)return;sb=window.supabase.createClient(SB_URL,k,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}})}
 
@@ -1298,7 +1298,7 @@ async function loadPO(){
 // ──────────────────────────────────────────────────────────────────────────────
 async function subG(){
   const name=$('grNm').value.trim(),phone=$('grPh').value.trim();
-  if(!name){toast('Введите имя',false);return}
+  if(!name || !phone){toast('Укажите имя и телефон',false);return}
   const time=$('grTm').value.trim(),addr=$('grAd').value;
   const brand=hookahU==='y'?'Как всегда':($('grBr').value.trim()||''),strength=$('grSt')?.value.trim()||'';
   let saved=false;
