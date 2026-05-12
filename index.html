@@ -1717,43 +1717,18 @@ function logout(){
   try{
     role='staff'; guestExists=false; existingGuest=null;
   }catch(e){}
-  if($('appShell')) $('appShell').classList.add('h');
-  if($('loginWrap')) $('loginWrap').classList.remove('h');
+  if($('appView')) $('appView').classList.add('h');
+  if($('loginView')) $('loginView').classList.remove('h');
   setRole('staff');
   toast('Вы вышли');
 }
 
+
 function openApp(){
-  $('loginView').classList.add('h');
-  $('appView').classList.remove('h');
-  if(!$('bDate').value) $('bDate').value=td();
-
-  const isStaff = !!getKey();
-
-  if (isStaff) {
-    $('sbRole').textContent = 'Сотрудник';
-    // Показываем все кнопки навигации
-    document.querySelectorAll('.nav').forEach(n => {
-      if(!n.hasAttribute('onclick') || n.getAttribute('onclick') !== "togT()" && n.getAttribute('onclick') !== "doOut()") {
-        n.classList.remove('h');
-      }
-    });
-    // И показываем разделители
-    document.querySelectorAll('.nav-sep').forEach(s => s.classList.remove('h'));
-    renderBrTabs();
-    sv('bk'); // Открываем Брони
-  } else {
-    $('sbRole').textContent = 'Гость';
-    // Прячем всё, кроме вкладки "Заявки на кальян"
-    document.querySelectorAll('.nav').forEach(n => {
-      if(n.getAttribute('onclick') !== "sv('po')" && n.getAttribute('onclick') !== "togT()" && n.getAttribute('onclick') !== "doOut()") {
-        n.classList.add('h');
-      }
-    });
-    document.querySelectorAll('.nav-sep').forEach(s => s.classList.add('h'));
-    sv('po'); // Открываем Заявки
-  }
+  if($('loginView')) $('loginView').classList.add('h');
+  if($('appView')) $('appView').classList.remove('h');
 }
+
 async function doOut(){if(sb)try{await sb.auth.signOut()}catch(e){}localStorage.removeItem('dg_key');sb=null;MEM.crm=[];$('appView').classList.add('h');$('loginView').classList.remove('h')}
 async function restoreSession(){const k=getKey();if(k&&window.supabase)try{sb=window.supabase.createClient(SB_URL,k,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}})}catch(e){}openApp()}
 
