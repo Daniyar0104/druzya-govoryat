@@ -221,6 +221,81 @@ button{cursor:pointer;user-select:none}
 .guest-note{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45}
 .guest-note.ok{color:var(--grn)}
 
+
+/* Mobile adaptation */
+html,body{overflow-x:hidden}
+.inp,.sel,.txa,button{min-height:44px}
+.login-box{max-width:560px}
+.fm-tabs-wrap{min-width:0}
+.fm-tabs-wrap .fm-tabs{max-width:100%}
+@media(max-width:960px){
+  .shell{grid-template-columns:1fr}
+  .sb{position:sticky;top:0;z-index:80;flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:8px 10px;border-right:none;border-bottom:1px solid var(--line);gap:6px;scrollbar-width:none}
+  .sb::-webkit-scrollbar{display:none}
+  .sb .brand,.sb .sb-bot,.sb .nav-sep{display:none}
+  .sb .nav{white-space:nowrap;flex:0 0 auto;padding:10px 12px;font-size:12px;min-height:40px}
+  .main{height:auto;min-height:calc(100dvh - 58px);padding:12px}
+  .rowb{align-items:flex-start}
+  .main-ttl{font-size:20px}
+  .card{padding:12px}
+  .fm-bar{position:sticky;top:57px;z-index:40;background:var(--bg);padding-bottom:8px}
+  .fm-outer{height:58vh;min-height:300px}
+  .rp-body{max-height:none}
+}
+@media(max-width:720px){
+  .login-wrap{align-items:flex-start;padding:10px;min-height:100dvh}
+  .login-box{padding:18px 14px;border-radius:16px}
+  .brand{margin-bottom:12px}
+  .brand-ico{font-size:20px}
+  .brand-t{font-size:13px}
+  .brand-s{font-size:10px}
+  .row,.rowb{gap:8px}
+  .tab{flex:1 1 0;padding:10px 12px;font-size:13px;min-height:42px}
+  .btn{width:100%;justify-content:center}
+  .btn-sm,.btn-xs{width:auto}
+  .g2,.g3,.fm-layout,.gb-grid{grid-template-columns:1fr}
+  .main{padding:10px}
+  .main-sub{font-size:11px;margin-bottom:10px}
+  .lbl{font-size:10px}
+  .inp,.sel,.txa{font-size:16px;padding:12px 12px}
+  .tog-row{display:grid;grid-template-columns:1fr 1fr}
+  .tog-btn{padding:11px 10px;font-size:13px;min-height:44px}
+  .fm-bar{gap:6px;top:53px}
+  .fm-tabs-wrap{flex:1 1 100%}
+  .zoom-ctl{order:5}
+  .leg{margin-left:0;width:100%;gap:8px}
+  .leg-i{font-size:10px}
+  .ed-banner{padding:8px}
+  .ed-title{font-size:11px}
+  .fm-outer{height:52vh;min-height:260px;border-radius:10px}
+  .rp{border-radius:10px}
+  .rp-hdr,.rp-foot,.rp-body{padding-left:10px;padding-right:10px}
+  .mo{padding:0;align-items:flex-end}
+  .mo-box{max-width:none;width:100%;max-height:100dvh;height:100dvh;border-radius:18px 18px 0 0;border-left:none;border-right:none;border-bottom:none}
+  .mo-hdr{padding:12px 14px}
+  .mo-body{padding:12px 14px 90px}
+  .mo-foot{position:sticky;bottom:0;background:var(--panel);padding:10px 14px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .mo-foot .btn{width:100%;min-height:44px}
+  .mo-foot #bmDel{grid-column:1/-1;order:4}
+  .mo-foot #bmLeftBtn{grid-column:1/-1;order:3}
+  .ph-drop{max-height:220px;overflow:auto}
+  .gpa-row{flex-direction:column;gap:2px}
+  .gpa-lbl,.gb-pl{min-width:0}
+  .po-row{flex-direction:column;gap:4px}
+  .po-tm{min-width:0}
+  .tbl-list{display:block;overflow-x:auto;white-space:nowrap}
+}
+@media(max-width:420px){
+  .login-wrap{padding:8px}
+  .login-box{padding:16px 12px}
+  .main{padding:8px}
+  .main-ttl{font-size:18px}
+  .btn-sm,.btn-xs{font-size:11px;padding:8px 10px}
+  .fm-bar{top:49px}
+  .fm-outer{height:48vh;min-height:220px}
+  .mo-hdr,.mo-body,.mo-foot{padding-left:12px;padding-right:12px}
+}
+
 </style>
 </head>
 <body>
