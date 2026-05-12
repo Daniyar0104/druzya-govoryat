@@ -1712,6 +1712,17 @@ async function subG(){
 // LOGIN / SESSION
 // ──────────────────────────────────────────────────────────────────────────────
 function doLogin(){const k=($('stKy').value||'').trim();if(k==='9963977553'){localStorage.setItem('dg_key',ANON);initSB();openApp();}else{toast('Неверный код доступа',false);}}
+
+function logout(){
+  try{
+    role='staff'; guestExists=false; existingGuest=null;
+  }catch(e){}
+  if($('appShell')) $('appShell').classList.add('h');
+  if($('loginWrap')) $('loginWrap').classList.remove('h');
+  setRole('staff');
+  toast('Вы вышли');
+}
+
 function openApp(){
   $('loginView').classList.add('h');
   $('appView').classList.remove('h');
@@ -1770,6 +1781,8 @@ setGuestQuestionnaireMode(false,null);
 setHookahNeed('y');
 try{const gb=JSON.parse(localStorage.getItem('dg_guest_bank')||'[]').map(sanitizeGuestRecord);localStorage.setItem('dg_guest_bank',JSON.stringify(gb));}catch(e){}
 setRole('staff');
+if($('guestLogin')) $('guestLogin').classList.add('h');
+if($('staffLogin')) $('staffLogin').classList.remove('h');
 if($('grNm')) $('grNm').value='';
 if($('grPh')) $('grPh').value='';
 fmRenderRibbon();
