@@ -321,9 +321,9 @@ html,body{overflow-x:hidden}
 
       <div id="grHookahBlock" class="h" style="margin-top:16px">
         <div style="font-size:14px;font-weight:700;margin-bottom:3px">Кальян</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:11px">Сначала выберите, хотите ли вы оформить кальян сейчас.</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:11px">Выберите, хотите ли вы заказать кальян заранее перед визитом.</div>
         <div class="fld" style="margin-bottom:10px">
-          <div class="lbl">Заказать кальян?</div>
+          <div class="lbl">Заказать кальян заранее?</div>
           <div class="tog-row"><button class="tog-btn on" id="bHY" onclick="setHookahNeed('y')">Да</button><button class="tog-btn" id="bHN" onclick="setHookahNeed('n')">Нет</button></div>
         </div>
         <div id="grHookahWrap">
@@ -1675,7 +1675,7 @@ async function subG(){
     localStorage.setItem('dg_po',JSON.stringify(orders.slice(0,100)));
   }
 
-  toast(wantHookah==='y' ? (savedGuest ? 'Гость сохранен, заявка принята ✓' : 'Гость сохранен локально ✓') : (savedGuest ? 'Гость сохранен ✓' : 'Гость сохранен локально ✓'));
+  toast(wantHookah==='y' ? (savedGuest ? 'Гость сохранен, предзаказ кальяна принят ✓' : 'Гость сохранен локально ✓') : (savedGuest ? 'Гость сохранен без предзаказа ✓' : 'Гость сохранен локально ✓'));
 
   if(wantHookah==='y'){
     const tgLinks = {'Малыгина 90':'friendstalk4','50 лет Октября':'friends_talk_tmn','Сперанского':'Friendstalk3','Чаркова':'T_Charkova'};
