@@ -562,7 +562,7 @@ html,body{overflow-x:hidden}
             </div>
           </div>
           <div class="mo-sec">
-            <div class="mo-stl">Кальян и предпочтения <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">(сотрудник или гость)</span></div>
+            <div class="mo-stl">Кальян и предпочтения <span style="font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0">(подтягиваются из анкеты гостя)</span></div>
             <div class="g2" style="gap:8px;margin-bottom:8px">
               <div class="fld"><div class="lbl">Кальян</div><input id="bmHk" class="inp" placeholder="Марка, вкус, крепость..."></div>
               <div class="fld"><div class="lbl">Блюда</div><input id="bmDs" class="inp" placeholder="Топ блюда..."></div>
@@ -1466,6 +1466,44 @@ async function checkGuestByPhone(){
     }
   }catch(e){}
   setGuestQuestionnaireMode(false,null);
+}
+
+function guestHookahText(g){
+  if(!g) return '';
+  const parts=[g.hookah_flavor_pref, g.hookah_brand_pref, g.hookah_strength_pref].filter(Boolean);
+  return parts.join(' · ');
+}
+function guestDishText(g){
+  if(!g) return '';
+  return g.pref_favorite_dishes||'';
+}
+function guestNoteText(g){
+  if(!g) return '';
+  const arr=[];
+  if(g.pref_allergens) arr.push('Аллергены: '+g.pref_allergens);
+  if(g.pref_work_silence==='Да') arr.push('Любит тишину');
+  if(g.pref_talkative==='Нет') arr.push('Не любит лишнее общение');
+  if(g.pref_ok_with_ty==='Нет') arr.push('Лучше на вы');
+  if(g.pref_drinks_alcohol==='Нет') arr.push('Без алкоголя');
+  if(g.pref_no_sugar==='Да') arr.push('Без сахара');
+  if(g.pref_on_diet==='Да') arr.push('На диете');
+  if(g.pref_vegan==='Да') arr.push('Веган');
+  const tbl=[];
+  if(g.pref_window==='Да') tbl.push('у окна');
+  if(g.pref_big_table==='Да') tbl.push('большой стол');
+  if(g.pref_seating && g.pref_seating!=='Без разницы') tbl.push(g.pref_seating.toLowerCase());
+  if(g.pref_quiet==='Да') tbl.push('потише');
+  if(tbl.length) arr.push('Стол: '+tbl.join(', '));
+  return arr.join(' · ');
+}
+function fillBookingPrefsFromGuest(g){
+  if(!g) return;
+  if($('bmHk')) $('bmHk').value = guestHookahText(g);
+  if($('bmDs')) $('bmDs').value = guestDishText(g);
+  if($('bmNo')) {
+    const txt = guestNoteText(g);
+    if(txt) $('bmNo').value = txt;
+  }
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
