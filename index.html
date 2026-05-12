@@ -16,6 +16,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 button,input,select,textarea{font:inherit;color:inherit;background:none;border:none;outline:none}
 button{cursor:pointer;user-select:none}
 .h{display:none!important}
+.muted-note{font-size:12px;color:var(--muted);margin-top:8px}
 
 /* ── Layout ── */
 .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100dvh;padding:16px}
@@ -176,6 +177,7 @@ button{cursor:pointer;user-select:none}
 /* Booking modal */
 .mo{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9900;display:flex;align-items:center;justify-content:center;padding:14px;backdrop-filter:blur(4px)}
 .mo.h{display:none!important}
+.muted-note{font-size:12px;color:var(--muted);margin-top:8px}
 .mo-box{background:var(--panel);border:1px solid var(--brd);border-radius:16px;width:100%;max-width:470px;max-height:92vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.7)}
 .mo-hdr{padding:13px 17px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .mo-ttl{font-size:14px;font-weight:800}
@@ -187,6 +189,7 @@ button{cursor:pointer;user-select:none}
 .ph-wrap{position:relative}
 .ph-drop{position:absolute;background:var(--panel);border:1.5px solid var(--brd);border-radius:var(--rsm);z-index:50;width:100%;top:calc(100% + 3px);box-shadow:0 6px 20px rgba(0,0,0,.5);overflow:hidden}
 .ph-drop.h{display:none!important}
+.muted-note{font-size:12px;color:var(--muted);margin-top:8px}
 .ph-item{padding:8px 12px;cursor:pointer;font-size:12px;border-bottom:1px solid var(--line)}
 .ph-item:last-child{border-bottom:none}
 .ph-item:hover{background:rgba(79,152,163,.1)}
@@ -316,7 +319,7 @@ html,body{overflow-x:hidden}
       </div>
       <div id="grStatus" class="guest-note">Введите телефон. Если гость уже зарегистрирован, анкета не заполняется повторно.</div>
 
-      <div style="margin-top:16px">
+      <div id="grHookahBlock" class="h" style="margin-top:16px">
         <div style="font-size:14px;font-weight:700;margin-bottom:3px">Кальян</div>
         <div style="font-size:12px;color:var(--muted);margin-bottom:11px">Сначала выберите, хотите ли вы оформить кальян сейчас.</div>
         <div class="fld" style="margin-bottom:10px">
@@ -1750,6 +1753,9 @@ autoRefreshPO();
 setGuestQuestionnaireMode(false,null);
 setHookahNeed('y');
 try{const gb=JSON.parse(localStorage.getItem('dg_guest_bank')||'[]').map(sanitizeGuestRecord);localStorage.setItem('dg_guest_bank',JSON.stringify(gb));}catch(e){}
+setRole('staff');
+if($('grNm')) $('grNm').value='';
+if($('grPh')) $('grPh').value='';
 fmRenderRibbon();
 if($('fmTime')) $('fmTime').value=fmSelTime;
 const _brTabs=document.getElementById('brTabs');
