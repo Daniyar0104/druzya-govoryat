@@ -1698,10 +1698,14 @@ function logout(){
 }
 
 
+
 function openApp(){
   if($('loginView')) $('loginView').classList.add('h');
   if($('appView')) $('appView').classList.remove('h');
+  try{ loadBookingsFromCloud(); }catch(e){}
+  try{ startBookingsSync(); }catch(e){}
 }
+
 
 async function doOut(){if(sb)try{await sb.auth.signOut()}catch(e){}localStorage.removeItem('dg_key');sb=null;MEM.crm=[];$('appView').classList.add('h');$('loginView').classList.remove('h')}
 async function restoreSession(){const k=getKey();if(k&&window.supabase)try{sb=window.supabase.createClient(SB_URL,k,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false}})}catch(e){}openApp()}
@@ -1734,6 +1738,7 @@ if($('guestLogin')) $('guestLogin').classList.add('h');
 if($('staffLogin')) $('staffLogin').classList.remove('h');
 if($('grNm')) $('grNm').value='';
 if($('grPh')) $('grPh').value='';
+if($('appView') && !$('appView').classList.contains('h')){try{startBookingsSync();}catch(e){}}
 fmRenderRibbon();
 if($('fmTime')) $('fmTime').value=fmSelTime;
 const _brTabs=document.getElementById('brTabs');
