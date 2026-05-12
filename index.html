@@ -317,7 +317,13 @@ html,body{overflow-x:hidden}
       <div id="grStatus" class="guest-note">Введите телефон. Если гость уже зарегистрирован, анкета не заполняется повторно.</div>
 
       <div style="margin-top:16px">
-        <div style="font-size:14px;font-weight:700;margin-bottom:3px">Предзаказ кальяна</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:3px">Кальян</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:11px">Сначала выберите, хотите ли вы оформить кальян сейчас.</div>
+        <div class="fld" style="margin-bottom:10px">
+          <div class="lbl">Заказать кальян?</div>
+          <div class="tog-row"><button class="tog-btn on" id="bHY" onclick="setHookahNeed('y')">Да</button><button class="tog-btn" id="bHN" onclick="setHookahNeed('n')">Нет</button></div>
+        </div>
+        <div id="grHookahWrap">
         <div style="font-size:12px;color:var(--muted);margin-bottom:11px">Для действующего гостя сохраняются прежние предпочтения. Изменить их можно в личном кабинете.</div>
         <div class="fld" style="margin-bottom:10px">
           <div class="lbl">Заказать как всегда?</div>
@@ -327,6 +333,8 @@ html,body{overflow-x:hidden}
           <div class="fld"><div class="lbl">Время</div><input id="grTm" class="inp" type="time" value="19:30"></div>
           <div class="fld"><div class="lbl">Адрес</div><select id="grAd" class="sel"><option>Малыгина 90</option><option>50 лет Октября</option><option>Чаркова</option><option>Сперанского</option></select></div>
         </div>
+      </div>
+
       </div>
 
       <div id="grQWrap">
@@ -669,7 +677,7 @@ html,body{overflow-x:hidden}
 
     <!-- PREORDERS -->
     <div id="v-po" class="h">
-      <div class="rowb" style="margin-bottom:11px"><div><div class="main-ttl">Заявки на кальян</div><div class="main-sub">От гостей при входе</div></div><button class="btn btn-sm" onclick="loadPO()">↻</button></div>
+      <div class="rowb" style="margin-bottom:11px"><div><div class="rowb" style="margin-bottom:10px"><div class="main-ttl">Заявки на кальян</div><button class="btn btn-p btn-sm" onclick="openGuestCabinetOrder()">+ Заказать кальян</button></div><div class="main-sub">От гостей при входе</div></div><button class="btn btn-sm" onclick="loadPO()">↻</button></div>
       <div class="card"><div id="poBody"><div style="color:var(--muted);font-size:12px">Загрузка...</div></div></div>
     </div>
 
@@ -1418,6 +1426,50 @@ async function loadPO(){
 }
 
 let guestExists=false, existingGuest=null;
+let wantHookah='y';
+function setHookahNeed(v){
+  wantHookah=v;
+  $('bHY')?.classList.toggle('on',v==='y');
+  $('bHN')?.classList.toggle('on',v==='n');
+  $('grHookahWrap')?.classList.toggle('h',v==='n');
+}
+function guestPayloadFromForm(name, phone){
+  return {
+    full_name:name,
+    phone:nph(phone),
+    hookah_strength_pref: $('grSt')?.value||'',
+    hookah_flavor_pref: $('grFl')?.value.trim()||'',
+    hookah_brand_pref: $('grBr')?.value.trim()||'',
+    hookah_before_or_after_food: $('grWhen')?.value||'',
+    pref_window: $('grTbWin')?.value||'',
+    pref_big_table: $('grTbBig')?.value||'',
+    pref_seating: $('grSeat')?.value||'',
+    pref_quiet: $('grQuiet')?.value||'',
+    pref_allergens: $('grAlg')?.value.trim()||'',
+    pref_favorite_dishes: $('grFavDish')?.value.trim()||'',
+    pref_drinks_alcohol: $('grAlc')?.value||'',
+    pref_no_sugar: $('grSugar')?.value||'Нет',
+    pref_on_diet: $('grDiet')?.value||'Нет',
+    pref_vegan: $('grVegan')?.value||'Нет',
+    pref_talkative: $('grTalk')?.value||'',
+    pref_work_silence: $('grWorkQuiet')?.value||'Нет',
+    pref_ok_with_ty: $('grTy')?.value||''
+  };
+}
+async function saveGuestToLocalBank(g){
+  try{
+    const arr=JSON.parse(localStorage.getItem('dg_guest_bank')||'[]');
+    const phone=g.phone||'';
+    const idx=arr.findIndex(x=>(x.phone||'')===phone);
+    if(idx>=0) arr[idx]={...arr[idx],...g}; else arr.unshift(g);
+    localStorage.setItem('dg_guest_bank', JSON.stringify(arr.slice(0,500)));
+  }catch(e){}
+}
+function openGuestCabinetOrder(){
+  sv('po');
+  toast('Открыл раздел заказа кальяна', true);
+}
+
 function guestPrefPayload(){
   return {
     hookah_strength_pref: $('grSt')?.value||'',
@@ -1454,7 +1506,8 @@ function setGuestQuestionnaireMode(exists, guest=null){
 }
 async function checkGuestByPhone(){
   const phone=$('grPh')?.value.trim();
-  if(!phone){setGuestQuestionnaireMode(false,null);return}
+  if(!phone){setGuestQuestionnaireMode(false,null);
+setHookahNeed('y');return}
   try{
     const cli=window.supabase.createClient(SBURL,ANON);
     const {data:found}=await cli.from('guests').select('*').eq('phone', nph(phone)).limit(1);
@@ -1466,6 +1519,7 @@ async function checkGuestByPhone(){
     }
   }catch(e){}
   setGuestQuestionnaireMode(false,null);
+setHookahNeed('y');
 }
 
 function guestHookahText(g){
@@ -1496,19 +1550,22 @@ function guestNoteText(g){
   if(tbl.length) arr.push('Стол: '+tbl.join(', '));
   return arr.join(' · ');
 }
+
 function fillBookingPrefsFromGuest(g){
   if(!g) return;
-  if($('bmHk')) $('bmHk').value = guestHookahText(g);
-  if($('bmDs')) $('bmDs').value = guestDishText(g);
-  if($('bmNo')) {
-    const txt = guestNoteText(g);
-    if(txt) $('bmNo').value = txt;
-  }
+  const hk = guestHookahText(g);
+  const ds = guestDishText(g);
+  const nt = guestNoteText(g);
+  if($('bmHk')) $('bmHk').value = hk || '';
+  if($('bmDs')) $('bmDs').value = ds || '';
+  if($('bmNo')) $('bmNo').value = nt || '';
 }
+
 
 // ──────────────────────────────────────────────────────────────────────────────
 // GUEST PREORDER SUBMIT
 // ──────────────────────────────────────────────────────────────────────────────
+
 
 
 async function subG(){
@@ -1516,7 +1573,7 @@ async function subG(){
   if(!name || !phone){toast('Укажите имя и телефон',false);return}
   const time=$('grTm').value.trim(), addr=$('grAd').value;
   const usual = hookahU==='y';
-  let saved=false, gid=null, guestData=existingGuest;
+  let savedGuest=false, savedPreorder=false, gid=null, guestData=existingGuest;
   let pref = guestExists && existingGuest ? {
     hookah_strength_pref: existingGuest.hookah_strength_pref||'',
     hookah_flavor_pref: existingGuest.hookah_flavor_pref||'',
@@ -1535,7 +1592,7 @@ async function subG(){
     pref_talkative: existingGuest.pref_talkative||'',
     pref_work_silence: existingGuest.pref_work_silence||'Нет',
     pref_ok_with_ty: existingGuest.pref_ok_with_ty||''
-  } : guestPrefPayload();
+  } : guestPayloadFromForm(name,phone);
 
   let brand = usual ? (pref.hookah_brand_pref || 'Как всегда') : (pref.hookah_brand_pref || '');
   let strength = usual ? (pref.hookah_strength_pref || '') : (pref.hookah_strength_pref || '');
@@ -1548,35 +1605,21 @@ async function subG(){
     if(found?.length){
       guestData=found[0]; gid=guestData.id;
       guestExists=true; existingGuest=guestData;
-      pref = {
-        hookah_strength_pref: guestData.hookah_strength_pref||'',
-        hookah_flavor_pref: guestData.hookah_flavor_pref||'',
-        hookah_brand_pref: guestData.hookah_brand_pref||'',
-        hookah_before_or_after_food: guestData.hookah_before_or_after_food||'',
-        pref_window: guestData.pref_window||'',
-        pref_big_table: guestData.pref_big_table||'',
-        pref_seating: guestData.pref_seating||'',
-        pref_quiet: guestData.pref_quiet||'',
-        pref_allergens: guestData.pref_allergens||'',
-        pref_favorite_dishes: guestData.pref_favorite_dishes||'',
-        pref_drinks_alcohol: guestData.pref_drinks_alcohol||'',
-        pref_no_sugar: guestData.pref_no_sugar||'Нет',
-        pref_on_diet: guestData.pref_on_diet||'Нет',
-        pref_vegan: guestData.pref_vegan||'Нет',
-        pref_talkative: guestData.pref_talkative||'',
-        pref_work_silence: guestData.pref_work_silence||'Нет',
-        pref_ok_with_ty: guestData.pref_ok_with_ty||''
-      };
+      pref = {...guestData};
       brand = usual ? (guestData.hookah_brand_pref || 'Как всегда') : (guestData.hookah_brand_pref || '');
       strength = usual ? (guestData.hookah_strength_pref || '') : (guestData.hookah_strength_pref || '');
       flavor = usual ? (guestData.hookah_flavor_pref || '') : (guestData.hookah_flavor_pref || '');
+      savedGuest=true;
+      await saveGuestToLocalBank(guestData);
     } else {
-      const payload = {full_name:name, phone:normPhone, ...guestPrefPayload()};
-      const {data:ng}=await cli.from('guests').insert(payload).select('id').single();
+      const payload = guestPayloadFromForm(name, phone);
+      const {data:ng}=await cli.from('guests').insert(payload).select('*').single();
       gid=ng?.id||null;
-      guestExists=false;
+      guestData=ng||payload;
+      savedGuest=true;
+      await saveGuestToLocalBank(guestData);
     }
-    if(gid&&time){
+    if(wantHookah==='y' && gid && time){
       await cli.from('hookah_preorders').insert({
         guest_id:gid,
         time_slot:time,
@@ -1584,24 +1627,41 @@ async function subG(){
         tobacco_brand: brand || flavor || 'Как всегда',
         strength,
         usual_order:usual,
-        notes: JSON.stringify({ flavor, when: pref.hookah_before_or_after_food, existing_guest: !!found?.length })
+        notes: JSON.stringify({ flavor, when: (guestData?.hookah_before_or_after_food||pref.hookah_before_or_after_food||''), existing_guest: !!found?.length })
       });
+      savedPreorder=true;
     }
-    saved=true;
-  }catch(e){}
+  }catch(e){
+    const payload = guestPayloadFromForm(name, phone);
+    await saveGuestToLocalBank(payload);
+  }
 
-  const orders=JSON.parse(localStorage.getItem('dg_po')||'[]');
-  orders.unshift({nm:name,ph:phone,tm:time,addr,brd:brand || flavor || 'Как всегда',str:strength,usual,pref,existing_guest:guestExists,ts:Date.now()});
-  localStorage.setItem('dg_po',JSON.stringify(orders.slice(0,100)));
+  const bank=JSON.parse(localStorage.getItem('dg_guest_bank')||'[]');
+  const gp=guestPayloadFromForm(name, phone);
+  if(!bank.find(x=>(x.phone||'')===gp.phone)) bank.unshift(gp); else {
+    const i=bank.findIndex(x=>(x.phone||'')===gp.phone); bank[i]={...bank[i],...gp};
+  }
+  localStorage.setItem('dg_guest_bank', JSON.stringify(bank.slice(0,500)));
 
-  toast(saved?'Заявка принята ✓':'Сохранено локально');
+  if(wantHookah==='y'){
+    const orders=JSON.parse(localStorage.getItem('dg_po')||'[]');
+    orders.unshift({nm:name,ph:phone,tm:time,addr,brd:brand || flavor || 'Как всегда',str:strength,usual,pref,existing_guest:guestExists,ts:Date.now()});
+    localStorage.setItem('dg_po',JSON.stringify(orders.slice(0,100)));
+  }
 
-  const tgLinks = {'Малыгина 90':'friendstalk4','50 лет Октября':'friends_talk_tmn','Сперанского':'Friendstalk3','Чаркова':'T_Charkova'};
-  const tgid = tgLinks[addr] || 'friendstalk4';
-  const msg = `Заявка с сайта!%0AИмя: ${name}%0AТелефон: ${phone}%0AВремя: ${time}%0AАдрес: ${addr}%0AГость: ${guestExists?'зарегистрирован':'новый'}%0AЗаказ: ${usual?'Как всегда':'Новый'}%0AМарка: ${brand}%0AВкус: ${flavor}%0AКрепость: ${strength}%0AДо/после еды: ${pref.hookah_before_or_after_food}`;
-  window.open(`https://t.me/${tgid}?text=${msg}`, '_self');
+  toast(savedGuest ? (wantHookah==='y' ? (savedPreorder?'Гость сохранен и заказ принят ✓':'Гость сохранен локально') : 'Гость сохранен ✓') : 'Сохранено локально');
+
+  if(wantHookah==='y'){
+    const tgLinks = {'Малыгина 90':'friendstalk4','50 лет Октября':'friends_talk_tmn','Сперанского':'Friendstalk3','Чаркова':'T_Charkova'};
+    const tgid = tgLinks[addr] || 'friendstalk4';
+    const msg = `Заявка с сайта!%0AИмя: ${name}%0AТелефон: ${phone}%0AВремя: ${time}%0AАдрес: ${addr}%0AГость: ${guestExists?'зарегистрирован':'новый'}%0AЗаказ: ${usual?'Как всегда':'Новый'}%0AМарка: ${brand}%0AВкус: ${flavor}%0AКрепость: ${strength}`;
+    window.open(`https://t.me/${tgid}?text=${msg}`, '_self');
+  } else {
+    openApp();
+  }
   setTimeout(() => openApp(), 500);
 }
+
 
 
 
@@ -1664,6 +1724,7 @@ function autoRefreshPO(){
 restoreSession();
 autoRefreshPO();
 setGuestQuestionnaireMode(false,null);
+setHookahNeed('y');
 fmRenderRibbon();
 if($('fmTime')) $('fmTime').value=fmSelTime;
 const _brTabs=document.getElementById('brTabs');
