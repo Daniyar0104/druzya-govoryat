@@ -1456,9 +1456,24 @@ function guestPayloadFromForm(name, phone){
     pref_ok_with_ty: $('grTy')?.value||''
   };
 }
+
+function sanitizeGuestRecord(g){
+  if(!g) return g;
+  const clean={...g};
+  delete clean.hookah;
+  delete clean.hk;
+  delete clean.dishes;
+  delete clean.ds;
+  delete clean.notes;
+  delete clean.note;
+  delete clean.comment;
+  return clean;
+}
+
 async function saveGuestToLocalBank(g){
   try{
-    const arr=JSON.parse(localStorage.getItem('dg_guest_bank')||'[]');
+    g=sanitizeGuestRecord(g);
+    const arr=JSON.parse(localStorage.getItem('dg_guest_bank')||'[]').map(sanitizeGuestRecord);
     const phone=g.phone||'';
     const idx=arr.findIndex(x=>(x.phone||'')===phone);
     if(idx>=0) arr[idx]={...arr[idx],...g}; else arr.unshift(g);
@@ -1507,7 +1522,8 @@ function setGuestQuestionnaireMode(exists, guest=null){
 async function checkGuestByPhone(){
   const phone=$('grPh')?.value.trim();
   if(!phone){setGuestQuestionnaireMode(false,null);
-setHookahNeed('y');return}
+setHookahNeed('y');
+try{const gb=JSON.parse(localStorage.getItem('dg_guest_bank')||'[]').map(sanitizeGuestRecord);localStorage.setItem('dg_guest_bank',JSON.stringify(gb));}catch(e){}return}
   try{
     const cli=window.supabase.createClient(SBURL,ANON);
     const {data:found}=await cli.from('guests').select('*').eq('phone', nph(phone)).limit(1);
@@ -1520,46 +1536,58 @@ setHookahNeed('y');return}
   }catch(e){}
   setGuestQuestionnaireMode(false,null);
 setHookahNeed('y');
+try{const gb=JSON.parse(localStorage.getItem('dg_guest_bank')||'[]').map(sanitizeGuestRecord);localStorage.setItem('dg_guest_bank',JSON.stringify(gb));}catch(e){}
 }
+
 
 function guestHookahText(g){
   if(!g) return '';
-  const parts=[g.hookah_flavor_pref, g.hookah_brand_pref, g.hookah_strength_pref].filter(Boolean);
+  const parts=[];
+  if(g.hookah_brand_pref) parts.push(g.hookah_brand_pref);
+  if(g.hookah_flavor_pref) parts.push(g.hookah_flavor_pref);
+  if(g.hookah_strength_pref) parts.push(g.hookah_strength_pref);
   return parts.join(' · ');
 }
+
+
 function guestDishText(g){
   if(!g) return '';
-  return g.pref_favorite_dishes||'';
+  return g.pref_favorite_dishes || '';
 }
+
+
 function guestNoteText(g){
   if(!g) return '';
   const arr=[];
-  if(g.pref_allergens) arr.push('Аллергены: '+g.pref_allergens);
-  if(g.pref_work_silence==='Да') arr.push('Любит тишину');
-  if(g.pref_talkative==='Нет') arr.push('Не любит лишнее общение');
-  if(g.pref_ok_with_ty==='Нет') arr.push('Лучше на вы');
+  if(g.pref_allergens) arr.push('Аллергены: ' + g.pref_allergens);
   if(g.pref_drinks_alcohol==='Нет') arr.push('Без алкоголя');
   if(g.pref_no_sugar==='Да') arr.push('Без сахара');
   if(g.pref_on_diet==='Да') arr.push('На диете');
   if(g.pref_vegan==='Да') arr.push('Веган');
+  if(g.pref_talkative==='Нет') arr.push('Не любит лишнее общение');
+  if(g.pref_work_silence==='Да') arr.push('Любит тишину');
+  if(g.pref_ok_with_ty==='Нет') arr.push('Лучше на вы');
   const tbl=[];
   if(g.pref_window==='Да') tbl.push('у окна');
   if(g.pref_big_table==='Да') tbl.push('большой стол');
   if(g.pref_seating && g.pref_seating!=='Без разницы') tbl.push(g.pref_seating.toLowerCase());
   if(g.pref_quiet==='Да') tbl.push('потише');
-  if(tbl.length) arr.push('Стол: '+tbl.join(', '));
+  if(tbl.length) arr.push('Стол: ' + tbl.join(', '));
   return arr.join(' · ');
 }
+
+
 
 function fillBookingPrefsFromGuest(g){
   if(!g) return;
   const hk = guestHookahText(g);
   const ds = guestDishText(g);
   const nt = guestNoteText(g);
-  if($('bmHk')) $('bmHk').value = hk || '';
-  if($('bmDs')) $('bmDs').value = ds || '';
-  if($('bmNo')) $('bmNo').value = nt || '';
+  if($('bmHk')) $('bmHk').value = hk;
+  if($('bmDs')) $('bmDs').value = ds;
+  if($('bmNo')) $('bmNo').value = nt;
 }
+
 
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -1636,8 +1664,8 @@ async function subG(){
     await saveGuestToLocalBank(payload);
   }
 
-  const bank=JSON.parse(localStorage.getItem('dg_guest_bank')||'[]');
-  const gp=guestPayloadFromForm(name, phone);
+  const bank=JSON.parse(localStorage.getItem('dg_guest_bank')||'[]').map(sanitizeGuestRecord);
+  const gp=sanitizeGuestRecord(guestPayloadFromForm(name, phone));
   if(!bank.find(x=>(x.phone||'')===gp.phone)) bank.unshift(gp); else {
     const i=bank.findIndex(x=>(x.phone||'')===gp.phone); bank[i]={...bank[i],...gp};
   }
@@ -1725,6 +1753,7 @@ restoreSession();
 autoRefreshPO();
 setGuestQuestionnaireMode(false,null);
 setHookahNeed('y');
+try{const gb=JSON.parse(localStorage.getItem('dg_guest_bank')||'[]').map(sanitizeGuestRecord);localStorage.setItem('dg_guest_bank',JSON.stringify(gb));}catch(e){}
 fmRenderRibbon();
 if($('fmTime')) $('fmTime').value=fmSelTime;
 const _brTabs=document.getElementById('brTabs');
