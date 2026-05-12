@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru" data-theme="dark">
 <head>
@@ -218,6 +217,10 @@ button{cursor:pointer;user-select:none}
 .po-tm{font-size:12px;font-weight:700;color:var(--teal);min-width:45px}
 
 @media(max-width:720px){.shell{grid-template-columns:1fr}.sb{flex-direction:row;overflow-x:auto;padding:7px;border-right:none;border-bottom:1px solid var(--line);scrollbar-width:none}.sb::-webkit-scrollbar{display:none}.sb .brand,.sb .sb-bot,.sb .nav-sep{display:none}.sb .nav{white-space:nowrap;flex-shrink:0;padding:6px 9px;font-size:12px}.main{padding:12px}.g2{grid-template-columns:1fr}}
+
+.guest-note{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.45}
+.guest-note.ok{color:var(--grn)}
+
 </style>
 </head>
 <body>
@@ -234,12 +237,13 @@ button{cursor:pointer;user-select:none}
     <div id="mG">
       <div class="g" style="gap:11px">
         <div class="fld"><div class="lbl">Имя</div><input id="grNm" class="inp" placeholder="Ваше имя"></div>
-        <div class="fld"><div class="lbl">Телефон</div><input id="grPh" class="inp" type="tel" placeholder="+7..."></div>
+        <div class="fld"><div class="lbl">Телефон</div><input id="grPh" class="inp" type="tel" placeholder="+7..." onblur="checkGuestByPhone()"></div>
       </div>
+      <div id="grStatus" class="guest-note">Введите телефон. Если гость уже зарегистрирован, анкета не заполняется повторно.</div>
 
       <div style="margin-top:16px">
-        <div style="font-size:14px;font-weight:700;margin-bottom:3px">Предпочтения по кальяну</div>
-        <div style="font-size:12px;color:var(--muted);margin-bottom:11px">Сохраняются как анкета гостя</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:3px">Предзаказ кальяна</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:11px">Для действующего гостя сохраняются прежние предпочтения. Изменить их можно в личном кабинете.</div>
         <div class="fld" style="margin-bottom:10px">
           <div class="lbl">Заказать как всегда?</div>
           <div class="tog-row"><button class="tog-btn on" id="bUY" onclick="setU('y')">Да</button><button class="tog-btn" id="bUN" onclick="setU('n')">Новый</button></div>
@@ -248,46 +252,53 @@ button{cursor:pointer;user-select:none}
           <div class="fld"><div class="lbl">Время</div><input id="grTm" class="inp" type="time" value="19:30"></div>
           <div class="fld"><div class="lbl">Адрес</div><select id="grAd" class="sel"><option>Малыгина 90</option><option>50 лет Октября</option><option>Чаркова</option><option>Сперанского</option></select></div>
         </div>
-        <div id="cHk" class="g" style="gap:9px">
-          <div class="g2" style="gap:9px">
-            <div class="fld"><div class="lbl">Крепость</div><select id="grSt" class="sel"><option>Легкий</option><option>Ниже среднего</option><option selected>Средний</option><option>Выше среднего</option><option>Крепкий</option></select></div>
-            <div class="fld"><div class="lbl">До еды или после</div><select id="grWhen" class="sel"><option>Без разницы</option><option>До еды</option><option>После еды</option></select></div>
+      </div>
+
+      <div id="grQWrap">
+        <div style="margin-top:16px">
+          <div style="font-size:14px;font-weight:700;margin-bottom:3px">Анкета нового гостя</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:11px">Заполняется только один раз при первой регистрации</div>
+          <div id="cHk" class="g" style="gap:9px">
+            <div class="g2" style="gap:9px">
+              <div class="fld"><div class="lbl">Крепость</div><select id="grSt" class="sel"><option>Легкий</option><option>Ниже среднего</option><option selected>Средний</option><option>Выше среднего</option><option>Крепкий</option></select></div>
+              <div class="fld"><div class="lbl">До еды или после</div><select id="grWhen" class="sel"><option>Без разницы</option><option>До еды</option><option>После еды</option></select></div>
+            </div>
+            <div class="g2" style="gap:9px">
+              <div class="fld"><div class="lbl">Вкус</div><input id="grFl" class="inp" placeholder="Например: ягодный, свежий, цитрус"></div>
+              <div class="fld"><div class="lbl">Марка табака</div><input id="grBr" class="inp" placeholder="Например: Musthave, Darkside"></div>
+            </div>
           </div>
+        </div>
+
+        <div style="margin-top:16px">
+          <div style="font-size:14px;font-weight:700;margin-bottom:8px">Предпочтения по столу</div>
           <div class="g2" style="gap:9px">
-            <div class="fld"><div class="lbl">Вкус</div><input id="grFl" class="inp" placeholder="Например: ягодный, свежий, цитрус"></div>
-            <div class="fld"><div class="lbl">Марка табака</div><input id="grBr" class="inp" placeholder="Например: Musthave, Darkside"></div>
+            <div class="fld"><div class="lbl">У окна</div><select id="grTbWin" class="sel"><option>Не важно</option><option>Да</option><option>Нет</option></select></div>
+            <div class="fld"><div class="lbl">Большой стол</div><select id="grTbBig" class="sel"><option>Не важно</option><option>Да</option><option>Нет</option></select></div>
+            <div class="fld"><div class="lbl">Посадка</div><select id="grSeat" class="sel"><option>Без разницы</option><option>Диваны</option><option>Кресла</option></select></div>
+            <div class="fld"><div class="lbl">Потише</div><select id="grQuiet" class="sel"><option>Не важно</option><option>Да</option><option>Нет</option></select></div>
           </div>
         </div>
-      </div>
 
-      <div style="margin-top:16px">
-        <div style="font-size:14px;font-weight:700;margin-bottom:8px">Предпочтения по столу</div>
-        <div class="g2" style="gap:9px">
-          <div class="fld"><div class="lbl">У окна</div><select id="grTbWin" class="sel"><option>Не важно</option><option>Да</option><option>Нет</option></select></div>
-          <div class="fld"><div class="lbl">Большой стол</div><select id="grTbBig" class="sel"><option>Не важно</option><option>Да</option><option>Нет</option></select></div>
-          <div class="fld"><div class="lbl">Посадка</div><select id="grSeat" class="sel"><option>Без разницы</option><option>Диваны</option><option>Кресла</option></select></div>
-          <div class="fld"><div class="lbl">Потише</div><select id="grQuiet" class="sel"><option>Не важно</option><option>Да</option><option>Нет</option></select></div>
+        <div style="margin-top:16px">
+          <div style="font-size:14px;font-weight:700;margin-bottom:8px">Еда и напитки</div>
+          <div class="g2" style="gap:9px">
+            <div class="fld"><div class="lbl">Аллергены</div><input id="grAlg" class="inp" placeholder="В свободной форме"></div>
+            <div class="fld"><div class="lbl">Любимые блюда</div><input id="grFavDish" class="inp" placeholder="В свободной форме"></div>
+            <div class="fld"><div class="lbl">Алкоголь</div><select id="grAlc" class="sel"><option>Не указано</option><option>Да</option><option>Нет</option></select></div>
+            <div class="fld"><div class="lbl">Без сахара</div><select id="grSugar" class="sel"><option>Нет</option><option>Да</option></select></div>
+            <div class="fld"><div class="lbl">На диете</div><select id="grDiet" class="sel"><option>Нет</option><option>Да</option></select></div>
+            <div class="fld"><div class="lbl">Веган</div><select id="grVegan" class="sel"><option>Нет</option><option>Да</option></select></div>
+          </div>
         </div>
-      </div>
 
-      <div style="margin-top:16px">
-        <div style="font-size:14px;font-weight:700;margin-bottom:8px">Еда и напитки</div>
-        <div class="g2" style="gap:9px">
-          <div class="fld"><div class="lbl">Аллергены</div><input id="grAlg" class="inp" placeholder="В свободной форме"></div>
-          <div class="fld"><div class="lbl">Любимые блюда</div><input id="grFavDish" class="inp" placeholder="В свободной форме"></div>
-          <div class="fld"><div class="lbl">Алкоголь</div><select id="grAlc" class="sel"><option>Не указано</option><option>Да</option><option>Нет</option></select></div>
-          <div class="fld"><div class="lbl">Без сахара</div><select id="grSugar" class="sel"><option>Нет</option><option>Да</option></select></div>
-          <div class="fld"><div class="lbl">На диете</div><select id="grDiet" class="sel"><option>Нет</option><option>Да</option></select></div>
-          <div class="fld"><div class="lbl">Веган</div><select id="grVegan" class="sel"><option>Нет</option><option>Да</option></select></div>
-        </div>
-      </div>
-
-      <div style="margin-top:16px">
-        <div style="font-size:14px;font-weight:700;margin-bottom:8px">Общение и обслуживание</div>
-        <div class="g2" style="gap:9px">
-          <div class="fld"><div class="lbl">Общительный человек</div><select id="grTalk" class="sel"><option>Не указано</option><option>Да</option><option>Нет</option></select></div>
-          <div class="fld"><div class="lbl">Люблю поработать в тишине</div><select id="grWorkQuiet" class="sel"><option>Нет</option><option>Да</option></select></div>
-          <div class="fld"><div class="lbl">Нормально на “ты”</div><select id="grTy" class="sel"><option>Не указано</option><option>Да</option><option>Нет</option></select></div>
+        <div style="margin-top:16px">
+          <div style="font-size:14px;font-weight:700;margin-bottom:8px">Общение и обслуживание</div>
+          <div class="g2" style="gap:9px">
+            <div class="fld"><div class="lbl">Общительный человек</div><select id="grTalk" class="sel"><option>Не указано</option><option>Да</option><option>Нет</option></select></div>
+            <div class="fld"><div class="lbl">Люблю поработать в тишине</div><select id="grWorkQuiet" class="sel"><option>Нет</option><option>Да</option></select></div>
+            <div class="fld"><div class="lbl">Нормально на “ты”</div><select id="grTy" class="sel"><option>Не указано</option><option>Да</option><option>Нет</option></select></div>
+          </div>
         </div>
       </div>
 
@@ -1331,17 +1342,9 @@ async function loadPO(){
   }).join('');
 }
 
-// ──────────────────────────────────────────────────────────────────────────────
-// GUEST PREORDER SUBMIT
-// ──────────────────────────────────────────────────────────────────────────────
-
-async function subG(){
-  const name=$('grNm').value.trim(), phone=$('grPh').value.trim();
-  if(!name || !phone){toast('Укажите имя и телефон',false);return}
-  const time=$('grTm').value.trim(), addr=$('grAd').value;
-  const usual = hookahU==='y';
-
-  const pref = {
+let guestExists=false, existingGuest=null;
+function guestPrefPayload(){
+  return {
     hookah_strength_pref: $('grSt')?.value||'',
     hookah_flavor_pref: $('grFl')?.value.trim()||'',
     hookah_brand_pref: $('grBr')?.value.trim()||'',
@@ -1360,11 +1363,70 @@ async function subG(){
     pref_work_silence: $('grWorkQuiet')?.value||'Нет',
     pref_ok_with_ty: $('grTy')?.value||''
   };
+}
+function setGuestQuestionnaireMode(exists, guest=null){
+  guestExists=!!exists; existingGuest=guest||null;
+  $('grQWrap')?.classList.toggle('h', guestExists);
+  const s=$('grStatus');
+  if(!s) return;
+  if(guestExists){
+    s.textContent='Гость уже зарегистрирован. Предпочтения сохранены и не заполняются повторно. Изменить их можно в личном кабинете.';
+    s.className='guest-note ok';
+  }else{
+    s.textContent='Новый гость. Заполните анкету один раз при первой регистрации.';
+    s.className='guest-note';
+  }
+}
+async function checkGuestByPhone(){
+  const phone=$('grPh')?.value.trim();
+  if(!phone){setGuestQuestionnaireMode(false,null);return}
+  try{
+    const cli=window.supabase.createClient(SBURL,ANON);
+    const {data:found}=await cli.from('guests').select('*').eq('phone', nph(phone)).limit(1);
+    if(found?.length){
+      const g=found[0];
+      if($('grNm') && !$('grNm').value.trim()) $('grNm').value=g.full_name||'';
+      setGuestQuestionnaireMode(true,g);
+      return;
+    }
+  }catch(e){}
+  setGuestQuestionnaireMode(false,null);
+}
 
-  let brand = usual ? 'Как всегда' : (pref.hookah_brand_pref || '');
-  let strength = usual ? '' : (pref.hookah_strength_pref || '');
-  let flavor = usual ? '' : (pref.hookah_flavor_pref || '');
-  let saved=false, gid=null, guestData=null;
+// ──────────────────────────────────────────────────────────────────────────────
+// GUEST PREORDER SUBMIT
+// ──────────────────────────────────────────────────────────────────────────────
+
+
+async function subG(){
+  const name=$('grNm').value.trim(), phone=$('grPh').value.trim();
+  if(!name || !phone){toast('Укажите имя и телефон',false);return}
+  const time=$('grTm').value.trim(), addr=$('grAd').value;
+  const usual = hookahU==='y';
+  let saved=false, gid=null, guestData=existingGuest;
+  let pref = guestExists && existingGuest ? {
+    hookah_strength_pref: existingGuest.hookah_strength_pref||'',
+    hookah_flavor_pref: existingGuest.hookah_flavor_pref||'',
+    hookah_brand_pref: existingGuest.hookah_brand_pref||'',
+    hookah_before_or_after_food: existingGuest.hookah_before_or_after_food||'',
+    pref_window: existingGuest.pref_window||'',
+    pref_big_table: existingGuest.pref_big_table||'',
+    pref_seating: existingGuest.pref_seating||'',
+    pref_quiet: existingGuest.pref_quiet||'',
+    pref_allergens: existingGuest.pref_allergens||'',
+    pref_favorite_dishes: existingGuest.pref_favorite_dishes||'',
+    pref_drinks_alcohol: existingGuest.pref_drinks_alcohol||'',
+    pref_no_sugar: existingGuest.pref_no_sugar||'Нет',
+    pref_on_diet: existingGuest.pref_on_diet||'Нет',
+    pref_vegan: existingGuest.pref_vegan||'Нет',
+    pref_talkative: existingGuest.pref_talkative||'',
+    pref_work_silence: existingGuest.pref_work_silence||'Нет',
+    pref_ok_with_ty: existingGuest.pref_ok_with_ty||''
+  } : guestPrefPayload();
+
+  let brand = usual ? (pref.hookah_brand_pref || 'Как всегда') : (pref.hookah_brand_pref || '');
+  let strength = usual ? (pref.hookah_strength_pref || '') : (pref.hookah_strength_pref || '');
+  let flavor = usual ? (pref.hookah_flavor_pref || '') : (pref.hookah_flavor_pref || '');
 
   try{
     const cli=window.supabase.createClient(SBURL,ANON);
@@ -1372,17 +1434,34 @@ async function subG(){
     const {data:found}=await cli.from('guests').select('*').eq('phone', normPhone).limit(1);
     if(found?.length){
       guestData=found[0]; gid=guestData.id;
-      if(usual){
-        brand = guestData.hookah_brand_pref || 'Как всегда';
-        strength = guestData.hookah_strength_pref || '';
-        flavor = guestData.hookah_flavor_pref || '';
-      } else {
-        await cli.from('guests').update({full_name:name, phone:normPhone, ...pref, updated_at:new Date().toISOString()}).eq('id', gid);
-      }
+      guestExists=true; existingGuest=guestData;
+      pref = {
+        hookah_strength_pref: guestData.hookah_strength_pref||'',
+        hookah_flavor_pref: guestData.hookah_flavor_pref||'',
+        hookah_brand_pref: guestData.hookah_brand_pref||'',
+        hookah_before_or_after_food: guestData.hookah_before_or_after_food||'',
+        pref_window: guestData.pref_window||'',
+        pref_big_table: guestData.pref_big_table||'',
+        pref_seating: guestData.pref_seating||'',
+        pref_quiet: guestData.pref_quiet||'',
+        pref_allergens: guestData.pref_allergens||'',
+        pref_favorite_dishes: guestData.pref_favorite_dishes||'',
+        pref_drinks_alcohol: guestData.pref_drinks_alcohol||'',
+        pref_no_sugar: guestData.pref_no_sugar||'Нет',
+        pref_on_diet: guestData.pref_on_diet||'Нет',
+        pref_vegan: guestData.pref_vegan||'Нет',
+        pref_talkative: guestData.pref_talkative||'',
+        pref_work_silence: guestData.pref_work_silence||'Нет',
+        pref_ok_with_ty: guestData.pref_ok_with_ty||''
+      };
+      brand = usual ? (guestData.hookah_brand_pref || 'Как всегда') : (guestData.hookah_brand_pref || '');
+      strength = usual ? (guestData.hookah_strength_pref || '') : (guestData.hookah_strength_pref || '');
+      flavor = usual ? (guestData.hookah_flavor_pref || '') : (guestData.hookah_flavor_pref || '');
     } else {
-      const payload = {full_name:name, phone:normPhone, ...pref};
+      const payload = {full_name:name, phone:normPhone, ...guestPrefPayload()};
       const {data:ng}=await cli.from('guests').insert(payload).select('id').single();
       gid=ng?.id||null;
+      guestExists=false;
     }
     if(gid&&time){
       await cli.from('hookah_preorders').insert({
@@ -1392,34 +1471,25 @@ async function subG(){
         tobacco_brand: brand || flavor || 'Как всегда',
         strength,
         usual_order:usual,
-        notes: JSON.stringify({ flavor, when: pref.hookah_before_or_after_food })
+        notes: JSON.stringify({ flavor, when: pref.hookah_before_or_after_food, existing_guest: !!found?.length })
       });
     }
     saved=true;
   }catch(e){}
 
   const orders=JSON.parse(localStorage.getItem('dg_po')||'[]');
-  orders.unshift({
-    nm:name, ph:phone, tm:time, addr,
-    brd:brand || flavor || 'Как всегда',
-    str:strength, usual,
-    pref, ts:Date.now()
-  });
+  orders.unshift({nm:name,ph:phone,tm:time,addr,brd:brand || flavor || 'Как всегда',str:strength,usual,pref,existing_guest:guestExists,ts:Date.now()});
   localStorage.setItem('dg_po',JSON.stringify(orders.slice(0,100)));
 
   toast(saved?'Заявка принята ✓':'Сохранено локально');
 
-  const tgLinks = {
-    'Малыгина 90': 'friendstalk4',
-    '50 лет Октября': 'friends_talk_tmn',
-    'Сперанского': 'Friendstalk3',
-    'Чаркова': 'T_Charkova'
-  };
+  const tgLinks = {'Малыгина 90':'friendstalk4','50 лет Октября':'friends_talk_tmn','Сперанского':'Friendstalk3','Чаркова':'T_Charkova'};
   const tgid = tgLinks[addr] || 'friendstalk4';
-  const msg = `Заявка с сайта!%0AИмя: ${name}%0AТелефон: ${phone}%0AВремя: ${time}%0AАдрес: ${addr}%0AЗаказ: ${usual?'Как всегда':'Новый'}%0AМарка: ${brand}%0AВкус: ${flavor}%0AКрепость: ${strength}%0AДо/после еды: ${pref.hookah_before_or_after_food}`;
+  const msg = `Заявка с сайта!%0AИмя: ${name}%0AТелефон: ${phone}%0AВремя: ${time}%0AАдрес: ${addr}%0AГость: ${guestExists?'зарегистрирован':'новый'}%0AЗаказ: ${usual?'Как всегда':'Новый'}%0AМарка: ${brand}%0AВкус: ${flavor}%0AКрепость: ${strength}%0AДо/после еды: ${pref.hookah_before_or_after_food}`;
   window.open(`https://t.me/${tgid}?text=${msg}`, '_self');
   setTimeout(() => openApp(), 500);
 }
+
 
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -1480,6 +1550,7 @@ function autoRefreshPO(){
 }
 restoreSession();
 autoRefreshPO();
+setGuestQuestionnaireMode(false,null);
 fmRenderRibbon();
 if($('fmTime')) $('fmTime').value=fmSelTime;
 const _brTabs=document.getElementById('brTabs');
