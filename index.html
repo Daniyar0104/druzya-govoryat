@@ -47,6 +47,7 @@ button{cursor:pointer;user-select:none}
 .btn-d{border-color:var(--red)!important;color:var(--red)!important}
 .btn-sm{padding:5px 11px;font-size:12px}
 .btn-xs{padding:3px 7px;font-size:11px}
+.icon-only{padding:0;width:44px;height:44px;min-width:44px}
 .fld{display:flex;flex-direction:column;gap:4px}
 .lbl{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:700}
 .inp,.sel,.txa{width:100%;padding:9px 12px;background:var(--card);border:1.5px solid var(--brd);border-radius:var(--rsm);color:var(--txt);font-size:13px;transition:border-color .12s}
@@ -252,10 +253,19 @@ html,body{overflow-x:hidden}
   .brand-ico{font-size:20px}
   .brand-t{font-size:13px}
   .brand-s{font-size:10px}
-  .row,.rowb{gap:8px}
+  .row,.rowb{gap:8px;flex-wrap:wrap}
+  .rowb{justify-content:flex-start}
   .tab{flex:1 1 0;padding:10px 12px;font-size:13px;min-height:42px}
-  .btn{width:100%;justify-content:center}
+  .btn{justify-content:center}
   .btn-sm,.btn-xs{width:auto}
+  .card .row > .btn,
+  .card .rowb > .btn,
+  .main > .row > .btn,
+  .main > .rowb > .btn{width:auto;flex:1 1 calc(50% - 8px);min-width:140px}
+  .card .row > .btn.icon-only,
+  .card .rowb > .btn.icon-only,
+  .main > .row > .btn.icon-only,
+  .main > .rowb > .btn.icon-only{flex:0 0 auto;min-width:44px}
   .g2,.g3,.fm-layout,.gb-grid{grid-template-columns:1fr}
   .main{padding:10px}
   .main-sub{font-size:11px;margin-bottom:10px}
